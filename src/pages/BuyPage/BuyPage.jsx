@@ -8,6 +8,16 @@ import { signer } from "../../web3/wallet/providers";
 
 export default function BuyPage(props) {
     const { id } = useParams();
+
+    async function buyProduct(data){
+        const index = createIndex(signer, "0x70bEb70807008B95CeB0cF4a88384b5cCddaF068");
+        const buyToken = createERC20(signer, (await index.buyTokenAddress()));
+
+        const transaction = await buyToken.approve(index.address, data.amount, { from: data.account });
+        await transaction.wait();
+        console.log("Transaction complete");
+    }
+
     return <Row style={{
         width: "100wv",
         display: "flex",
@@ -23,12 +33,10 @@ export default function BuyPage(props) {
         <Col span={24}>
             <Form name="buyForm" autoComplete="off"
                 onFinish={(values) => {
-
-                    const index = createIndex(signer, "0xBf6039a681979EbCa20300E1b8E50E40ab50b64a");
-                    const buyToken = createERC20(signer, "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48");
-                    
-                    
-
+                    buyProduct({
+                        amount: values.amount,
+                        account: props.account,
+                    });
                 }}
                 onFinishFailed={(errors) => {
                 }}>

@@ -20,7 +20,7 @@ function App() {
         <BrowserRouter>
             <Routes>
                 <Route path={INDEX_PAGE} element={<IndexPage />} />
-                <Route path={BUY_PAGE} element={<BuyPage />} />
+                <Route path={BUY_PAGE} element={<BuyPage account={account} />} />
             </Routes>
         </BrowserRouter>
     );
