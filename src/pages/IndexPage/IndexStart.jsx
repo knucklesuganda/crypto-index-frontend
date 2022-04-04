@@ -1,6 +1,8 @@
-import { Row, Col, Typography } from "antd";
+import { Row, Col, Typography, Space, Divider } from "antd";
 import { useState, useEffect, useRef } from "react";
 import { Line } from "@ant-design/plots";
+import { BarChartOutlined, GlobalOutlined, SlidersOutlined } from '@ant-design/icons';
+
 
 function PriceLines() {
     return (
@@ -55,14 +57,14 @@ function PriceLines() {
                 { date: "2022-03-01", price: 59, asset: "derivatives" },
             ]}
 
-            xAxis={{ grid: { line: {style: { lineWidth: 0 }} }}}
-            yAxis={{ grid: { line: {style: { lineWidth: 0 }} }}}
+            xAxis={{ grid: { line: { style: { lineWidth: 0 } } } }}
+            yAxis={{ grid: { line: { style: { lineWidth: 0 } } } }}
             interactions={[{ type: 'tooltip', enable: false }]}
 
             xField="date" yField="price" seriesField="asset"
             legend={{ position: "top" }} smooth={true}
             animation={{ appear: { animation: "path-in", duration: 1000 } }}
-            colors={['#00e7eb', "#00eb10", "#eb9c00"]}
+            color={['#00e7eb', "#00eb10", "#eb9c00"]}
         />
     );
 };
@@ -72,6 +74,7 @@ export default function IndexStart() {
     const titleColors = ["#eb9c00", "#eb00bb", "#00e7eb", "#00eb10"];
     const [titleIndex, setTitleIndex] = useState(0);
     const titleIntervalId = useRef(null);
+    const iconStyle = { display: "flex", fontSize: "4em", justifyContent: "space-around" };
 
     useEffect(
         () => {
@@ -93,20 +96,48 @@ export default function IndexStart() {
     );
 
     return (
-        <Row id="start" style={{ background: "", height: "90vh" }}>
-            <Col span={16}>
-                <PriceLines />
-            </Col>
+        <Space wrap direction="vertical" style={{ width: "100%" }}>
+            <Row style={{ width: "100%" }}>
+                <Col span={16}>
+                    <PriceLines />
+                    <Typography.Text disabled style={{ paddingLeft: "0.5em" }}>Not real data</Typography.Text>
+                </Col>
 
-            <Col span={7} style={{ display: "flex", paddingTop: "11em", justifyContent: "center" }}>
-                <Typography.Title level={1}>
-                    Crypto{" "}
-                    <div style={{ color: titleColors[titleIndex], transition: "100ms" }} >
-                        {allTitles[titleIndex]}
-                    </div>
-                    For Everyone
-                </Typography.Title>
-            </Col>
-        </Row>
+                <Col span={7} style={{ display: "flex", paddingTop: "11em", justifyContent: "center" }}>
+                    <Typography.Title level={1} style={{ margin: 0, padding: 0 }}>
+                        Crypto{" "}
+                        <div style={{ color: titleColors[titleIndex], transition: "100ms" }} >
+                            {allTitles[titleIndex]}
+                        </div>
+                        For Everyone
+                    </Typography.Title>
+                </Col>
+            </Row>
+
+            <Row gutter={[100, 0]} style={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+                alignContent: "center",
+                placeContent: "center",
+                marginTop: "5em",
+            }}>
+                {[
+                    [<GlobalOutlined style={iconStyle}/>, "Global solutions in crypto finance"],
+                    [<BarChartOutlined style={iconStyle}/>, "Derivatives you have never seen before."],
+                    [<SlidersOutlined style={iconStyle}/>, "Protect yourself with anti-volatility products."],
+                ].map((data, index) =>
+                    <Col key={index}>
+                        { data[0] }
+                        <Divider />
+
+                        <Typography.Text style={{ fontSize: "1.1em" }}>
+                            { data[1] }
+                        </Typography.Text>
+                    </Col>
+                )}
+
+            </Row>
+        </Space>
     );
 }
