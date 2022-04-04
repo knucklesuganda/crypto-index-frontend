@@ -2,6 +2,8 @@ import { Row, Col, Typography, Space, Divider } from "antd";
 import { useState, useEffect, useRef } from "react";
 import { Line } from "@ant-design/plots";
 import { BarChartOutlined, GlobalOutlined, SlidersOutlined } from '@ant-design/icons';
+import { Title } from "../../components/Title";
+import { NextPage } from "../../components/NextPage";
 
 
 function PriceLines() {
@@ -63,40 +65,41 @@ function PriceLines() {
 
             xField="date" yField="price" seriesField="asset"
             legend={{ position: "top" }} smooth={true}
-            animation={{ appear: { animation: "path-in", duration: 1000 } }}
+            animation={{ appear: { animation: "path-in", duration: 4000 } }}
             color={['#00e7eb', "#00eb10", "#eb9c00"]}
         />
     );
 };
 
-export default function IndexStart() {
+export default function IndexStart(props) {
     const allTitles = ["Derivatives", "Indices", "Products", "Safety"];
     const titleColors = ["#eb9c00", "#eb00bb", "#00e7eb", "#00eb10"];
     const [titleIndex, setTitleIndex] = useState(0);
     const titleIntervalId = useRef(null);
     const iconStyle = { display: "flex", fontSize: "4em", justifyContent: "space-around" };
 
-    useEffect(
-        () => {
-            titleIntervalId.current = setInterval(() => {
-                const nextTitleIndex = titleIndex + 1;
+    useEffect(() => {
+        titleIntervalId.current = setInterval(() => {
+            const nextTitleIndex = titleIndex + 1;
 
-                if (nextTitleIndex >= allTitles.length) {
-                    setTitleIndex(0);
-                } else {
-                    setTitleIndex(nextTitleIndex);
-                }
-            }, 3000);
+            if (nextTitleIndex >= allTitles.length) {
+                setTitleIndex(0);
+            } else {
+                setTitleIndex(nextTitleIndex);
+            }
+        }, 3000);
 
-            return () => {
-                clearInterval(titleIntervalId.current);
-            };
-        },
+        return () => {
+            clearInterval(titleIntervalId.current);
+        };
+    },
         [setTitleIndex, titleIndex, allTitles]
     );
 
     return (
         <Space wrap direction="vertical" style={{ width: "100%" }}>
+            <Title id={props.id}>Crypto finance</Title>
+
             <Row style={{ width: "100%" }}>
                 <Col span={16}>
                     <PriceLines />
@@ -114,30 +117,31 @@ export default function IndexStart() {
                 </Col>
             </Row>
 
-            <Row gutter={[100, 0]} style={{
+            <Row style={{
                 width: "100%",
                 display: "flex",
-                justifyContent: "center",
+                justifyContent: "space-around",
                 alignContent: "center",
-                placeContent: "center",
+                placeContent: "space-around",
                 marginTop: "5em",
             }}>
                 {[
-                    [<GlobalOutlined style={iconStyle}/>, "Global solutions in crypto finance"],
-                    [<BarChartOutlined style={iconStyle}/>, "Derivatives you have never seen before."],
-                    [<SlidersOutlined style={iconStyle}/>, "Protect yourself with anti-volatility products."],
+                    [<GlobalOutlined style={iconStyle} />, "Global solutions in crypto finance"],
+                    [<BarChartOutlined style={iconStyle} />, "Derivatives you have never seen before."],
+                    [<SlidersOutlined style={iconStyle} />, "Protect yourself with anti-volatility products."],
                 ].map((data, index) =>
                     <Col key={index}>
-                        { data[0] }
+                        {data[0]}
                         <Divider />
 
                         <Typography.Text style={{ fontSize: "1.1em" }}>
-                            { data[1] }
+                            {data[1]}
                         </Typography.Text>
                     </Col>
                 )}
-
             </Row>
+
+            <NextPage setNextPage={props.setNextPage} />
         </Space>
     );
 }

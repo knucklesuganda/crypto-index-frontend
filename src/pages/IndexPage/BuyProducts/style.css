@@ -1,0 +1,5 @@
+
+.productCard:hover {
+    background-color: #242323;
+    transition: 50ms;
+}

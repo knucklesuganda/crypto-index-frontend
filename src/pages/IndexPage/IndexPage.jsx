@@ -1,31 +1,53 @@
-import {Row, Col, Menu, Typography } from "antd";
+import { useState, useLayoutEffect } from "react";
+import { Row, Col, Menu, Typography } from "antd";
+import IndexAboutUs from "./IndexAboutUs";
 import IndexStart from "./IndexStart";
+import IndexBuyProducts from "./BuyProducts/BuyProducts";
+
 
 export default function IndexPage(props) {
-    return (
-        <Row style={{paddingRight: "1em", paddingTop: "0.5em"}}>
-            <Col span={24} style={{display: "flex", justifyContent: "center"}}>
-                <Typography.Title level={2}>
-                    <a href="/">ZONA</a>
-                </Typography.Title>
-            </Col>
+    const [currentPage, setCurrentPage] = useState(0);
+    const startId = "start";
+    const aboutUsId = "about-us";
+    const buyProductsId = "buy-products";
 
-            <Col span={22}>
-                <IndexStart />
+    useLayoutEffect(() => {
+        const originalStyle = window.getComputedStyle(document.body).overflow;
+        document.body.style.overflow = "hidden";
+        return () => (document.body.style.overflow = originalStyle);
+    }, []);
+
+    return (
+        <Row style={{ paddingRight: "1em", paddingTop: "0.5em" }}>
+            <Col span={22} style={{ display: 'flex', direction: "column" }}>
+                <Row style={{ width: "100%" }}>
+                    {[
+                        <IndexStart id={startId} setNextPage={() => {
+                            document.getElementById(aboutUsId).scrollIntoView({ behavior: "smooth" });
+                            setCurrentPage(1);
+                        }} />,
+                        <IndexAboutUs id={aboutUsId} setNextPage={() => {
+                            document.getElementById(buyProductsId).scrollIntoView({ behavior: "smooth" });
+                            setCurrentPage(2);
+                        }}/>,
+                        <IndexBuyProducts id={buyProductsId} />,
+                    ].map((item, index) => <Col key={index} span={24} style={{ height: "100vh" }}>{item}</Col>)}
+                </Row>
             </Col>
 
             <Col span={2}>
-                <Menu defaultSelectedKeys={["1"]} defaultOpenKeys={["sub1"]} mode="inline" 
-                       style={{ background: "none", height: "100%", position: "fixed", }}>
+                <Menu selectedKeys={[currentPage.toString()]} mode="inline" style={{
+                    background: "none", height: "100%", position: "fixed"
+                }} onSelect={({ _, key }) => { setCurrentPage(parseInt(key)); }}>
                     <Menu.ItemGroup>
-                        <Menu.Item key={1}>
-                            <a href="#start">Start</a>
+                        <Menu.Item key='0'>
+                            <a href={`#${startId}`}>Start</a>
                         </Menu.Item>
-                        <Menu.Item key={2}>
-                            <a href="#aboutCompany">About us</a>
+                        <Menu.Item key='1'>
+                            <a href={`#${aboutUsId}`}>About us</a>
                         </Menu.Item>
-                        <Menu.Item key={3}>
-                            <a href="#buyProducts">Buy Products</a>
+                        <Menu.Item key='2'>
+                            <a href={`#${buyProductsId}`}>Buy Products</a>
                         </Menu.Item>
                     </Menu.ItemGroup>
                 </Menu>
