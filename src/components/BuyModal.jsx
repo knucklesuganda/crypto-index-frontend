@@ -1,7 +1,6 @@
 
 import { Fragment, useEffect, useState } from "react";
 import { Form, Row, InputNumber, Col, Button, Modal, message, Typography } from "antd";
-import { Title } from "./Title";
 import { Loading } from "./Loading";
 import { createERC20 } from "../web3/contracts/ERC20Contract";
 import { createIndex } from "../web3/contracts/IndexContract";
@@ -9,9 +8,8 @@ import { signer } from "../web3/wallet/providers";
 import { BigNumber } from "ethers";
 
 
-
 async function buyProduct(data) {
-    data.amount = BigNumber.from('100000000000000000000');
+    data.amount = BigNumber.from(data.amount.toString() + '000000000000000000');
 
     const index = createIndex(signer, data.productAddress);
     const buyToken = createERC20(signer, (await index.buyTokenAddress()));
@@ -25,41 +23,53 @@ async function buyProduct(data) {
     await buyTransaction.wait();
 }
 
-async function getAccountData(account, productData){
-    
+async function getAccountData(account, productData) {
+
     const buyToken = createERC20(signer, productData.buyTokenAddress);
     const tokenBalance = await buyToken.balanceOf(account);
 
     return {
         accountBalance: tokenBalance,
-    }
+    };
+
+}
+
+async function getProductData(productAddress){
+
+    const index = createIndex(signer, productAddress);
+    const indexToken = createERC20(signer, (await index.buyTokenAddress()));
+
+    return {
+        name: await index.name(),
+        productBalance: (await indexToken.balanceOf(productAddress)).toString(),
+    };
 
 }
 
 
-export default function BuyModal(props) {
+
+export function BuyModal(props) {
     const [isOpen, setIsOpen] = props.state;
     const [productData, setProductData] = useState(null);
     const [accountData, setAccountData] = useState(null);
 
     useEffect(() => {
-
-        setProductData({
-            name: "Meta index",
-            buyTokenName: "USDC",
-            address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-        });
-
-        getAccountData(props.account, productData).then(accountData => {
-            setAccountData({
-                balance: accountData.balance,
+        if(true){
+            getAccountData(props.account, props.productData).then(data => {
+                setAccountData(data);
             });
+
+        };
+
+        getProductData(props.productAddress).then(data => {
+            setProductData(data);
         });
 
-        return () => { };
-    }, []);
+        return () => {};
+    }, [props.account, props.productAddress, getAccountData, setProductData]);
 
     if (productData === null) {
+        console.log(1);
         return <Loading />;
     }
 
@@ -73,11 +83,8 @@ export default function BuyModal(props) {
             placeContent: "center",
         }}>
             <Col span={24} style={{
-                display: "flex",
-                placeContent: "center",
-                alignItems: "center",
-                justifyContent: "center",
-                direction: "column",
+                display: "flex", placeContent: "center", direction: "column",
+                alignItems: "center", justifyContent: "center",
             }}>{
                     productData === null ? <Loading /> :
                         <Fragment>
@@ -90,8 +97,7 @@ export default function BuyModal(props) {
                                 )}
                             </Col>
                         </Fragment>
-                }
-            </Col>
+                }</Col>
 
             <Col span={24}>
                 <Form name="buyForm" autoComplete="off"
@@ -99,10 +105,10 @@ export default function BuyModal(props) {
                         buyProduct({
                             amount: values.amount,
                             account: props.account,
-                            productAddress: '0xF8EEacD9882ECAD3F4753c91d59b3212b11695d5',
+                            productAddress: '0x69Db4AB99Db469D486d3802cA60b2cf88Ab9eBA0',
                         }).catch((error) => {
                             message.error({
-                                content: error.message,
+                                content: error.data.message,
                                 duration: 5,
                             });
                         });

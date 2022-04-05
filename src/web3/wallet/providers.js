@@ -3,5 +3,15 @@ import { ethers } from "ethers";
 
 
 const ethereum = getEthereum();
-export const provider = new ethers.providers.Web3Provider(ethereum);
-export const signer = provider.getSigner();
+let provider, signer;
+
+if(!ethereum){
+    provider = null;
+    signer = null;
+}else{
+    provider = new ethers.providers.Web3Provider(ethereum);
+    signer = provider.getSigner();
+}
+
+
+export { provider, signer };

@@ -1,12 +1,35 @@
-import { useState } from "react";
-import { Row, Col, Card } from "antd";
-import BuyModal from "../../../components/BuyModal";
+import { useState, useEffect } from "react";
+import { Row, Col, Card, message } from "antd";
+import { BuyModal } from "../../../components/BuyModal";
 import { Title } from "../../../components/Title";
+import { connectWeb3Account } from "../../../web3";
 import './style.css';
 
 
-export default function IndexBuyProducts(props) {
+export function IndexBuyProducts(props) {
     const [isBuyOpen, setIsBuyOpen] = useState(false);
+    const [account, setAccount] = useState(null);
+    const [productAddress, setProductAddress] = useState(null);
+
+    useEffect(() => {
+
+        connectWeb3Account().then((account) => {
+            setAccount(account);
+        }).catch((error) => {
+            message.error({
+                content: error.toString(),
+                duration: 5,
+            });
+        });
+
+        return () => {};
+    }, [connectWeb3Account, setAccount]);
+
+    if(account === null){
+        return <Row>
+            
+        </Row>;
+    }
 
     return <Row>
         <Title id={props.id}>Buy products</Title>
@@ -19,6 +42,7 @@ export default function IndexBuyProducts(props) {
                             src="https://prcycoin.com/wp-content/uploads/2021/07/tether-usdt-logo.png" />
                     } onClick={() => {
                         setIsBuyOpen(true);
+                        setProductAddress('0x69Db4AB99Db469D486d3802cA60b2cf88Ab9eBA0');
                     }}>
                         Meta index is a compilation of all the meta coins on Ethereum network.
                     </Card>
@@ -26,6 +50,6 @@ export default function IndexBuyProducts(props) {
             )}
         </Row>
 
-        <BuyModal account={props.account} state={[isBuyOpen, setIsBuyOpen]} />
+        <BuyModal account={props.account} productAddress={productAddress} state={[isBuyOpen, setIsBuyOpen]} />
     </Row>;
 }

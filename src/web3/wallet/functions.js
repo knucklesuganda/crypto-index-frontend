@@ -1,41 +1,35 @@
 
-export function getEthereum(){
+export function getEthereum() {
     return window.ethereum;
 }
 
 
-export function checkWalletIsConnected(){
-    return !window.ethereum;
+export function checkWeb3Connected() {
+    return window.ethereum !== undefined && window.ethereum !== null;
 }
 
 
-export async function reconnectAccount(setAccount){
+export async function reconnectAccount() {
     const ethereum = getEthereum();
     const accounts = await ethereum.request({ method: "eth_accounts" });
 
-    if(accounts.length !== 0){
-        setAccount(accounts[0]);
-    }else{
+    if (accounts.length !== 0) {
+        return accounts[0];
+    } else {
         throw new Error("No connected accounts found");
     }
 
 }
 
 
-export async function connectWallet(setAccount){
+export async function connectWallet() {
 
-    if(checkWalletIsConnected()){
-        throw new Error("No metamask found!");
-    }else{
-
-        try{
-            const ethereum = getEthereum();
-            const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-            setAccount(accounts[0]);
-        }catch(error){
-            throw new Error(error);
-        }
-
+    try {
+        const ethereum = getEthereum();
+        const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+        return accounts[0];
+    } catch (error) {
+        throw new Error(error);
     }
 
 }

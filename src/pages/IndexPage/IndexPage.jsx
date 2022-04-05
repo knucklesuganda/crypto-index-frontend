@@ -1,8 +1,8 @@
 import { useState, useLayoutEffect } from "react";
 import { Row, Col, Menu, Typography } from "antd";
-import IndexAboutUs from "./IndexAboutUs";
-import IndexStart from "./IndexStart";
-import IndexBuyProducts from "./IndexBuyProducts/IndexBuyProducts";
+import { IndexAboutUs } from "./IndexAboutUs";
+import { IndexStart } from "./IndexStart";
+import { IndexBuyProducts } from "./IndexBuyProducts/IndexBuyProducts";
 
 
 export default function IndexPage(props) {
@@ -30,7 +30,7 @@ export default function IndexPage(props) {
                             document.getElementById(buyProductsId).scrollIntoView({ behavior: "smooth" });
                             setCurrentPage(2);
                         }} />,
-                        <IndexBuyProducts id={buyProductsId} account={props.account} />,
+                        <IndexBuyProducts id={buyProductsId} />,
                     ].map((item, index) => <Col key={index} span={24} style={{ height: "100vh" }}>{item}</Col>)}
                 </Row>
             </Col>

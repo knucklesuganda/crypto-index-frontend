@@ -71,7 +71,7 @@ function PriceLines() {
     );
 };
 
-export default function IndexStart(props) {
+export function IndexStart(props) {
     const [titleIndex, setTitleIndex] = useState(0);
     const titleIntervalId = useRef(null);
     const allTitles = ["Derivatives", "Indices", "Products", "Safety"];

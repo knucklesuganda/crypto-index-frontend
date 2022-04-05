@@ -1,9 +1,14 @@
-import { reconnectAccount, connectWallet } from "./wallet/functions";
+import { reconnectAccount, connectWallet as connectAccount, checkWeb3Connected } from "./wallet/functions";
 
-export async function addAccount(setAccount) {
+export async function connectWeb3Account() {
+
+    if(!checkWeb3Connected()){
+        throw new Error("Wallet is not connected!");
+    }
+
     try {
-        reconnectAccount(setAccount);
+        return reconnectAccount();
     } catch (error) {
-        connectWallet(setAccount);
+        return connectAccount();
     }
 }
