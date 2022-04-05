@@ -1,3 +1,4 @@
+
 import { Fragment, useEffect, useState } from "react";
 import { Form, Row, InputNumber, Col, Button, Modal, message, Typography } from "antd";
 import { Title } from "./Title";
@@ -5,10 +6,13 @@ import { Loading } from "./Loading";
 import { createERC20 } from "../web3/contracts/ERC20Contract";
 import { createIndex } from "../web3/contracts/IndexContract";
 import { signer } from "../web3/wallet/providers";
+import { BigNumber } from "ethers";
 
 
 
 async function buyProduct(data) {
+    data.amount = BigNumber.from('100000000000000000000');
+
     const index = createIndex(signer, data.productAddress);
     const buyToken = createERC20(signer, (await index.buyTokenAddress()));
     const approveTransaction = await buyToken.approve(index.address, data.amount, { from: data.account });
@@ -92,7 +96,11 @@ export default function BuyModal(props) {
             <Col span={24}>
                 <Form name="buyForm" autoComplete="off"
                     onFinish={(values) => {
-                        buyProduct({ amount: values.amount, account: props.account }).catch((error) => {
+                        buyProduct({
+                            amount: values.amount,
+                            account: props.account,
+                            productAddress: '0xF8EEacD9882ECAD3F4753c91d59b3212b11695d5',
+                        }).catch((error) => {
                             message.error({
                                 content: error.message,
                                 duration: 5,
