@@ -2,12 +2,12 @@ import { useState, useLayoutEffect } from "react";
 import { Row, Col, Menu, Typography } from "antd";
 import IndexAboutUs from "./IndexAboutUs";
 import IndexStart from "./IndexStart";
-import IndexBuyProducts from "./BuyProducts/BuyProducts";
+import IndexBuyProducts from "./IndexBuyProducts/IndexBuyProducts";
 
 
 export default function IndexPage(props) {
     const [currentPage, setCurrentPage] = useState(0);
-    const startId = "start";
+    const startId = props.startId;
     const aboutUsId = "about-us";
     const buyProductsId = "buy-products";
 
@@ -29,15 +29,15 @@ export default function IndexPage(props) {
                         <IndexAboutUs id={aboutUsId} setNextPage={() => {
                             document.getElementById(buyProductsId).scrollIntoView({ behavior: "smooth" });
                             setCurrentPage(2);
-                        }}/>,
-                        <IndexBuyProducts id={buyProductsId} />,
+                        }} />,
+                        <IndexBuyProducts id={buyProductsId} account={props.account} />,
                     ].map((item, index) => <Col key={index} span={24} style={{ height: "100vh" }}>{item}</Col>)}
                 </Row>
             </Col>
 
             <Col span={2}>
                 <Menu selectedKeys={[currentPage.toString()]} mode="inline" style={{
-                    background: "none", height: "100%", position: "fixed"
+                    background: "none", height: "100%", position: "fixed",
                 }} onSelect={({ _, key }) => { setCurrentPage(parseInt(key)); }}>
                     <Menu.ItemGroup>
                         <Menu.Item key='0'>
@@ -51,6 +51,7 @@ export default function IndexPage(props) {
                         </Menu.Item>
                     </Menu.ItemGroup>
                 </Menu>
+
             </Col>
         </Row>
     );

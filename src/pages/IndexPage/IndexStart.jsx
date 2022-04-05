@@ -72,10 +72,10 @@ function PriceLines() {
 };
 
 export default function IndexStart(props) {
-    const allTitles = ["Derivatives", "Indices", "Products", "Safety"];
-    const titleColors = ["#eb9c00", "#eb00bb", "#00e7eb", "#00eb10"];
     const [titleIndex, setTitleIndex] = useState(0);
     const titleIntervalId = useRef(null);
+    const allTitles = ["Derivatives", "Indices", "Products", "Safety"];
+    const titleColors = ["#eb9c00", "#eb00bb", "#00e7eb", "#00eb10"];
     const iconStyle = { display: "flex", fontSize: "4em", justifyContent: "space-around" };
 
     useEffect(() => {
@@ -98,7 +98,6 @@ export default function IndexStart(props) {
 
     return (
         <Space wrap direction="vertical" style={{ width: "100%" }}>
-            <Title id={props.id}>Crypto finance</Title>
 
             <Row style={{ width: "100%" }}>
                 <Col span={16}>
@@ -134,9 +133,7 @@ export default function IndexStart(props) {
                         {data[0]}
                         <Divider />
 
-                        <Typography.Text style={{ fontSize: "1.1em" }}>
-                            {data[1]}
-                        </Typography.Text>
+                        <Typography.Text style={{ fontSize: "1.1em" }}>{data[1]}</Typography.Text>
                     </Col>
                 )}
             </Row>
