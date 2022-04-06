@@ -1,9 +1,18 @@
-import { useState, useEffect } from "react";
-import { Row, Col, Card, message } from "antd";
+import { useState, useEffect, Fragment } from "react";
+import { Row, Col, Card, message, Button } from "antd";
 import { BuyModal } from "../../../components/BuyModal";
 import { Title } from "../../../components/Title";
 import { connectWeb3Account } from "../../../web3";
 import './style.css';
+
+
+function ProductCard(props) {
+    return <Col key={props.index} span={4} style={{ cursor: "pointer" }}>
+        <Card title={props.title} className="productCard"
+            extra={<img style={{ width: 50 }} alt={props.title} src={props.image} />}
+            onClick={props.handleClick}>{props.description}</Card>
+    </Col>
+}
 
 
 export function IndexBuyProducts(props) {
@@ -11,45 +20,46 @@ export function IndexBuyProducts(props) {
     const [account, setAccount] = useState(null);
     const [productAddress, setProductAddress] = useState(null);
 
-    useEffect(() => {
-
-        connectWeb3Account().then((account) => {
-            setAccount(account);
-        }).catch((error) => {
-            message.error({
-                content: error.toString(),
-                duration: 5,
-            });
-        });
-
-        return () => {};
-    }, [connectWeb3Account, setAccount]);
-
-    if(account === null){
-        return <Row>
-            
-        </Row>;
-    }
-
     return <Row>
         <Title id={props.id}>Buy products</Title>
 
-        <Row gutter={[16, 16]} style={{ paddingTop: "2em", paddingLeft: "1em", paddingRight: "1em" }}>
+        {account === null ? <Row style={{ display: "flex" }}>
             {[1, 2, 3, 4, 5].map((index) =>
-                <Col key={index} span={4} style={{ cursor: "pointer" }}>
-                    <Card title="Meta index" className="productCard" extra={
-                        <img style={{ width: 50 }} alt='Meta index'
-                            src="https://prcycoin.com/wp-content/uploads/2021/07/tether-usdt-logo.png" />
-                    } onClick={() => {
-                        setIsBuyOpen(true);
-                        setProductAddress('0x69Db4AB99Db469D486d3802cA60b2cf88Ab9eBA0');
-                    }}>
-                        Meta index is a compilation of all the meta coins on Ethereum network.
-                    </Card>
-                </Col>
+                <ProductCard
+                    index={index}
+                    image="https://i.picsum.photos/id/1005/200/300.jpg"
+                    title="Product image"
+                    description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cursus nibh vel tortor."
+                />
             )}
-        </Row>
 
-        <BuyModal account={props.account} productAddress={productAddress} state={[isBuyOpen, setIsBuyOpen]} />
+            <Button type="primary" onClick={() => {
+                connectWeb3Account().then((account) => {
+                    setAccount(account);
+                }).catch((error) => {
+                    message.error({
+                        content: error.toString(),
+                        duration: 5,
+                    });
+                });
+            }}>Connect account</Button>
+        </Row>
+        :
+        <Fragment>
+            <Row gutter={[16, 16]} style={{ paddingTop: "2em", paddingLeft: "1em", paddingRight: "1em" }}>
+                {[1, 2, 3, 4, 5].map((index) =>
+                    <ProductCard
+                        title="Meta index"
+                        productImage="https://i.picsum.photos/id/1005/200/300.jpg"
+                        handleClick={() => {
+                            setIsBuyOpen(true);
+                            setProductAddress('0x725CA50819AD2353d69311f7b090ED1541d3e443');
+                        }}
+                    />
+                )}
+            </Row>
+
+            <BuyModal account={props.account} productAddress={productAddress} state={[isBuyOpen, setIsBuyOpen]} />
+        </Fragment>}
     </Row>;
 }
