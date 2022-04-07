@@ -1,60 +1,36 @@
 
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Form, Row, InputNumber, Col, Button, Modal, message, Typography } from "antd";
 import { Loading } from "./Loading";
-import { createERC20 } from "../web3/contracts/ERC20Contract";
-import { createIndex } from "../web3/contracts/IndexContract";
-import { connectWallet } from "../web3/wallet/providers";
-import { BigNumber } from "ethers";
+import { allowTokens as approveTokens } from "../web3/contracts/ERC20Contract";
+import { buyIndex } from "../web3/contracts/IndexContract";
+import { useProvider } from "../hooks/useProvider";
+import { getIndexInformation } from "../web3/contracts/IndexContract";
 
 
-async function buyProduct(data) {
-    data.amount = BigNumber.from(data.amount.toString() + '000000000000000000');
+async function buyProduct(providerData, amount, productData) {
 
-    const index = createIndex(data.signer, data.productAddress);
-    const buyToken = createERC20(data.signer, (await index.buyTokenAddress()));
-    const approveTransaction = await buyToken.approve(index.address, data.amount, { from: data.account });
-
-    console.log(approveTransaction);
-    await approveTransaction.wait();
-
-    console.log("Adding funds");
-    const buyTransaction = await index.addFunds(data.amount);
-    await buyTransaction.wait();
-}
-
-async function getProductData(productAddress, signer){
-
-    const index = createIndex(signer, productAddress);
-    const indexToken = createERC20(signer, (await index.buyTokenAddress()));
-
-    return {
-        name: await index.name(),
-        productBalance: (await indexToken.balanceOf(productAddress)).toString(),
-    };
+    const approveTransaction = await approveTokens(providerData, productData, amount);
+    const buyTransaction = await buyIndex(providerData, productData.address, amount);
 
 }
-
 
 
 export function BuyModal(props) {
     const [isOpen, setIsOpen] = props.state;
+    const { providerData } = useProvider();
     const [productData, setProductData] = useState(null);
-    const [accountData, setAccountData] = useState(null);
 
     useEffect(() => {
-        if(isOpen){
-            getProductData(props.productAddress).then(data => {
-                setProductData(data);
+
+        if (providerData !== null) {
+            getIndexInformation(providerData.signer, props.productAddress).then(product => {
+                setProductData(product);
             });
-        };
+        }
 
-        return () => {};
-    }, [props.account, props.productAddress, setProductData]);
-
-    if (isOpen && productData === null) {
-        return <Loading />;
-    }
+        return () => { };
+    });
 
     return <Modal title='Buy product' visible={isOpen} onCancel={() => { setIsOpen(false); }} footer={null}>
         <Row style={{
@@ -68,30 +44,27 @@ export function BuyModal(props) {
             <Col span={24} style={{
                 display: "flex", placeContent: "center", direction: "column",
                 alignItems: "center", justifyContent: "center",
-            }}>{
-                    productData === null ? <Loading /> :
-                        <Fragment>
-                            <Col style={{ paddingLeft: 0, marginBottom: "1em", display: "flex", direction: "column" }}>
-                                {[
-                                    `Product: ${productData.name}`,
-                                    `Address: ${productData.address}`,
-                                ].map((text, index) =>
-                                    <Typography.Text style={{ padding: 0, fontSize: "1.2em" }}>{text}</Typography.Text>
-                                )}
-                            </Col>
-                        </Fragment>
-                }</Col>
+            }}>{productData === null ? <Loading /> :
+                <Col style={{ paddingLeft: 0, marginBottom: "1em" }}>
+                    <Typography.Title level={2}>{productData.title}</Typography.Title>
+                    <Typography.Text>{productData.description}</Typography.Text>
+                </Col>
+                }
+            </Col>
 
             <Col span={24}>
                 <Form name="buyForm" autoComplete="off"
                     onFinish={(values) => {
-                        buyProduct({
-                            amount: values.amount,
-                            account: props.account,
-                            productAddress: '0x69Db4AB99Db469D486d3802cA60b2cf88Ab9eBA0',
+                        buyProduct(
+                            providerData,
+                            values.amount,
+                            productData,
+                        ).then(() => {
+                            message.info(`You successfully bought ${productData.title}!`);
                         }).catch((error) => {
+                            console.log(error);
                             message.error({
-                                content: error.data.message,
+                                content: error,
                                 duration: 5,
                             });
                         });
@@ -103,15 +76,14 @@ export function BuyModal(props) {
                         <InputNumber
                             formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                             parser={value => value.replace(/\$\s?|(,*)/g, '')}
-                            min={0} size="large" style={{ width: "30em" }} controls={false} />
+                            min={0} size="large" style={{ width: "100%" }} controls={false} />
                     </Form.Item>
 
                     <Form.Item>
-                        <Button type="primary" htmlType="submit" style={{ width: "100%", height: "3em" }}>Submit</Button>
+                        <Button type="primary" htmlType="submit" style={{ width: "100%" }}>Submit</Button>
                     </Form.Item>
                 </Form>
             </Col>
-
         </Row>
     </Modal>;
 }

@@ -26,10 +26,7 @@ export async function connectWallet() {
         return { account: await _getWallet(), signer, provider};
     }
 
-    web3Modal = new Web3Modal({
-        cacheProvider: false,
-        providerOptions,
-    });
+    web3Modal = new Web3Modal({cacheProvider: false, providerOptions});
 
     const web3ModalProvider = await web3Modal.connect();
     provider = new ethers.providers.Web3Provider(web3ModalProvider);

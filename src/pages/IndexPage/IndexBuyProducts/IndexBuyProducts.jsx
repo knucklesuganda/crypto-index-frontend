@@ -2,8 +2,9 @@ import { useState, useEffect, Fragment } from "react";
 import { Row, Col, Card, message, Button, Typography } from "antd";
 import { BuyModal } from "../../../components/BuyModal";
 import { Title } from "../../../components/Title";
-import { connectWallet } from "../../../web3/wallet/providers";
-import { createIndex } from "../../../web3/contracts/IndexContract";
+import { Loading } from "../../../components/Loading";
+import { getIndexInformation } from "../../../web3/contracts/IndexContract";
+import { useProvider } from "../../../hooks/useProvider";
 import './style.css';
 
 
@@ -22,15 +23,8 @@ async function getProductInformation(providerData) {
     const productsList = [];
 
     for (let i = 0; i < 10; i++) {
-        const productAddress = '0x235914B0e3fec83C084d0bdE2eb4FF8D98e2D184';
-        const product = createIndex(providerData.signer, productAddress);
-
-        productsList.push({
-            image: "https://picsum.photos/200",
-            address: productAddress,
-            title: await product.name(),
-            description: await product.shortDescription(),
-        });
+        const productAddress = '0x2b1Bbb0fED0C5255AB58181e32DEBfca38A6b32b';
+        productsList.push(await getIndexInformation(providerData.signer, productAddress));
     }
 
     return productsList;
@@ -39,21 +33,19 @@ async function getProductInformation(providerData) {
 
 export function IndexBuyProducts(props) {
     const [isBuyOpen, setIsBuyOpen] = useState(false);
-    const [providerData, setProviderData] = useState(null);
     const [currentProduct, setCurrentProduct] = useState(null);
-    const [productData, setProductData] = useState([]);
-
+    const [productData, setProductData] = useState(null);
+    const { providerData, handleWalletConnection } = useProvider();
 
     useEffect(() => {
-
         if (providerData !== null) {
             getProductInformation(providerData).then((productData) => {
                 setProductData(productData);
-            })
+            });
         }
 
-        return () => { }
-    }, [providerData]);
+        return () => { };
+    });
 
 
     const placeholderProducts = [];
@@ -92,30 +84,20 @@ export function IndexBuyProducts(props) {
 
                     <Button type="primary" size="large" style={{
                         width: "20em", marginTop: "1em",
-                    }}
-                        onClick={() => {
-                            connectWallet().then((providerData) => {
-                                setProviderData(providerData);
-                            }).catch((error) => {
-                                message.error({
-                                    content: error.toString(),
-                                    duration: 5,
-                                });
-                            });
-                        }}>Connect account</Button>
+                    }} onClick={() => { handleWalletConnection() }}>Connect account</Button>
                 </Card>
             </Row>
-        </Row>
-            :
+        </Row> :
             <Fragment>
                 <Row gutter={[16, 16]} style={{ paddingTop: "2em", paddingLeft: "1em", paddingRight: "1em" }}>
-                    {productData.map((product, index) =>
+                    {productData === null ? <Loading /> : productData.map((product, index) =>
                         <ProductCard
                             key={index}
                             title={product.title}
                             className="productCard"
                             productImage={product.image}
                             description={product.description}
+                            image={product.image}
                             handleClick={() => {
                                 setIsBuyOpen(true);
                                 setCurrentProduct(product.address);
@@ -125,7 +107,8 @@ export function IndexBuyProducts(props) {
                     )}
                 </Row>
 
-                <BuyModal account={providerData} productAddress={currentProduct} state={[isBuyOpen, setIsBuyOpen]} />
-            </Fragment>}
+                { isBuyOpen ? <BuyModal productAddress={currentProduct} state={[isBuyOpen, setIsBuyOpen]} /> : null }
+            </Fragment>
+        }
     </Row>;
 }

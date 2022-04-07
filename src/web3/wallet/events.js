@@ -1,21 +1,29 @@
+import { message } from 'antd';
+import { ethers } from 'ethers';
 
 
-export async function setupEvents(provider){
+export async function setupEvents(provider) {
 
-    provider.on("accountsChanged", (accounts) => {
-        console.log(accounts);
+    const { provider: ethereum } = provider;
+
+    ethereum.on('accountsChanged', (accounts) => {
+        message.info(`Account changed to: ${accounts[0]}`)
     });
 
-    provider.on("chainChanged", (chainId) => {
-        console.log(chainId);
+    provider.on("network", (newNetwork, oldNetwork) => {
+        message.info(`Network switched to ${newNetwork.name}`);
+
+        // if (!process.env.DEBUG) {
+        //     ethereum.request({
+        //         method: 'wallet_switchEthereumChain',
+        //         params: [{ chainId: process.env.CHAIN_ID }],
+        //     });
+        // }
+
     });
-    
-    provider.on("connect", (info) => {
-        console.log(info);
+
+    provider.on("pending", (tx) => {
+        message.info(`Transaction ${tx.hash} is pending`);
     });
-    
-    provider.on("disconnect", (error) => {
-        console.log(error);
-    });    
 
 }
