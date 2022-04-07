@@ -4,15 +4,15 @@ import { Form, Row, InputNumber, Col, Button, Modal, message, Typography } from 
 import { Loading } from "./Loading";
 import { createERC20 } from "../web3/contracts/ERC20Contract";
 import { createIndex } from "../web3/contracts/IndexContract";
-import { signer } from "../web3/wallet/providers";
+import { connectWallet } from "../web3/wallet/providers";
 import { BigNumber } from "ethers";
 
 
 async function buyProduct(data) {
     data.amount = BigNumber.from(data.amount.toString() + '000000000000000000');
 
-    const index = createIndex(signer, data.productAddress);
-    const buyToken = createERC20(signer, (await index.buyTokenAddress()));
+    const index = createIndex(data.signer, data.productAddress);
+    const buyToken = createERC20(data.signer, (await index.buyTokenAddress()));
     const approveTransaction = await buyToken.approve(index.address, data.amount, { from: data.account });
 
     console.log(approveTransaction);
@@ -23,18 +23,7 @@ async function buyProduct(data) {
     await buyTransaction.wait();
 }
 
-async function getAccountData(account, productData) {
-
-    const buyToken = createERC20(signer, productData.buyTokenAddress);
-    const tokenBalance = await buyToken.balanceOf(account);
-
-    return {
-        accountBalance: tokenBalance,
-    };
-
-}
-
-async function getProductData(productAddress){
+async function getProductData(productAddress, signer){
 
     const index = createIndex(signer, productAddress);
     const indexToken = createERC20(signer, (await index.buyTokenAddress()));
@@ -54,22 +43,16 @@ export function BuyModal(props) {
     const [accountData, setAccountData] = useState(null);
 
     useEffect(() => {
-        if(true){
-            getAccountData(props.account, props.productData).then(data => {
-                setAccountData(data);
+        if(isOpen){
+            getProductData(props.productAddress).then(data => {
+                setProductData(data);
             });
-
         };
 
-        getProductData(props.productAddress).then(data => {
-            setProductData(data);
-        });
-
         return () => {};
-    }, [props.account, props.productAddress, getAccountData, setProductData]);
+    }, [props.account, props.productAddress, setProductData]);
 
-    if (productData === null) {
-        console.log(1);
+    if (isOpen && productData === null) {
         return <Loading />;
     }
 

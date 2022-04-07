@@ -1,13 +1,14 @@
-import { useState, Fragment } from "react";
-import { Row, Col, Card, message, Button, Space, Typography } from "antd";
+import { useState, useEffect, Fragment } from "react";
+import { Row, Col, Card, message, Button, Typography } from "antd";
 import { BuyModal } from "../../../components/BuyModal";
 import { Title } from "../../../components/Title";
 import { connectWallet } from "../../../web3/wallet/providers";
+import { createIndex } from "../../../web3/contracts/IndexContract";
 import './style.css';
 
 
 function ProductCard(props) {
-    return <Col key={props.index} span={4} style={props.style}>
+    return <Col span={4} style={props.style}>
         <Card title={props.title} onClick={props.handleClick} className={props.className} extra={<img
             style={{ width: 50 }} alt={props.title} src={props.image} />}>
             {props.description}
@@ -16,16 +17,49 @@ function ProductCard(props) {
 }
 
 
+async function getProductInformation(providerData) {
+
+    const productsList = [];
+
+    for (let i = 0; i < 10; i++) {
+        const productAddress = '0x235914B0e3fec83C084d0bdE2eb4FF8D98e2D184';
+        const product = createIndex(providerData.signer, productAddress);
+
+        productsList.push({
+            image: "https://picsum.photos/200",
+            address: productAddress,
+            title: await product.name(),
+            description: await product.shortDescription(),
+        });
+    }
+
+    return productsList;
+}
+
+
 export function IndexBuyProducts(props) {
     const [isBuyOpen, setIsBuyOpen] = useState(false);
-    const [account, setAccount] = useState(null);
-    const [productAddress, setProductAddress] = useState(null);
+    const [providerData, setProviderData] = useState(null);
+    const [currentProduct, setCurrentProduct] = useState(null);
+    const [productData, setProductData] = useState([]);
+
+
+    useEffect(() => {
+
+        if (providerData !== null) {
+            getProductInformation(providerData).then((productData) => {
+                setProductData(productData);
+            })
+        }
+
+        return () => { }
+    }, [providerData]);
+
 
     const placeholderProducts = [];
-
     for (let i = 0; i < 18; i++) {
         placeholderProducts.push(<ProductCard
-            index={i} title="Product image"
+            key={i} title="Product image"
             style={{ cursor: "inherit" }}
             image="https://picsum.photos/200"
             description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cursus nibh vel tortor."
@@ -35,7 +69,7 @@ export function IndexBuyProducts(props) {
     return <Row>
         <Title id={props.id}>Buy products</Title>
 
-        {account === null ? <Row gutter={[25, 55]} style={{
+        {providerData === null ? <Row gutter={[25, 55]} style={{
             display: "flex", paddingLeft: "1em", rowGap: "10px", columnGap: "10px"
         }}>
             <Row style={{ width: "100%", zIndex: -1, filter: "blur(4px)" }}>{placeholderProducts}</Row>
@@ -58,38 +92,40 @@ export function IndexBuyProducts(props) {
 
                     <Button type="primary" size="large" style={{
                         width: "20em", marginTop: "1em",
-                    }} 
-                    onClick={() => {
-                        connectWallet().then((account) => {
-                            setAccount(account);
-                        }).catch((error) => {
-                            message.error({
-                                content: error.toString(),
-                                duration: 5,
+                    }}
+                        onClick={() => {
+                            connectWallet().then((providerData) => {
+                                setProviderData(providerData);
+                            }).catch((error) => {
+                                message.error({
+                                    content: error.toString(),
+                                    duration: 5,
+                                });
                             });
-                        });
-                    }}>Connect account</Button>
+                        }}>Connect account</Button>
                 </Card>
             </Row>
-        </Row> :
+        </Row>
+            :
             <Fragment>
                 <Row gutter={[16, 16]} style={{ paddingTop: "2em", paddingLeft: "1em", paddingRight: "1em" }}>
-                    {[1, 2, 3, 4, 5].map((index) =>
+                    {productData.map((product, index) =>
                         <ProductCard
-                            index={index}
-                            title="Meta index"
+                            key={index}
+                            title={product.title}
                             className="productCard"
-                            productImage="https://i.picsum.photos/id/1005/200/300.jpg"
+                            productImage={product.image}
+                            description={product.description}
                             handleClick={() => {
                                 setIsBuyOpen(true);
-                                setProductAddress('0x725CA50819AD2353d69311f7b090ED1541d3e443');
+                                setCurrentProduct(product.address);
                             }}
                             style={{ cursor: "pointer" }}
                         />
                     )}
                 </Row>
 
-                <BuyModal account={props.account} productAddress={productAddress} state={[isBuyOpen, setIsBuyOpen]} />
+                <BuyModal account={providerData} productAddress={currentProduct} state={[isBuyOpen, setIsBuyOpen]} />
             </Fragment>}
     </Row>;
 }
