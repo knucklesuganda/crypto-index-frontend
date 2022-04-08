@@ -12,7 +12,7 @@ function App() {
         <BrowserRouter>
             <Header id={'start'}>
                 <Routes>
-                    <Route path={INDEX_PAGE} element={<IndexPage startId={"start"} />} />
+                    <Route path={INDEX_PAGE} element={<IndexPage />} />
                 </Routes>
             </Header>
         </BrowserRouter>

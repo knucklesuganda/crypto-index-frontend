@@ -1,9 +1,7 @@
 import { message } from 'antd';
-import { ethers } from 'ethers';
 
 
 export async function setupEvents(provider) {
-
     const { provider: ethereum } = provider;
 
     ethereum.on('accountsChanged', (accounts) => {

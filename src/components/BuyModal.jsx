@@ -1,17 +1,21 @@
 
 import { useEffect, useState } from "react";
-import { Form, Row, InputNumber, Col, Button, Modal, message, Typography } from "antd";
+import { ethers } from "ethers";
+import { Form, Row, InputNumber, Col, Button, Modal, message, Typography, notification, Card } from "antd";
 import { Loading } from "./Loading";
-import { allowTokens as approveTokens } from "../web3/contracts/ERC20Contract";
+import { approveTokens } from "../web3/contracts/ERC20Contract";
 import { buyIndex } from "../web3/contracts/IndexContract";
 import { useProvider } from "../hooks/useProvider";
 import { getIndexInformation } from "../web3/contracts/IndexContract";
+import { addTokenToWallet } from "../web3/wallet/functions";
 
 
 async function buyProduct(providerData, amount, productData) {
 
-    const approveTransaction = await approveTokens(providerData, productData, amount);
-    const buyTransaction = await buyIndex(providerData, productData.address, amount);
+    const transaction = await approveTokens(providerData, productData, amount);
+    await transaction.wait();
+
+    await buyIndex(providerData, productData.address, amount);
 
 }
 
@@ -44,11 +48,19 @@ export function BuyModal(props) {
             <Col span={24} style={{
                 display: "flex", placeContent: "center", direction: "column",
                 alignItems: "center", justifyContent: "center",
-            }}>{productData === null ? <Loading /> :
-                <Col style={{ paddingLeft: 0, marginBottom: "1em" }}>
-                    <Typography.Title level={2}>{productData.title}</Typography.Title>
-                    <Typography.Text>{productData.description}</Typography.Text>
-                </Col>
+            }}>{
+                    productData === null ? <Loading /> :
+                        <Col style={{ paddingLeft: 0, marginBottom: "1em" }}>
+                            <Row>
+                                <Typography.Title level={2}>{productData.title}</Typography.Title>
+                                <Card style={{ padding: 0 }}>
+                                    <img src={productData.image} style={{
+                                        width: "4em", boxShadow: "0px 0px 2px 2px rgba(255, 255, 255, 0.2)"
+                                    }} />
+                                </Card>
+                            </Row>
+                            <Typography.Text>{productData.description}</Typography.Text>
+                        </Col>
                 }
             </Col>
 
@@ -57,14 +69,32 @@ export function BuyModal(props) {
                     onFinish={(values) => {
                         buyProduct(
                             providerData,
-                            values.amount,
-                            productData,
+                            ethers.utils.parseEther(values.amount.toString()),
+                            productData
                         ).then(() => {
                             message.info(`You successfully bought ${productData.title}!`);
+                            setIsOpen(false);
+
+                            setTimeout(() => {
+                                notification.info(({
+                                    message: 'Add tokens to your wallet',
+                                    description: <Col>
+                                        <Button type="primary" onClick={() => {
+                                            addTokenToWallet(
+                                                providerData.provider,
+                                                productData.productToken.address,
+                                                productData.productToken.symbol,
+                                                productData.productToken.decimals,
+                                                productData.productToken.image,
+                                            );
+                                        }}>Click here to add {productData.title} to your wallet</Button>
+                                    </Col>,
+                                }));
+                            }, 2000);
+
                         }).catch((error) => {
-                            console.log(error);
                             message.error({
-                                content: error,
+                                content: error.message !== undefined ? error.message : "Unknown error",
                                 duration: 5,
                             });
                         });

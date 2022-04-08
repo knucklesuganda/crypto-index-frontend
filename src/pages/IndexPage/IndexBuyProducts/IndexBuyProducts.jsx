@@ -1,5 +1,5 @@
 import { useState, useEffect, Fragment } from "react";
-import { Row, Col, Card, message, Button, Typography } from "antd";
+import { Row, Col, Card, Button, Typography } from "antd";
 import { BuyModal } from "../../../components/BuyModal";
 import { Title } from "../../../components/Title";
 import { Loading } from "../../../components/Loading";
@@ -10,7 +10,7 @@ import './style.css';
 
 function ProductCard(props) {
     return <Col span={4} style={props.style}>
-        <Card title={props.title} onClick={props.handleClick} className={props.className} extra={<img
+        <Card title={props.title} hoverable onClick={props.handleClick} className={props.className} extra={<img
             style={{ width: 50 }} alt={props.title} src={props.image} />}>
             {props.description}
         </Card>
@@ -23,7 +23,7 @@ async function getProductInformation(providerData) {
     const productsList = [];
 
     for (let i = 0; i < 10; i++) {
-        const productAddress = '0x2b1Bbb0fED0C5255AB58181e32DEBfca38A6b32b';
+        const productAddress = '0xAFdCEF94CE400bAbBf45Bb259DC73CDDCc22C837';
         productsList.push(await getIndexInformation(providerData.signer, productAddress));
     }
 

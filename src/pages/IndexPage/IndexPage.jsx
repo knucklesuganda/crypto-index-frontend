@@ -7,7 +7,7 @@ import { IndexBuyProducts } from "./IndexBuyProducts/IndexBuyProducts";
 
 export default function IndexPage(props) {
     const [currentPage, setCurrentPage] = useState(0);
-    const startId = props.startId;
+    const startId = 'start';
     const aboutUsId = "about-us";
     const buyProductsId = "buy-products";
 

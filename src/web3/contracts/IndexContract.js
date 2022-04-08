@@ -1,4 +1,5 @@
 import { ethers } from "ethers";
+import { createERC20 } from "./ERC20Contract";
 import contract from './sources/BaseIndex.json';
 
 const IndexABI = contract.abi;
@@ -11,6 +12,7 @@ export function createIndex(signer, indexAddress) {
 
 export async function getIndexInformation(signer, indexAddress) {
     const product = createIndex(signer, indexAddress);
+    const indexToken = createERC20(signer, await product.indexToken());
 
     return {
         image: "https://picsum.photos/200",
@@ -18,11 +20,17 @@ export async function getIndexInformation(signer, indexAddress) {
         title: await product.name(),
         description: await product.shortDescription(),
         buyTokenAddress: await product.buyTokenAddress(),
+        productToken: {
+            address: indexToken.address,
+            symbol: indexToken.symbol,
+            decimals: indexToken.decimals,
+            image: "https://picsum.photos/200",
+        },
     };
 }
 
-export async function buyIndex(providerData, indexAddress, amount){
-    const index = createIndex(providerData.signer, indexAddress);
-    return await index.buy(amount, { from: providerData.account });
+export async function buyIndex(providerData, indexAddress, amount) {
+    // const index = createIndex(providerData.signer, indexAddress);
+    // return await index.buy(amount, { from: providerData.account });
 
 }
