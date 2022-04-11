@@ -9,9 +9,17 @@ export function createERC20(signer, tokenAddress){
 }
 
 
-export async function approveTokens(providerData, productData, amount){
+export async function approveBuyTokens(providerData, productData, amount){
 
     const token = await createERC20(providerData.signer, productData.buyTokenAddress);
+    return await token.approve(productData.address, amount, { from: providerData.account });
+
+}
+
+
+export async function approveIndexTokens(providerData, productData, amount){
+
+    const token = await createERC20(providerData.signer, productData.productToken.address);
     return await token.approve(productData.address, amount, { from: providerData.account });
 
 }
