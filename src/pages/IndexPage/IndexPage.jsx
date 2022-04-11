@@ -1,6 +1,6 @@
 import { useState, useLayoutEffect } from "react";
 import { Row, Col, Menu, Typography } from "antd";
-import { IndexAboutUs } from "./IndexAboutUs";
+import { IndexBiggestProblem } from "./IndexBiggestProblem";
 import { IndexStart } from "./IndexStart";
 import { IndexBuyProducts } from "./IndexBuyProducts/IndexBuyProducts";
 
@@ -26,16 +26,19 @@ export default function IndexPage(props) {
                             document.getElementById(aboutUsId).scrollIntoView({ behavior: "smooth" });
                             setCurrentPage(1);
                         }} />,
-                        <IndexAboutUs id={aboutUsId} setNextPage={() => {
+                        <IndexBiggestProblem id={aboutUsId} setNextPage={() => {
                             document.getElementById(buyProductsId).scrollIntoView({ behavior: "smooth" });
                             setCurrentPage(2);
                         }} />,
-                        <IndexBuyProducts id={buyProductsId} />,
+                        <IndexBuyProducts id={buyProductsId} setNextPage={() => {
+                            document.getElementById(startId).scrollIntoView({ behavior: "smooth" });
+                            setCurrentPage(0);
+                        }}/>,
                     ].map((item, index) => <Col key={index} span={24} style={{ height: "100vh" }}>{item}</Col>)}
                 </Row>
             </Col>
 
-            <Col span={2}>
+            <Col span={2} id="menu" >
                 <Menu selectedKeys={[currentPage.toString()]} mode="inline" style={{
                     background: "none", height: "100%", position: "fixed",
                 }} onSelect={({ _, key }) => { setCurrentPage(parseInt(key)); }}>

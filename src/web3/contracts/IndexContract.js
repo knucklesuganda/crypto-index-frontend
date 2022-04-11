@@ -20,6 +20,7 @@ export async function getIndexInformation(signer, indexAddress) {
         title: await product.name(),
         description: await product.shortDescription(),
         buyTokenAddress: await product.buyTokenAddress(),
+        price: (await product.getPrice()).toString(),
         productToken: {
             address: indexToken.address,
             symbol: indexToken.symbol,
@@ -30,7 +31,6 @@ export async function getIndexInformation(signer, indexAddress) {
 }
 
 export async function buyIndex(providerData, indexAddress, amount) {
-    // const index = createIndex(providerData.signer, indexAddress);
-    // return await index.buy(amount, { from: providerData.account });
-
+    const index = createIndex(providerData.signer, indexAddress);
+    return await index.buy(amount, { from: providerData.account });
 }

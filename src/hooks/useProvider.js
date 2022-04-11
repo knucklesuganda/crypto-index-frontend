@@ -15,7 +15,7 @@ export function useProvider() {
             setProviderData(providerData);
         }).catch((error) => {
             message.error({
-                content: error.message ? error.message : "Unknown error",
+                content: error ? error.message : "Unknown error",
                 duration: 5,
             });
         });

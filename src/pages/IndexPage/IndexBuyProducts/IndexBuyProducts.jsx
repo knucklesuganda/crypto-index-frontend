@@ -6,12 +6,13 @@ import { Loading } from "../../../components/Loading";
 import { getIndexInformation } from "../../../web3/contracts/IndexContract";
 import { useProvider } from "../../../hooks/useProvider";
 import './style.css';
+import { NextPage } from "../../../components/NextPage";
 
 
 function ProductCard(props) {
     return <Col span={4} style={props.style}>
         <Card title={props.title} hoverable onClick={props.handleClick} className={props.className} extra={<img
-            style={{ width: 50 }} alt={props.title} src={props.image} />}>
+            style={{ width: "4em" }} alt={props.title} src={props.image} />}>
             {props.description}
         </Card>
     </Col>
@@ -23,7 +24,7 @@ async function getProductInformation(providerData) {
     const productsList = [];
 
     for (let i = 0; i < 10; i++) {
-        const productAddress = '0xAFdCEF94CE400bAbBf45Bb259DC73CDDCc22C837';
+        const productAddress = '0xc4F3a3E63E11703c343F3BB5C60411a1b2B362a1';
         productsList.push(await getIndexInformation(providerData.signer, productAddress));
     }
 
@@ -88,27 +89,33 @@ export function IndexBuyProducts(props) {
                 </Card>
             </Row>
         </Row> :
-            <Fragment>
-                <Row gutter={[16, 16]} style={{ paddingTop: "2em", paddingLeft: "1em", paddingRight: "1em" }}>
-                    {productData === null ? <Loading /> : productData.map((product, index) =>
-                        <ProductCard
-                            key={index}
-                            title={product.title}
-                            className="productCard"
-                            productImage={product.image}
-                            description={product.description}
-                            image={product.image}
-                            handleClick={() => {
-                                setIsBuyOpen(true);
-                                setCurrentProduct(product.address);
-                            }}
-                            style={{ cursor: "pointer" }}
-                        />
-                    )}
-                </Row>
+            <Row style={{ display: "flex", justifyContent: "center" }}>
+                <Col style={{ height: "80vh" }}>
+                    <Row gutter={[16, 16]} style={{ paddingTop: "2em", paddingLeft: "1em", paddingRight: "1em" }}>
+                        {productData === null ? <Loading /> : productData.map((product, index) =>
+                            <ProductCard
+                                key={index}
+                                title={product.title}
+                                className="productCard"
+                                productImage={product.image}
+                                description={product.description}
+                                image={product.image}
+                                handleClick={() => {
+                                    setIsBuyOpen(true);
+                                    setCurrentProduct(product.address);
+                                }}
+                                style={{ cursor: "pointer" }}
+                            />
+                        )}
+                    </Row>
+                </Col>
 
-                { isBuyOpen ? <BuyModal productAddress={currentProduct} state={[isBuyOpen, setIsBuyOpen]} /> : null }
-            </Fragment>
+                <Col>
+                    <NextPage setNextPage={props.setNextPage} rotate />
+                </Col>
+
+                {isBuyOpen ? <BuyModal productAddress={currentProduct} state={[isBuyOpen, setIsBuyOpen]} /> : null}
+            </Row>
         }
     </Row>;
 }

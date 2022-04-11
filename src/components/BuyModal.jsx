@@ -13,6 +13,7 @@ import { addTokenToWallet } from "../web3/wallet/functions";
 async function buyProduct(providerData, amount, productData) {
 
     const transaction = await approveTokens(providerData, productData, amount);
+    console.log(transaction);
     await transaction.wait();
 
     await buyIndex(providerData, productData.address, amount);
@@ -53,11 +54,7 @@ export function BuyModal(props) {
                         <Col style={{ paddingLeft: 0, marginBottom: "1em" }}>
                             <Row>
                                 <Typography.Title level={2}>{productData.title}</Typography.Title>
-                                <Card style={{ padding: 0 }}>
-                                    <img src={productData.image} style={{
-                                        width: "4em", boxShadow: "0px 0px 2px 2px rgba(255, 255, 255, 0.2)"
-                                    }} />
-                                </Card>
+                                <Typography.Title level={3}>{productData.price}</Typography.Title>
                             </Row>
                             <Typography.Text>{productData.description}</Typography.Text>
                         </Col>
