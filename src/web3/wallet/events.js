@@ -21,7 +21,7 @@ export async function setupEvents(provider) {
 
     });
 
-    console.log(provider.on("error", (error) => {
+    provider.on("error", (error) => {
         let errorMessage = error ? error.data : null;
 
         if(errorMessage !== null){
@@ -31,7 +31,7 @@ export async function setupEvents(provider) {
         }
 
         notification.error(errorMessage)
-    }));
+    });
 
     provider.on("pending", (tx) => {
         message.info(`Transaction ${tx.hash} is pending`);

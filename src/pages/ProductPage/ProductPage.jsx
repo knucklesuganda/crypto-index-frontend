@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { useParams } from "react-router";
+import { Navigate, useNavigate, useParams } from "react-router";
 import { useState, useEffect, Fragment } from 'react';
 import { useProvider } from "../../hooks/useProvider"
 import { Loading, WalletConnect } from "../../components";
@@ -55,7 +55,7 @@ function AnalyticsSection(props) {
                         return {
                             key: index,
                             tokenName: tokenPrice.name,
-                            tokenPrice: tokenPrice.price,
+                            tokenPrice: `${tokenPrice.price}$`,
                         };
                     })}
                     columns={[
@@ -74,13 +74,15 @@ export default function ProductPage() {
     const { providerData, handleWalletConnection } = useProvider();
     const [productData, setProductData] = useState(null);
     const [operationType, setOperationType] = useState('buy');
-    const [isApproved, setIsApproved] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
 
         if (providerData !== null) {
             getIndexInformation(providerData.signer, productAddress).then(product => {
                 setProductData(product);
+            }).catch(() => {
+                navigate('/not_found');
             });
         }
 

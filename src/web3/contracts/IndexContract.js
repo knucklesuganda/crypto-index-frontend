@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 import { formatEther } from "ethers/lib/utils";
+import { addTokenNotification } from "../../components";
 import { addTokenToWallet } from "../wallet/functions";
 import { createERC20, approveBuyTokens } from "./ERC20Contract";
 import contract from './sources/BaseIndex.json';
@@ -34,33 +35,36 @@ export async function getIndexInformation(signer, indexAddress) {
 }
 
 
-async function _approveTokens(data){
-    const transaction = await approveBuyTokens(
-        data.providerData, data.productData.address,
-        data.productData.buyTokenAddress, data.amount,
-    );
-    await transaction.wait();
+function _baseIndexTokenOperation(func){
+    return async (data) => {
+        const transaction = await approveBuyTokens(
+            data.providerData, data.productData.address,
+            data.productData.buyTokenAddress, data.amount,
+        );
+        await transaction.wait();
+
+        const index = await createIndex(data.providerData.signer, data.productData.address);
+        const operationTransaction = await func(index, data);
+
+        addTokenNotification(data.providerData, data.productData);
+
+        await operationTransaction.wait();
+    };
 }
 
 
-export async function buyIndex(data) {
-    await _approveTokens(data);
-
-    const index = await createIndex(data.providerData.signer, data.productData.address);
-    await index.buy(data.amount, { from: data.providerData.account });
-
-    addTokenToWallet(data.providerData, data.productData.indexToken);
+async function _buyIndex(index, data) {
+    return await index.buy(data.amount, { from: data.providerData.account });
 }
 
 
-export async function sellIndex(data) {
-    await _approveTokens(data);
-
-    const index = await createIndex(data.providerData.signer, data.productData.address);
-    await index.sell(data.amount, { from: data.providerData.account });
-
-    addTokenToWallet(data.providerData, data.productData.indexToken);
+async function _sellIndex(index, data) {
+    return await index.sell(data.amount, { from: data.providerData.account });
 }
+
+
+export const buyIndex = _baseIndexTokenOperation(_buyIndex);
+export const sellIndex = _baseIndexTokenOperation(_sellIndex);
 
 
 export async function getIndexComponents(signer, productAddress){
@@ -81,7 +85,7 @@ export async function getIndexComponents(signer, productAddress){
 
         priceData.push({
             name: tokenName,
-            price: formatEther(await index.getTokenPrice(component.priceOracleAddress)).toLocaleString(),
+            price: parseFloat(formatEther(await index.getTokenPrice(component.priceOracleAddress))).toLocaleString(),
         });
 
     }
