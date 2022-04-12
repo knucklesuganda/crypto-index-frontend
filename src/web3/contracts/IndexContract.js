@@ -48,17 +48,25 @@ export async function sellIndex(providerData, indexAddress, amount){
 export async function getIndexComponents(signer, productAddress){
     const index = createIndex(signer, productAddress);
     const rawComponents = await index.getComponents();
-    const formattedComponents = [];
+
+    const ratioData = [];
+    const priceData = [];
 
     for (let component of rawComponents) {
-
         const token = createERC20(signer, component.tokenAddress);
-        formattedComponents.push({
-            type: await token.name(),
+        const tokenName = await token.name();
+
+        ratioData.push({
+            type: tokenName,
             value: component.indexPercentage,
+        });
+
+        priceData.push({
+            name: tokenName,
+            price: formatEther(await index.getTokenPrice(component.priceOracleAddress)).toLocaleString(),
         });
 
     }
 
-    return formattedComponents;
+    return { ratioData, priceData };
 }

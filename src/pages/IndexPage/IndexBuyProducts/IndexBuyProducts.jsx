@@ -1,12 +1,9 @@
+import { Row, Col, Card } from "antd";
 import { useState, useEffect, Fragment } from "react";
-import { Row, Col, Card, Button, Typography } from "antd";
-import { BuyModal } from "../../../components/BuyModal";
-import { Title } from "../../../components/Title";
-import { Loading } from "../../../components/Loading";
+import { NextPage, Title, Loading, BuyModal, WalletConnect } from "../../../components";
 import { getIndexInformation } from "../../../web3/contracts/IndexContract";
 import { useProvider } from "../../../hooks/useProvider";
 import './style.css';
-import { NextPage } from "../../../components/NextPage";
 
 
 function ProductCard(props) {
@@ -24,7 +21,7 @@ async function getProductInformation(providerData) {
     const productsList = [];
 
     for (let i = 0; i < 10; i++) {
-        const productAddress = '0x5c66fc820B7e9971aA46582d378e11E802B5d0ff';
+        const productAddress = '0x633765851Dd384dc95A30c61A6Bcb2420043a0D6';
         productsList.push(await getIndexInformation(providerData.signer, productAddress));
     }
 
@@ -46,7 +43,7 @@ export function IndexBuyProducts(props) {
         }
 
         return () => { };
-    });
+    }, [providerData]);
 
 
     const placeholderProducts = [];
@@ -59,38 +56,11 @@ export function IndexBuyProducts(props) {
         />);
     }
 
-    console.log(productData);
-
     return <Row>
         <Title id={props.id}>Buy products</Title>
 
-        {providerData === null ? <Row gutter={[25, 55]} style={{
-            display: "flex", paddingLeft: "1em", rowGap: "10px", columnGap: "10px"
-        }}>
-            <Row style={{ width: "100%", zIndex: -1, filter: "blur(4px)" }}>{placeholderProducts}</Row>
-
-            <Row style={{
-                position: "absolute",
-                zIndex: 10,
-                left: "40%", right: "50%",
-                top: "20%", bottom: "50%",
-                marginLeft: "auto",
-                marginRight: "auto",
-                textAlign: "center",
-            }}>
-                <Card style={{
-                    boxShadow: "3px 3px 84px 0px rgba(255, 255, 255, 0.2)"
-                }}>
-                    <Typography.Text style={{ fontSize: "1.2em" }}>
-                        You must connect your wallet in order to buy products
-                    </Typography.Text>
-
-                    <Button type="primary" size="large" style={{
-                        width: "20em", marginTop: "1em",
-                    }} onClick={() => { handleWalletConnection() }}>Connect account</Button>
-                </Card>
-            </Row>
-        </Row> :
+        {providerData === null ? <WalletConnect handleWalletConnection={handleWalletConnection}
+            placeholder={placeholderProducts} /> :
             <Fragment>
                 {!productData ? <Loading style={{ height: "10vh", width: "100wv" }} /> :
                     <Row style={{ display: "flex", justifyContent: "center" }}>

@@ -7,7 +7,7 @@ export function useProvider() {
     const [providerData, setProviderData] = useState(null);
 
     function handleWalletConnection() {
-        if(providerData !== null){
+        if (providerData !== null) {
             return;
         }
 
@@ -22,9 +22,8 @@ export function useProvider() {
     }
 
     useEffect(() => {
-        if (providerData === null) {
-            handleWalletConnection();
-        }
-    });
+        handleWalletConnection();
+    }, [providerData]);
+
     return { providerData, handleWalletConnection };
 }

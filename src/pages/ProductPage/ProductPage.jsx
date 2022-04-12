@@ -1,12 +1,11 @@
 import { ethers } from "ethers";
 import { useParams } from "react-router";
 import { useState, useEffect, Fragment } from 'react';
-import { Loading } from "../../components/Loading";
+import { Loading, addTokenNotification, WalletConnect } from "../../components";
 import { useProvider } from "../../hooks/useProvider"
-import { addTokenNotification } from "../../components/AddToken";
 import { approveIndexTokens } from "../../web3/contracts/ERC20Contract";
 import { getIndexInformation, getIndexComponents, sellIndex } from "../../web3/contracts/IndexContract";
-import { Form, Col, message, InputNumber, Radio, Button, Divider, Typography } from "antd";
+import { Form, Col, Row, message, InputNumber, Radio, Button, Divider, Typography, Table, Popover } from "antd";
 import { Pie } from '@ant-design/plots';
 
 
@@ -21,7 +20,7 @@ async function sellProduct(providerData, amount, productData) {
 
 export default function ProductPage() {
     const { productAddress } = useParams();
-    const { providerData } = useProvider();
+    const { providerData, handleWalletConnection } = useProvider();
     const [productData, setProductData] = useState(null);
     const [operationType, setOperationType] = useState('buy');
     const [productComponents, setProductComponents] = useState(null);
@@ -41,8 +40,8 @@ export default function ProductPage() {
         return () => { };
     }, [providerData]);
 
-
-    return <Col style={{ paddingRight: "1em", paddingLeft: "1em", width: "100wv" }}>{productData === null ? <Loading /> :
+    return <Col style={{ paddingRight: "1em", paddingLeft: "1em", width: "100wv" }}>{productData === null ?
+        <WalletConnect handleWalletConnection={handleWalletConnection} /> :
         <Fragment>
             <Divider />
 
@@ -87,6 +86,12 @@ export default function ProductPage() {
                                 <Radio.Button value="buy" style={{ width: "100%" }}>Buy</Radio.Button>
                                 <Radio.Button value="sell" style={{ width: "100%" }}>Sell</Radio.Button>
                             </Radio.Group>
+                            {operationType === "sell" ? <Popover
+                                content={`We want to encourage users to sell on exchanges,
+                                 as the fees are lower and the product will be more available`}
+                                title="Help us and yourself!">
+                                <Typography.Text type="danger">We advise selling on exchanges</Typography.Text>
+                            </Popover> : null}
                         </Form.Item>
 
                         <Form.Item>
@@ -103,26 +108,43 @@ export default function ProductPage() {
                     About: {productData.longDescription}
                 </Typography.Paragraph>
 
-                { productComponents === null ? <Loading /> :
-                    <Pie data={productComponents}
-                        appendPadding={10}
-                        angleField='value'
-                        colorField='type'
-                        radius={0.9}
-                        label={{
-                            type: 'inner',
-                            offset: '-30%',
-                            content: ({ percent }) => `${(percent * 100).toFixed(0)}%`,
-                            style: {
-                                fontSize: 14,
-                                textAlign: 'center',
-                            },
-                        }}
-                        interactions={[{ type: 'element-active' }]}
-                    />
-                }
+                <Row style={{ width: "100%", display: "flex", alignItems: "center" }} gutter={[100, 16]}>
+                    <Col span={12}>{
+                        productComponents === null ? <Loading /> :
+                            <Pie appendPadding={10} angleField='value' colorField='type' radius={0.9}
+                                data={productComponents.ratioData}
+                                label={{
+                                    type: 'inner',
+                                    offset: '-30%',
+                                    content: ({ percent }) => `${(percent * 100).toFixed(0)}%`,
+                                    style: {
+                                        fontSize: 14,
+                                        textAlign: 'center',
+                                    },
+                                }}
+                                interactions={[{ type: 'element-active' }]}
+                            />
+                    }</Col>
+
+                    <Col span={12}>
+                        {productComponents === null ? <Loading /> : <Table bordered
+                            style={{ background: "none" }} pagination={{ position: ['none', 'none'] }}
+                            dataSource={productComponents.priceData.map((tokenPrice, index) => {
+                                return {
+                                    key: index,
+                                    tokenName: tokenPrice.name,
+                                    tokenPrice: tokenPrice.price,
+                                };
+                            })}
+                            columns={[
+                                { title: 'Token name', dataIndex: 'tokenName', key: 'tokenName' },
+                                { title: 'Token price', dataIndex: 'tokenPrice', key: 'tokenPrice' },
+                            ]}
+                        />}
+                    </Col>
+                </Row>
             </Col>
         </Fragment>
-    }</Col>;
+    }</Col >;
 
 }

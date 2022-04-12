@@ -26,6 +26,10 @@ html {
     background: #555;
 }
 
+.ant-table-cell, .ant-table-row, .ant-table-thead{
+    background: #000000!important;
+}
+
 @media only screen and (max-width: 768px) {
 
     /* For mobile phones: */
