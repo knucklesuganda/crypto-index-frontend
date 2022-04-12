@@ -21,7 +21,7 @@ async function getProductInformation(providerData) {
     const productsList = [];
 
     for (let i = 0; i < 10; i++) {
-        const productAddress = '0x633765851Dd384dc95A30c61A6Bcb2420043a0D6';
+        const productAddress = '0x033Fe30dedFb43C5f632Ed262b3b045d852f11f4';
         productsList.push(await getIndexInformation(providerData.signer, productAddress));
     }
 
@@ -42,9 +42,8 @@ export function IndexBuyProducts(props) {
             });
         }
 
-        return () => { };
+        return () => {};
     }, [providerData]);
-
 
     const placeholderProducts = [];
     for (let i = 0; i < 18; i++) {
@@ -80,11 +79,12 @@ export function IndexBuyProducts(props) {
                                         }}
                                         style={{ cursor: "pointer" }}
                                     />
-                                )
-                            }</Row>
+                                )}</Row>
                         </Col>
 
-                        <Col><NextPage setNextPage={props.setNextPage} rotate /></Col>
+                        <Col>
+                            <NextPage setNextPage={props.setNextPage} rotate />
+                        </Col>
                         {isBuyOpen ? <BuyModal productAddress={currentProduct} state={[isBuyOpen, setIsBuyOpen]} /> : null}
                     </Row>
                 }

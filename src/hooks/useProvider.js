@@ -1,29 +1,21 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { connectWallet } from "../web3/wallet/providers";
-import { message } from "antd";
 
 
 export function useProvider() {
     const [providerData, setProviderData] = useState(null);
 
-    function handleWalletConnection() {
+    const handleWalletConnection = useCallback(() => {
         if (providerData !== null) {
             return;
         }
 
-        connectWallet().then((providerData) => {
-            setProviderData(providerData);
-        }).catch((error) => {
-            message.error({
-                content: error ? error.message : "Unknown error",
-                duration: 5,
-            });
-        });
-    }
+        connectWallet().then((providerData) => { setProviderData(providerData) });
+    }, [providerData]);
 
     useEffect(() => {
         handleWalletConnection();
-    }, [providerData]);
+    }, [providerData, handleWalletConnection]);
 
     return { providerData, handleWalletConnection };
 }

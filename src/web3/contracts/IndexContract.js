@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import { formatEther } from "ethers/lib/utils";
-import { createERC20 } from "./ERC20Contract";
+import { addTokenToWallet } from "../wallet/functions";
+import { createERC20, approveBuyTokens } from "./ERC20Contract";
 import contract from './sources/BaseIndex.json';
 
 const IndexABI = contract.abi;
@@ -32,17 +33,34 @@ export async function getIndexInformation(signer, indexAddress) {
     };
 }
 
-export async function buyIndex(providerData, indexAddress, amount) {
-    const index = createIndex(providerData.signer, indexAddress);
-    return await index.buy(amount, { from: providerData.account });
+
+async function _approveTokens(data){
+    const transaction = await approveBuyTokens(
+        data.providerData, data.productData.address,
+        data.productData.buyTokenAddress, data.amount,
+    );
+    await transaction.wait();
 }
 
 
-export async function sellIndex(providerData, indexAddress, amount){
-    const index = createIndex(providerData.signer, indexAddress);
-    return await index.sell(amount, { from: providerData.account });
+export async function buyIndex(data) {
+    await _approveTokens(data);
+
+    const index = await createIndex(data.providerData.signer, data.productData.address);
+    await index.buy(data.amount, { from: data.providerData.account });
+
+    addTokenToWallet(data.providerData, data.productData.indexToken);
 }
 
+
+export async function sellIndex(data) {
+    await _approveTokens(data);
+
+    const index = await createIndex(data.providerData.signer, data.productData.address);
+    await index.sell(data.amount, { from: data.providerData.account });
+
+    addTokenToWallet(data.providerData, data.productData.indexToken);
+}
 
 
 export async function getIndexComponents(signer, productAddress){

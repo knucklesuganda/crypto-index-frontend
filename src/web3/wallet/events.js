@@ -1,4 +1,4 @@
-import { message } from 'antd';
+import { message, notification } from 'antd';
 
 
 export async function setupEvents(provider) {
@@ -20,6 +20,18 @@ export async function setupEvents(provider) {
         // }
 
     });
+
+    console.log(provider.on("error", (error) => {
+        let errorMessage = error ? error.data : null;
+
+        if(errorMessage !== null){
+            errorMessage = error.data.message;
+        }else{
+            errorMessage = "Unknown error";
+        }
+
+        notification.error(errorMessage)
+    }));
 
     provider.on("pending", (tx) => {
         message.info(`Transaction ${tx.hash} is pending`);

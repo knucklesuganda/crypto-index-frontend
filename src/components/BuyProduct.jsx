@@ -1,24 +1,11 @@
 import { ethers } from "ethers";
-import { Form, Row, InputNumber, Col, Button, message, Typography } from "antd";
+import { Form, Row, InputNumber, Col, Button, Typography } from "antd";
 import { Loading } from "./Loading";
-import { addTokenNotification } from "../components/AddToken";
 import { createProductPage } from "../routes";
 import { useEffect, useState } from "react";
 import { useProvider } from "../hooks/useProvider";
 import { getIndexInformation } from "../web3/contracts/IndexContract";
-import { approveBuyTokens } from "../web3/contracts/ERC20Contract";
 import { buyIndex } from "../web3/contracts/IndexContract";
-
-
-async function buyProduct(providerData, amount, productData) {
-
-    const transaction = await approveBuyTokens(providerData, productData, amount);
-    console.log(transaction);
-    await transaction.wait();
-
-    await buyIndex(providerData, productData.address, amount);
-
-}
 
 
 export function BuyProduct(props) {
@@ -59,19 +46,11 @@ export function BuyProduct(props) {
         <Col span={24}>
             <Form name="buyForm" autoComplete="off"
                 onFinish={(values) => {
-                    buyProduct(
+                    buyIndex(
                         providerData,
                         ethers.utils.parseEther(values.amount.toString()),
                         productData
-                    ).then(() => {
-                        message.info(`You successfully bought ${productData.title}!`);
-                        addTokenNotification(providerData, productData);
-                    }).catch((error) => {
-                        message.error({
-                            content: error.message !== undefined ? error.message : "Unknown error",
-                            duration: 5,
-                        });
-                    });
+                    );
                 }}
                 onFinishFailed={(errors) => { }}>
 
