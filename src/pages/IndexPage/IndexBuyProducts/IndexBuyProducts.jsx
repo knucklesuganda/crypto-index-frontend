@@ -24,7 +24,7 @@ async function getProductInformation(providerData) {
     const productsList = [];
 
     for (let i = 0; i < 10; i++) {
-        const productAddress = '0x302Ea9AaE30f3FD11A2A56086f55dF46f5dd6528';
+        const productAddress = '0x5c66fc820B7e9971aA46582d378e11E802B5d0ff';
         productsList.push(await getIndexInformation(providerData.signer, productAddress));
     }
 
@@ -59,6 +59,8 @@ export function IndexBuyProducts(props) {
         />);
     }
 
+    console.log(productData);
+
     return <Row>
         <Title id={props.id}>Buy products</Title>
 
@@ -89,33 +91,34 @@ export function IndexBuyProducts(props) {
                 </Card>
             </Row>
         </Row> :
-            <Row style={{ display: "flex", justifyContent: "center" }}>
-                <Col style={{ height: "80vh" }}>
-                    <Row gutter={[16, 16]} style={{ paddingTop: "2em", paddingLeft: "1em", paddingRight: "1em" }}>
-                        {productData === null ? <Loading /> : productData.map((product, index) =>
-                            <ProductCard
-                                key={index}
-                                title={product.title}
-                                className="productCard"
-                                productImage={product.image}
-                                description={product.description}
-                                image={product.image}
-                                handleClick={() => {
-                                    setIsBuyOpen(true);
-                                    setCurrentProduct(product.address);
-                                }}
-                                style={{ cursor: "pointer" }}
-                            />
-                        )}
+            <Fragment>
+                {!productData ? <Loading style={{ height: "10vh", width: "100wv" }} /> :
+                    <Row style={{ display: "flex", justifyContent: "center" }}>
+                        <Col style={{ height: "80vh" }}>
+                            <Row gutter={[16, 16]} style={{ paddingTop: "2em", paddingLeft: "1em", paddingRight: "1em" }}>{
+                                productData.map((product, index) =>
+                                    <ProductCard
+                                        key={index}
+                                        title={product.title}
+                                        className="productCard"
+                                        productImage={product.image}
+                                        description={product.description}
+                                        image={product.image}
+                                        handleClick={() => {
+                                            setIsBuyOpen(true);
+                                            setCurrentProduct(product.address);
+                                        }}
+                                        style={{ cursor: "pointer" }}
+                                    />
+                                )
+                            }</Row>
+                        </Col>
+
+                        <Col><NextPage setNextPage={props.setNextPage} rotate /></Col>
+                        {isBuyOpen ? <BuyModal productAddress={currentProduct} state={[isBuyOpen, setIsBuyOpen]} /> : null}
                     </Row>
-                </Col>
-
-                <Col>
-                    <NextPage setNextPage={props.setNextPage} rotate />
-                </Col>
-
-                {isBuyOpen ? <BuyModal productAddress={currentProduct} state={[isBuyOpen, setIsBuyOpen]} /> : null}
-            </Row>
+                }
+            </Fragment>
         }
     </Row>;
 }

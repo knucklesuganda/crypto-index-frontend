@@ -20,12 +20,13 @@ export async function getIndexInformation(signer, indexAddress) {
         address: indexAddress,
         title: await product.name(),
         description: await product.shortDescription(),
+        longDescription: await product.longDescription(),
         buyTokenAddress: await product.buyTokenAddress(),
         price: parseFloat(formatEther(await product.getPrice())).toLocaleString(),
         productToken: {
             address: indexToken.address,
-            symbol: indexToken.symbol,
-            decimals: indexToken.decimals,
+            symbol: await indexToken.symbol(),
+            decimals: await indexToken.decimals(),
             image: "https://picsum.photos/200",
         },
     };
@@ -40,4 +41,24 @@ export async function buyIndex(providerData, indexAddress, amount) {
 export async function sellIndex(providerData, indexAddress, amount){
     const index = createIndex(providerData.signer, indexAddress);
     return await index.sell(amount, { from: providerData.account });
+}
+
+
+
+export async function getIndexComponents(signer, productAddress){
+    const index = createIndex(signer, productAddress);
+    const rawComponents = await index.getComponents();
+    const formattedComponents = [];
+
+    for (let component of rawComponents) {
+
+        const token = createERC20(signer, component.tokenAddress);
+        formattedComponents.push({
+            type: await token.name(),
+            value: component.indexPercentage,
+        });
+
+    }
+
+    return formattedComponents;
 }

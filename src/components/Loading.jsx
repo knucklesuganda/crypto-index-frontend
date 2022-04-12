@@ -1,5 +1,5 @@
 import { Skeleton } from "antd";
 
 export function Loading(props){
-    return <Skeleton active />;
+    return <Skeleton active style={props.style} />;
 }
