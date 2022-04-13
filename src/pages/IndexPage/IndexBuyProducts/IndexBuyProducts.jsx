@@ -21,7 +21,7 @@ async function getProductInformation(providerData) {
     const productsList = [];
 
     for (let i = 0; i < 10; i++) {
-        const productAddress = '0x99f3A613a97d856CBC6bc6C811F196e9f8bC99E1';
+        const productAddress = '0xC8969e9014E0741f3ada782F37b3D7E6b765daaF';
         productsList.push(await getIndexInformation(providerData, productAddress));
     }
 

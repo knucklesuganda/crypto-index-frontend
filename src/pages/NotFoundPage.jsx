@@ -1,5 +1,4 @@
 import { Col, Row, Typography } from "antd";
-import { useEffect, useRef } from "react";
 import { Zoom } from "react-reveal";
 
 

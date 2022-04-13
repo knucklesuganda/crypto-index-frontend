@@ -2,6 +2,7 @@ import { ethers } from "ethers";
 import { addTokenNotification } from "../../components";
 import { createERC20, approveBuyTokens, getERC20Information } from "./ERC20Contract";
 import contract from './sources/BaseIndex.json';
+import { formatBigNumber } from "../utils";
 
 const IndexABI = contract.abi;
 
@@ -30,7 +31,9 @@ export async function getIndexInformation(providerData, indexAddress) {
 function _baseIndexTokenOperation(func){
     return async (data) => {
         if(data.productData.buyToken.balance < data.amount){
-            throw new Error(`You don't have enough tokens. Your balance: ${data.productData.buyToken.balance}`);
+            throw new Error(
+                `You don't have enough tokens. Your balance: ${formatBigNumber(data.productData.buyToken.balance)}`
+            );
         }
 
         const transaction = await approveBuyTokens(

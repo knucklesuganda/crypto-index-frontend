@@ -5,8 +5,8 @@ import { useProvider } from "../../hooks/useProvider"
 import { Loading, WalletConnect } from "../../components";
 import { getIndexInformation, getIndexComponents, sellIndex, buyIndex } from "../../web3/contracts/IndexContract";
 import { Form, Col, Row, InputNumber, Radio, Button, Divider, Typography, Table, message, Card } from "antd";
-import { Pie } from '@ant-design/plots';
 import { formatBigNumber } from "../../web3/utils";
+import { Pie } from '@ant-design/plots';
 
 
 function AnalyticsSection(props) {
@@ -25,7 +25,7 @@ function AnalyticsSection(props) {
         return <Loading />;
     }
 
-    return <Fragment>
+    return <Col style={{ paddingRight: "2em", paddingLeft: "2em" }}>
         <Typography.Title>Analytics</Typography.Title>
 
         <Card>
@@ -39,7 +39,7 @@ function AnalyticsSection(props) {
             }
         </Card>
 
-        <Row style={{ width: "100%", display: "flex", alignItems: "center" }} gutter={[100, 16]}>
+        <Row style={{ paddingTop: "1em", width: "100%", display: "flex", alignItems: "center" }} gutter={[100, 16]}>
             <Col span={12}>
                 <Pie appendPadding={10} angleField='value' colorField='type' radius={0.9}
                     data={productComponents.ratioData}
@@ -56,7 +56,7 @@ function AnalyticsSection(props) {
                 />
             </Col>
 
-            <Col span={12}>
+            <Col>
                 <Table bordered
                     style={{ background: "none" }} pagination={{ position: ['none', 'none'] }}
                     dataSource={productComponents.priceData.map((tokenPrice, index) => {
@@ -73,7 +73,8 @@ function AnalyticsSection(props) {
                 />
             </Col>
         </Row>
-    </Fragment>;
+
+    </Col>;
 }
 
 
@@ -97,7 +98,9 @@ export default function ProductPage() {
         return () => { };
     }, [providerData, productAddress]);
 
-    return <Col style={{ paddingRight: "1em", paddingLeft: "1em", width: "100wv" }}>{productData === null ?
+    return <Col style={{
+        paddingRight: "1em", paddingBottom: "4em", paddingLeft: "1em", width: "100wv"
+    }}>{productData === null ?
         <WalletConnect handleWalletConnection={handleWalletConnection} /> :
         <Fragment>
             <Divider />
