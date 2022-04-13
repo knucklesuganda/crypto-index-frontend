@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useProvider } from "../hooks/useProvider";
 import { getIndexInformation } from "../web3/contracts/IndexContract";
 import { buyIndex } from "../web3/contracts/IndexContract";
+import { formatBigNumber } from "../web3/utils";
 
 
 export function BuyProduct(props) {
@@ -15,7 +16,7 @@ export function BuyProduct(props) {
     useEffect(() => {
 
         if (providerData !== null) {
-            getIndexInformation(providerData.signer, props.productAddress).then(product => {
+            getIndexInformation(providerData, props.productAddress).then(product => {
                 setProductData(product);
             });
         }
@@ -30,12 +31,12 @@ export function BuyProduct(props) {
                     <Col>
                         <Typography.Title level={2}>
                             <Typography.Link href={createProductPage(productData.address)}>
-                                {productData.title}
+                                {productData.name}
                             </Typography.Link>
                         </Typography.Title>
                     </Col>
 
-                    <Col><Typography.Title level={4}>{productData.price}$</Typography.Title></Col>
+                    <Col><Typography.Title level={4}>{formatBigNumber(productData.price)}$</Typography.Title></Col>
                 </Row>
 
                 <Typography.Text>{productData.description}</Typography.Text>

@@ -1,49 +1,45 @@
 import { ethers } from "ethers";
-import { formatEther } from "ethers/lib/utils";
 import { addTokenNotification } from "../../components";
-import { addTokenToWallet } from "../wallet/functions";
-import { createERC20, approveBuyTokens } from "./ERC20Contract";
+import { createERC20, approveBuyTokens, getERC20Information } from "./ERC20Contract";
 import contract from './sources/BaseIndex.json';
 
 const IndexABI = contract.abi;
 
 
-export function createIndex(signer, indexAddress) {
-    return new ethers.Contract(indexAddress, IndexABI, signer);
+export function createIndex(providerData, indexAddress) {
+    return new ethers.Contract(indexAddress, IndexABI, providerData.signer);
 }
 
 
-export async function getIndexInformation(signer, indexAddress) {
-    const product = createIndex(signer, indexAddress);
-    const indexToken = createERC20(signer, await product.indexToken());
+export async function getIndexInformation(providerData, indexAddress) {
+    const product = createIndex(providerData, indexAddress);
 
     return {
-        image: "https://picsum.photos/200",
         address: indexAddress,
-        title: await product.name(),
+        image: await product.image(),
+        name: await product.name(),
         description: await product.shortDescription(),
         longDescription: await product.longDescription(),
-        buyTokenAddress: await product.buyTokenAddress(),
-        price: parseFloat(formatEther(await product.getPrice())).toLocaleString(),
-        productToken: {
-            address: indexToken.address,
-            symbol: await indexToken.symbol(),
-            decimals: await indexToken.decimals(),
-            image: "https://picsum.photos/200",
-        },
+        price: await product.getPrice(),
+        productToken: await getERC20Information(providerData, await product.indexToken()),
+        buyToken: await getERC20Information(providerData, await product.buyTokenAddress()),
     };
 }
 
 
 function _baseIndexTokenOperation(func){
     return async (data) => {
+        if(data.productData.buyToken.balance < data.amount){
+            throw new Error(`You don't have enough tokens. Your balance: ${data.productData.buyToken.balance}`);
+        }
+
         const transaction = await approveBuyTokens(
             data.providerData, data.productData.address,
-            data.productData.buyTokenAddress, data.amount,
+            data.productData.buyToken.address, data.amount,
         );
         await transaction.wait();
 
-        const index = await createIndex(data.providerData.signer, data.productData.address);
+        const index = await createIndex(data.providerData, data.productData.address);
         const operationTransaction = await func(index, data);
 
         addTokenNotification(data.providerData, data.productData);
@@ -67,16 +63,20 @@ export const buyIndex = _baseIndexTokenOperation(_buyIndex);
 export const sellIndex = _baseIndexTokenOperation(_sellIndex);
 
 
-export async function getIndexComponents(signer, productAddress){
-    const index = createIndex(signer, productAddress);
+export async function getIndexComponents(providerData, productAddress){
+    const index = createIndex(providerData, productAddress);
     const rawComponents = await index.getComponents();
 
     const ratioData = [];
     const priceData = [];
 
     for (let component of rawComponents) {
-        const token = createERC20(signer, component.tokenAddress);
-        const tokenName = await token.name();
+        const token = createERC20(providerData, component.tokenAddress);
+        let tokenName = token.address;
+
+        try{
+            tokenName = await token.name();
+        }catch(error){}
 
         ratioData.push({
             type: tokenName,
@@ -85,10 +85,11 @@ export async function getIndexComponents(signer, productAddress){
 
         priceData.push({
             name: tokenName,
-            price: parseFloat(formatEther(await index.getTokenPrice(component.priceOracleAddress))).toLocaleString(),
+            price: await index.getTokenPrice(component.priceOracleAddress),
         });
 
     }
 
+    console.log({ ratioData, priceData });
     return { ratioData, priceData };
 }

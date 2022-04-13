@@ -1,11 +1,12 @@
 import { ethers } from "ethers";
-import { Navigate, useNavigate, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useState, useEffect, Fragment } from 'react';
 import { useProvider } from "../../hooks/useProvider"
 import { Loading, WalletConnect } from "../../components";
 import { getIndexInformation, getIndexComponents, sellIndex, buyIndex } from "../../web3/contracts/IndexContract";
-import { Form, Col, Row, InputNumber, Radio, Button, Divider, Typography, Table } from "antd";
+import { Form, Col, Row, InputNumber, Radio, Button, Divider, Typography, Table, message, Card } from "antd";
 import { Pie } from '@ant-design/plots';
+import { formatBigNumber } from "../../web3/utils";
 
 
 function AnalyticsSection(props) {
@@ -13,7 +14,7 @@ function AnalyticsSection(props) {
     const [productComponents, setProductComponents] = useState(null);
 
     useEffect(() => {
-        getIndexComponents(providerData.signer, props.productAddress).then(components => {
+        getIndexComponents(providerData, props.productAddress).then(components => {
             setProductComponents(components);
         });
 
@@ -27,9 +28,16 @@ function AnalyticsSection(props) {
     return <Fragment>
         <Typography.Title>Analytics</Typography.Title>
 
-        <Typography.Paragraph style={{ fontSize: "1.2em" }}>
-            About: {props.productData.longDescription}
-        </Typography.Paragraph>
+        <Card>
+            {[
+                `About: ${props.productData.longDescription}`,
+                `Your balance: ${formatBigNumber(props.productData.productToken.balance)}
+                ${props.productData.productToken.symbol}`,
+                `Buy Token: ${props.productData.buyToken.symbol}`,
+            ].map((text, index) =>
+                <Col key={index}><Typography.Text style={{ fontSize: "1.2em" }}>{text}</Typography.Text></Col>)
+            }
+        </Card>
 
         <Row style={{ width: "100%", display: "flex", alignItems: "center" }} gutter={[100, 16]}>
             <Col span={12}>
@@ -55,7 +63,7 @@ function AnalyticsSection(props) {
                         return {
                             key: index,
                             tokenName: tokenPrice.name,
-                            tokenPrice: `${tokenPrice.price}$`,
+                            tokenPrice: `${formatBigNumber(tokenPrice.price)}$`,
                         };
                     })}
                     columns={[
@@ -79,9 +87,9 @@ export default function ProductPage() {
     useEffect(() => {
 
         if (providerData !== null) {
-            getIndexInformation(providerData.signer, productAddress).then(product => {
+            getIndexInformation(providerData, productAddress).then(product => {
                 setProductData(product);
-            }).catch(() => {
+            }).catch((error) => {
                 navigate('/not_found');
             });
         }
@@ -102,19 +110,26 @@ export default function ProductPage() {
                 alignContent: "center",
                 justifyContent: "center",
             }}>
-                <Col span={24}>
-                    <Typography.Title>{productData.title}</Typography.Title>
+                <Col span={24} style={{ display: "inline-flex", alignItems: "baseline" }}>
+                    <Typography.Text style={{ fontSize: "2em" }}>{productData.name}</Typography.Text>
+                    <Typography.Text style={{ fontSize: "1.2em" }}>({formatBigNumber(productData.price)}$)</Typography.Text>
                 </Col>
 
                 <Col>
                     <Form name="productInteractionForm" autoComplete="off" onFinish={(values) => {
                         const amount = ethers.utils.parseEther(values.sellAmount.toString());
+                        let operation;
 
                         if (operationType === "buy") {
-                            buyIndex({ providerData, amount, productData });
+                            operation = buyIndex({ providerData, amount, productData });
                         } else {
-                            sellIndex({ providerData, amount, productData });
+                            operation = sellIndex({ providerData, amount, productData });
                         }
+
+                        operation.catch((error) => {
+                            message.error({ content: `Error: ${error.message}` });
+                        });
+
                     }}>
                         <Form.Item name="sellAmount" rules={[{ required: true, message: "Please input the amount" }]}>
                             <InputNumber min={0} size="large" style={{ width: "100%" }} controls={false}

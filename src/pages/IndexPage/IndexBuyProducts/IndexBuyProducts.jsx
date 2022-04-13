@@ -21,8 +21,8 @@ async function getProductInformation(providerData) {
     const productsList = [];
 
     for (let i = 0; i < 10; i++) {
-        const productAddress = '0x9FdAb5e71017852269a68E31422e497bCE5397c0';
-        productsList.push(await getIndexInformation(providerData.signer, productAddress));
+        const productAddress = '0x99f3A613a97d856CBC6bc6C811F196e9f8bC99E1';
+        productsList.push(await getIndexInformation(providerData, productAddress));
     }
 
     return productsList;
@@ -68,7 +68,7 @@ export function IndexBuyProducts(props) {
                                 productData.map((product, index) =>
                                     <ProductCard
                                         key={index}
-                                        title={product.title}
+                                        title={product.name}
                                         className="productCard"
                                         productImage={product.image}
                                         description={product.description}

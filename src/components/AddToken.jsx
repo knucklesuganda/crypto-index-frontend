@@ -18,7 +18,7 @@ export function AddToken(props) {
             );
             notification.close(notificationId);
 
-        }}>Click here to add {props.productData.title} to your wallet</Button>
+        }}>Click here to add {props.productData.name} to your wallet</Button>
     </Col>;
 }
 

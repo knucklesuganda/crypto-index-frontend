@@ -8,7 +8,7 @@ export default function NotFoundPage() {
 
     for (let index = 0; index < 24; index++) {
         errorMessages.push(
-            <Col span={4}>
+            <Col span={4} key={index}>
                 <Typography.Title key={index} level={4}>
                     <Zoom cascade collapse>Page was not found</Zoom>
                 </Typography.Title>
