@@ -1,7 +1,7 @@
 import { Row, Col, Card } from "antd";
 import { useState, useEffect, Fragment } from "react";
 import { NextPage, Title, Loading, BuyModal, WalletConnect } from "../../../components";
-import { getIndexInformation } from "../../../web3/contracts/IndexContract";
+import { listProducts } from "../../../web3/contracts/ObserverContract";
 import { useProvider } from "../../../hooks/useProvider";
 import './style.css';
 
@@ -15,20 +15,6 @@ function ProductCard(props) {
     </Col>
 }
 
-
-async function getProductInformation(providerData) {
-
-    const productsList = [];
-
-    for (let i = 0; i < 10; i++) {
-        const productAddress = '0xC8969e9014E0741f3ada782F37b3D7E6b765daaF';
-        productsList.push(await getIndexInformation(providerData, productAddress));
-    }
-
-    return productsList;
-}
-
-
 export function IndexBuyProducts(props) {
     const [isBuyOpen, setIsBuyOpen] = useState(false);
     const [currentProduct, setCurrentProduct] = useState(null);
@@ -37,7 +23,7 @@ export function IndexBuyProducts(props) {
 
     useEffect(() => {
         if (providerData !== null) {
-            getProductInformation(providerData).then((productData) => {
+            listProducts(providerData, '0xcE740163ac34F701f3cdF3A6A70E99026853949D').then((productData) => {
                 setProductData(productData);
             });
         }

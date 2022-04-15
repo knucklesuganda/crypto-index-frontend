@@ -21,7 +21,7 @@ export function BuyProduct(props) {
             });
         }
 
-        return () => {};
+        return () => { };
     });
 
     return <Row style={props.rowStyle}>
@@ -41,17 +41,17 @@ export function BuyProduct(props) {
 
                 <Typography.Text>{productData.description}</Typography.Text>
             </Col>
-            }
+        }
         </Col>
 
         <Col span={24}>
             <Form name="buyForm" autoComplete="off"
                 onFinish={(values) => {
-                    buyIndex(
+                    buyIndex({
                         providerData,
-                        ethers.utils.parseEther(values.amount.toString()),
+                        amount: ethers.utils.parseEther(values.amount.toString()),
                         productData
-                    );
+                    });
                 }}
                 onFinishFailed={(errors) => { }}>
 
