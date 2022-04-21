@@ -28,17 +28,21 @@ export async function getIndexInformation(providerData, indexAddress) {
 }
 
 
-function _baseIndexTokenOperation(func){
+function _baseIndexTokenOperation(exchangeToken, func){
     return async (data) => {
-        if(data.productData.buyToken.balance < data.amount){
+        exchangeToken = data.productData[exchangeToken];
+
+        if(exchangeToken.balance.lt(data.amount)){
             throw new Error(
                 `You don't have enough tokens. Your balance: ${formatBigNumber(data.productData.buyToken.balance)}`
             );
         }
 
         const transaction = await approveBuyTokens(
-            data.providerData, data.productData.address,
-            data.productData.buyToken.address, data.amount,
+            data.providerData,
+            data.productData.address,
+            exchangeToken.address,
+            data.amount,
         );
         await transaction.wait();
 
@@ -46,7 +50,6 @@ function _baseIndexTokenOperation(func){
         const operationTransaction = await func(index, data);
 
         addTokenNotification(data.providerData, data.productData);
-
         await operationTransaction.wait();
     };
 }
@@ -62,8 +65,8 @@ async function _sellIndex(index, data) {
 }
 
 
-export const buyIndex = _baseIndexTokenOperation(_buyIndex);
-export const sellIndex = _baseIndexTokenOperation(_sellIndex);
+export const buyIndex = _baseIndexTokenOperation('buyToken', _buyIndex);
+export const sellIndex = _baseIndexTokenOperation('productToken', _sellIndex);
 
 
 export async function getIndexComponents(providerData, productAddress){
@@ -81,10 +84,7 @@ export async function getIndexComponents(providerData, productAddress){
             tokenName = await token.name();
         }catch(error){}
 
-        ratioData.push({
-            type: tokenName,
-            value: component.indexPercentage,
-        });
+        ratioData.push({ type: tokenName, value: component.indexPercentage });
 
         priceData.push({
             name: tokenName,
@@ -93,6 +93,5 @@ export async function getIndexComponents(providerData, productAddress){
 
     }
 
-    console.log({ ratioData, priceData });
     return { ratioData, priceData };
 }

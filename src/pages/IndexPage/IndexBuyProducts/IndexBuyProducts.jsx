@@ -7,7 +7,7 @@ import './style.css';
 
 
 function ProductCard(props) {
-    return <Col span={4} style={props.style}>
+    return <Col style={props.style}>
         <Card title={props.title} hoverable onClick={props.handleClick} className={props.className} extra={<img
             style={{ width: "4em" }} alt={props.title} src={props.image} />}>
             {props.description}
@@ -23,12 +23,12 @@ export function IndexBuyProducts(props) {
 
     useEffect(() => {
         if (providerData !== null) {
-            listProducts(providerData, '0xcE740163ac34F701f3cdF3A6A70E99026853949D').then((productData) => {
+            listProducts(providerData, '0xA8Ee798d017AdfD9B4b4B829349D4fd8f878E3eA').then((productData) => {
                 setProductData(productData);
             });
         }
 
-        return () => {};
+        return () => { };
     }, [providerData]);
 
     const placeholderProducts = [];
@@ -45,36 +45,32 @@ export function IndexBuyProducts(props) {
         <Title id={props.id}>Buy products</Title>
 
         {providerData === null ? <WalletConnect handleWalletConnection={handleWalletConnection}
-            placeholder={placeholderProducts} /> :
-            <Fragment>
-                {!productData ? <Loading style={{ height: "10vh", width: "100wv" }} /> :
-                    <Row style={{ display: "flex", justifyContent: "center" }}>
-                        <Col style={{ height: "80vh" }}>
-                            <Row gutter={[16, 16]} style={{ paddingTop: "2em", paddingLeft: "1em", paddingRight: "1em" }}>{
-                                productData.map((product, index) =>
-                                    <ProductCard
-                                        key={index}
-                                        title={product.name}
-                                        className="productCard"
-                                        productImage={product.image}
-                                        description={product.description}
-                                        image={product.image}
-                                        handleClick={() => {
-                                            setIsBuyOpen(true);
-                                            setCurrentProduct(product.address);
-                                        }}
-                                        style={{ cursor: "pointer" }}
-                                    />
-                                )}</Row>
-                        </Col>
+            placeholder={placeholderProducts} /> : <Fragment>
+            {!productData ? <Loading style={{ height: "10vh", width: "100wv" }} /> :
+                <Row style={{ display: "flex", justifyContent: "center" }}>
 
-                        <Col>
-                            <NextPage setNextPage={props.setNextPage} rotate />
-                        </Col>
-                        {isBuyOpen ? <BuyModal productAddress={currentProduct} state={[isBuyOpen, setIsBuyOpen]} /> : null}
-                    </Row>
-                }
-            </Fragment>
-        }
+                    <Col style={{ height: "80vh" }}>
+                        <Row gutter={[16, 16]} style={{ paddingTop: "2em", paddingLeft: "1em", paddingRight: "1em" }}>{
+                            productData.map((product, index) =>
+                                <ProductCard
+                                    key={index}
+                                    title={product.name}
+                                    className="productCard"
+                                    productImage={product.image}
+                                    description={product.description}
+                                    image={product.image}
+                                    handleClick={() => {
+                                        setIsBuyOpen(true);
+                                        setCurrentProduct(product.address);
+                                    }}
+                                    style={{ cursor: "pointer" }}
+                                />
+                            )}</Row>
+                    </Col>
+
+                    {isBuyOpen ? <BuyModal productAddress={currentProduct} state={[isBuyOpen, setIsBuyOpen]} /> : null}
+                </Row>
+            }
+        </Fragment>}
     </Row>;
 }
