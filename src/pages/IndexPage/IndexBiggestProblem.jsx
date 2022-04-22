@@ -1,18 +1,14 @@
 import { Row, Typography, Col, Button } from "antd";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Fragment } from "react";
 import { Title } from "../../components/Title";
 import { NextPage } from "../../components/NextPage";
 import { Fade } from "../../components/animations";
 
 
 function TextElement(props) {
-    console.log(props.currentText === props.index);
-
-    return <Fade timeout={300} isActive={props.currentText === props.index}>
+    return <Fade isActive={props.currentText === props.index}>
         <Typography.Title style={{ fontSize: "4em", textAlign: "center", wordBreak: "keep-all", 
-            whiteSpace: "nowrap", height: "40vh"}}>
-                {props.text}
-        </Typography.Title>
+            whiteSpace: "nowrap", height: "40vh"}}>{props.children}</Typography.Title>
     </Fade>;
 }
 
@@ -43,13 +39,12 @@ export function IndexBiggestProblem(props) {
                 <TextElement currentText={currentText} index={1}>What is the biggest crypto problem?</TextElement>
                 <TextElement currentText={currentText} index={2}>We think - Volatility</TextElement>
                 <TextElement currentText={currentText} index={3}>And we created something to solve it...</TextElement>
-                <TextElement currentText={currentText} index={4}>Crypto Finance</TextElement>
-            </Col>
-
-            <Col span={24} style={{ display: "flex", justifyContent: "center" }}>
-                <Fade isActive={currentText === 4} timeout={300}>
-                    <Button type="primary" onClick={() => { setCurrentText(0) }}>Replay</Button>
-                </Fade>
+                <TextElement currentText={currentText} index={4}>
+                    <Col>
+                        <Col>Crypto Finance</Col>
+                        <Button type="primary" onClick={() => { setCurrentText(0) }}>Replay</Button>
+                    </Col>
+                </TextElement>
             </Col>
 
             <Col span={24}>

@@ -1,4 +1,5 @@
 import { Col, Row, Typography } from "antd";
+import { Fade } from "../components/animations";
 
 
 export default function NotFoundPage() {
@@ -7,9 +8,11 @@ export default function NotFoundPage() {
     for (let index = 0; index < 24; index++) {
         errorMessages.push(
             <Col span={4} key={index}>
-                <Typography.Title key={index} level={4}>
-                    Page was not found
-                </Typography.Title>
+                <Fade duration={Math.random() * 5000 + 1000} isActive>
+                    <Typography.Title key={index} level={4}>
+                        Page was not found
+                    </Typography.Title>
+                </Fade>
             </Col>
         );
     }
@@ -18,6 +21,6 @@ export default function NotFoundPage() {
         paddingLeft: "1em",
         height: "90vh",
         display: "flex",
-        alignItems: "center" 
+        alignItems: "center"
     }}>{errorMessages}</Row>;
 }
