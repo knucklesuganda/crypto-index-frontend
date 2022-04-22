@@ -12,7 +12,6 @@ export function addSavedTokenAction(token){
 export const savedTokenReducer = (state = {}, action) => {
     switch(action.type){
         case ADD_SAVED_TOKEN_ACTION:
-            console.log(state, action);
 
             return {
 

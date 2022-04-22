@@ -2,8 +2,19 @@ import { Row, Typography, Col, Button } from "antd";
 import { useState, useEffect, useRef } from "react";
 import { Title } from "../../components/Title";
 import { NextPage } from "../../components/NextPage";
-import Zoom from 'react-reveal/Zoom';
-import Fade from 'react-reveal/Zoom';
+import { Fade } from "../../components/animations";
+
+
+function TextElement(props) {
+    console.log(props.currentText === props.index);
+
+    return <Fade timeout={300} isActive={props.currentText === props.index}>
+        <Typography.Title style={{ fontSize: "4em", textAlign: "center", wordBreak: "keep-all", 
+            whiteSpace: "nowrap", height: "40vh"}}>
+                {props.text}
+        </Typography.Title>
+    </Fade>;
+}
 
 
 export function IndexBiggestProblem(props) {
@@ -26,23 +37,19 @@ export function IndexBiggestProblem(props) {
 
         <Row style={{ height: "100vh", width: "100%", display: "flex", justifyContent: "center", paddingTop: "20vh" }}>
             <Col>
-                <Typography.Title style={{
-                    fontSize: "4em", textAlign: "center",
-                    wordBreak: "keep-all", whiteSpace: "nowrap",
-                    height: "40vh",
-                }}>
-                    <Zoom cascade collapse when={currentText === 0}>
-                        We are a team of developers and financiers that asked a question...
-                    </Zoom>
-                    <Zoom cascade collapse when={currentText === 1}>What is the biggest crypto problem?</Zoom>
-                    <Zoom cascade collapse when={currentText === 2}>We think - Volatility</Zoom>
-                    <Zoom cascade collapse when={currentText === 3}>And we created something to solve it...</Zoom>
-                    <Zoom cascade collapse when={currentText === 4}>Crypto Finance</Zoom>
+                <TextElement currentText={currentText} index={0}>
+                    We are a team of developers and financiers that asked a question...
+                </TextElement>
+                <TextElement currentText={currentText} index={1}>What is the biggest crypto problem?</TextElement>
+                <TextElement currentText={currentText} index={2}>We think - Volatility</TextElement>
+                <TextElement currentText={currentText} index={3}>And we created something to solve it...</TextElement>
+                <TextElement currentText={currentText} index={4}>Crypto Finance</TextElement>
+            </Col>
 
-                    {currentText === 4 && <Fade>
-                        <Button type="primary" onClick={() => { setCurrentText(0) }}>Replay</Button>
-                    </Fade>}
-                </Typography.Title>
+            <Col span={24} style={{ display: "flex", justifyContent: "center" }}>
+                <Fade isActive={currentText === 4} timeout={300}>
+                    <Button type="primary" onClick={() => { setCurrentText(0) }}>Replay</Button>
+                </Fade>
             </Col>
 
             <Col span={24}>

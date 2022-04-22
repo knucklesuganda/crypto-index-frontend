@@ -1,4 +1,3 @@
-import { BuyModal } from "./BuyModal";
 import { Title } from "./Title";
 import { Loading } from "./Loading";
 import { NextPage } from "./NextPage";
@@ -9,6 +8,6 @@ import { BuyProduct } from "./BuyProduct";
 
 
 export {
-    BuyModal, Title, Loading, NextPage, addTokenNotification, 
+    Title, Loading, NextPage, addTokenNotification, 
     Header, AddToken, WalletConnect, BuyProduct,
 };

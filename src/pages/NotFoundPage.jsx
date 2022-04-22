@@ -1,5 +1,4 @@
 import { Col, Row, Typography } from "antd";
-import { Zoom } from "react-reveal";
 
 
 export default function NotFoundPage() {
@@ -9,7 +8,7 @@ export default function NotFoundPage() {
         errorMessages.push(
             <Col span={4} key={index}>
                 <Typography.Title key={index} level={4}>
-                    <Zoom cascade collapse>Page was not found</Zoom>
+                    Page was not found
                 </Typography.Title>
             </Col>
         );

@@ -18,7 +18,7 @@ const persistConfig = { key: 'crypto_index', storage };
 
 
 const rootReducer = combineReducers({
-    savedToken: savedTokenReducer,
+    savedTokens: savedTokenReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

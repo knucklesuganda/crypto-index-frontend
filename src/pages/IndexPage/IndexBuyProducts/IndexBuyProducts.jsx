@@ -1,6 +1,6 @@
 import { Row, Col, Card } from "antd";
 import { useState, useEffect, Fragment } from "react";
-import { NextPage, Title, Loading, BuyModal, WalletConnect } from "../../../components";
+import { NextPage, Title, Loading, WalletConnect } from "../../../components";
 import { listProducts } from "../../../web3/contracts/ObserverContract";
 import { useProvider } from "../../../hooks/useProvider";
 import './style.css';
@@ -8,16 +8,14 @@ import './style.css';
 
 function ProductCard(props) {
     return <Col style={props.style}>
-        <Card title={props.title} hoverable onClick={props.handleClick} className={props.className} extra={<img
-            style={{ width: "4em" }} alt={props.title} src={props.image} />}>
-            {props.description}
+        <Card title={props.product.name} hoverable onClick={props.handleClick} className={props.className}
+            extra={<img style={{ width: "4em" }} alt='' src={props.product.image} />}>
+                {props.product.description}
         </Card>
     </Col>
 }
 
 export function IndexBuyProducts(props) {
-    const [isBuyOpen, setIsBuyOpen] = useState(false);
-    const [currentProduct, setCurrentProduct] = useState(null);
     const [productData, setProductData] = useState(null);
     const { providerData, handleWalletConnection } = useProvider();
 
@@ -34,10 +32,11 @@ export function IndexBuyProducts(props) {
     const placeholderProducts = [];
     for (let i = 0; i < 18; i++) {
         placeholderProducts.push(<ProductCard
-            key={i} title="Product image"
-            style={{ cursor: "inherit" }}
-            image="https://picsum.photos/200"
-            description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cursus nibh vel tortor."
+            product={{
+                name: "Product image",
+                image: "https://picsum.photos/200",
+                description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cursus nibh vel tortor."
+            }} style={{ cursor: "inherit" }} key={i}
         />);
     }
 
@@ -52,23 +51,10 @@ export function IndexBuyProducts(props) {
                     <Col style={{ height: "80vh" }}>
                         <Row gutter={[16, 16]} style={{ paddingTop: "2em", paddingLeft: "1em", paddingRight: "1em" }}>{
                             productData.map((product, index) =>
-                                <ProductCard
-                                    key={index}
-                                    title={product.name}
-                                    className="productCard"
-                                    productImage={product.image}
-                                    description={product.description}
-                                    image={product.image}
-                                    handleClick={() => {
-                                        setIsBuyOpen(true);
-                                        setCurrentProduct(product.address);
-                                    }}
-                                    style={{ cursor: "pointer" }}
-                                />
+                                <ProductCard key={index} product={product} 
+                                    className="productCard" style={{ cursor: "pointer" }} />
                             )}</Row>
                     </Col>
-
-                    {isBuyOpen ? <BuyModal productAddress={currentProduct} state={[isBuyOpen, setIsBuyOpen]} /> : null}
                 </Row>
             }
         </Fragment>}

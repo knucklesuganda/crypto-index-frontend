@@ -1,6 +1,6 @@
 
-export function addTokenToWallet(provider, indexToken) {
-    return provider.send('wallet_watchAsset', {
+export async function addTokenToWallet(provider, indexToken) {
+    return await provider.send('wallet_watchAsset', {
         type: 'ERC20',
         options: {
             address: indexToken.address,
