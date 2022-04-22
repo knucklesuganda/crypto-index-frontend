@@ -1,14 +1,20 @@
 import { Row, Col, Card } from "antd";
 import { useState, useEffect, Fragment } from "react";
-import { NextPage, Title, Loading, WalletConnect } from "../../../components";
+import { Title, Loading, WalletConnect } from "../../../components";
 import { listProducts } from "../../../web3/contracts/ObserverContract";
 import { useProvider } from "../../../hooks/useProvider";
+import { useNavigate } from "react-router";
 import './style.css';
+import { createProductPage } from "../../../routes";
 
 
 function ProductCard(props) {
+    const navigate = useNavigate();
+
     return <Col style={props.style}>
-        <Card title={props.product.name} hoverable onClick={props.handleClick} className={props.className}
+        <Card title={props.product.name} hoverable onClick={() => {
+            navigate(createProductPage(props.product.address));
+        }} className={props.className}
             extra={<img style={{ width: "4em" }} alt='' src={props.product.image} />}>
                 {props.product.description}
         </Card>
@@ -21,7 +27,7 @@ export function IndexBuyProducts(props) {
 
     useEffect(() => {
         if (providerData !== null) {
-            listProducts(providerData, '0xA8Ee798d017AdfD9B4b4B829349D4fd8f878E3eA').then((productData) => {
+            listProducts(providerData, '0xC0410faf293cDE06442fA728d76Eb6424bb6142c').then((productData) => {
                 setProductData(productData);
             });
         }
@@ -31,13 +37,16 @@ export function IndexBuyProducts(props) {
 
     const placeholderProducts = [];
     for (let i = 0; i < 18; i++) {
-        placeholderProducts.push(<ProductCard
-            product={{
-                name: "Product image",
-                image: "https://picsum.photos/200",
-                description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cursus nibh vel tortor."
-            }} style={{ cursor: "inherit" }} key={i}
-        />);
+        placeholderProducts.push(
+            <ProductCard
+                style={{ cursor: "inherit" }} key={i}
+                product={{
+                    name: "Product image",
+                    image: "https://picsum.photos/200",
+                    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cursus nibh vel tortor."
+                }}
+            />
+        );
     }
 
     return <Row>
@@ -47,7 +56,6 @@ export function IndexBuyProducts(props) {
             placeholder={placeholderProducts} /> : <Fragment>
             {!productData ? <Loading style={{ height: "10vh", width: "100wv" }} /> :
                 <Row style={{ display: "flex", justifyContent: "center" }}>
-
                     <Col style={{ height: "80vh" }}>
                         <Row gutter={[16, 16]} style={{ paddingTop: "2em", paddingLeft: "1em", paddingRight: "1em" }}>{
                             productData.map((product, index) =>

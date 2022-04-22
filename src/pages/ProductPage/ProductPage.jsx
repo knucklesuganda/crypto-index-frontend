@@ -7,11 +7,13 @@ import { getIndexInformation, getIndexComponents, sellIndex, buyIndex } from "..
 import { Form, Col, Row, InputNumber, Radio, Button, Divider, Typography, Table, message, Card } from "antd";
 import { formatBigNumber } from "../../web3/utils";
 import { Pie } from '@ant-design/plots';
+import { addTokenToWallet } from "../../web3/wallet/functions";
 
 
 function AnalyticsSection(props) {
     const providerData = props.providerData;
     const [productComponents, setProductComponents] = useState(null);
+    const textStyle = { fontSize: "1.2em" };
 
     useEffect(() => {
         getIndexComponents(providerData, props.productAddress).then(components => {
@@ -30,13 +32,28 @@ function AnalyticsSection(props) {
 
         <Card>
             {[
-                `About: ${props.productData.longDescription}`,
-                `Your balance: ${formatBigNumber(props.productData.productToken.balance)}
-                ${props.productData.productToken.symbol}`,
-                `Buy Token: ${props.productData.buyToken.symbol}`,
-            ].map((text, index) =>
-                <Col key={index}><Typography.Text style={{ fontSize: "1.2em" }}>{text}</Typography.Text></Col>)
-            }
+                <Typography.Text style={textStyle}>
+                    About: {props.productData.longDescription}
+                </Typography.Text>,
+
+                <Typography.Text style={textStyle}>
+                    Your balance: {
+                        formatBigNumber(props.productData.productToken.balance)} {props.productData.productToken.symbol}
+                </Typography.Text>,
+
+                <Typography.Text title={`Add ${props.productData.buyToken.symbol} token to your wallet`}
+                    style={{ ...textStyle, cursor: "pointer", color: '#1890ff' }} onClick={() => {
+                        addTokenToWallet(
+                            providerData.provider,
+                            {
+                                address: props.productData.buyToken.address,
+                                symbol: props.productData.buyToken.symbol,
+                                decimals: props.productData.buyToken.decimals,
+                                image: props.productData.buyToken.image,
+                            }
+                        )
+                    }}>Buy Token: {props.productData.buyToken.symbol}</Typography.Text>
+            ].map((text, index) => <Col key={index}>{text} </Col>)}
         </Card>
 
         <Row style={{ paddingTop: "1em", width: "100%", display: "flex", alignItems: "center" }} gutter={[100, 16]}>
@@ -162,6 +179,6 @@ export default function ProductPage() {
                 <AnalyticsSection providerData={providerData} productAddress={productAddress} productData={productData} />
             </Col>
         </Fragment>
-    }</Col>;
+        }</Col>;
 
 }
