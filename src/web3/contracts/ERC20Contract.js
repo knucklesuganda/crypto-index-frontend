@@ -24,7 +24,7 @@ export async function approveIndexTokens(providerData, productData, amount){
 
 }
 
-export async function getERC20Information(providerData, tokenAddress, isProductToken){
+export async function getERC20Information(providerData, tokenAddress, tokenImage){
     const token = createERC20(providerData, tokenAddress);
 
     let symbol = token.address;
@@ -34,10 +34,11 @@ export async function getERC20Information(providerData, tokenAddress, isProductT
     try{ name = await token.name() }catch(error){}
 
     return {
-        name, symbol,
+        name,
+        symbol,
         address: token.address,
         decimals: await token.decimals(),
-        image: isProductToken ? await token.image() : 
+        image: tokenImage ? tokenImage : 
             `https://raw.githubusercontent.com/TrustWallet/tokens/master/images/${token.address}.png`,
         balance: await token.balanceOf(providerData.account),
     };

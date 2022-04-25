@@ -16,15 +16,18 @@ export function createIndex(providerData, indexAddress) {
 
 export async function getIndexInformation(providerData, indexAddress) {
     const product = createIndex(providerData, indexAddress);
+    const productImage = await product.image();
 
     return {
         address: indexAddress,
-        image: await product.image(),
+        image: productImage,
         name: await product.name(),
         description: await product.shortDescription(),
         longDescription: await product.longDescription(),
         price: await product.getPrice(),
-        productToken: await getERC20Information(providerData, await product.indexToken()),
+        productToken: await getERC20Information(
+            providerData, await product.indexToken(), productImage,
+        ),
         buyToken: await getERC20Information(providerData, await product.buyTokenAddress()),
     };
 }

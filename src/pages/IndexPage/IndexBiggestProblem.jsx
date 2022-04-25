@@ -41,7 +41,7 @@ export function IndexBiggestProblem(props) {
                 <TextElement currentText={currentText} index={3}>And we created something to solve it...</TextElement>
                 <TextElement currentText={currentText} index={4}>
                     <Col>
-                        <Col>Crypto Finance</Col>
+                        <Col>Crypto Revolution</Col>
                         <Button type="primary" onClick={() => { setCurrentText(0) }}>Replay</Button>
                     </Col>
                 </TextElement>
