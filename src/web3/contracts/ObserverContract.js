@@ -17,6 +17,7 @@ export async function listProducts(providerData, observerAddress) {
 
     for(let product of await observer.getProducts()){
         let productInfo;
+
         if(product.productType === 'index'){
             productInfo = await getIndexInformation(providerData, product.productAddress);
         }

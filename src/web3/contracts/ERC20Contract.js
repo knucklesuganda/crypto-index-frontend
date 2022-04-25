@@ -27,9 +27,15 @@ export async function approveIndexTokens(providerData, productData, amount){
 export async function getERC20Information(providerData, tokenAddress, isProductToken){
     const token = createERC20(providerData, tokenAddress);
 
+    let symbol = token.address;
+    let name = token.address;
+
+    try{ symbol = await token.symbol() }catch(error){}
+    try{ name = await token.name() }catch(error){}
+
     return {
+        name, symbol,
         address: token.address,
-        symbol: await token.symbol(),
         decimals: await token.decimals(),
         image: isProductToken ? await token.image() : 
             `https://raw.githubusercontent.com/TrustWallet/tokens/master/images/${token.address}.png`,

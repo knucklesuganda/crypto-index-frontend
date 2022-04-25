@@ -1,12 +1,13 @@
 import { ethers } from "ethers";
+import { Pie } from '@ant-design/plots';
 import { useNavigate, useParams } from "react-router";
 import { useState, useEffect, Fragment } from 'react';
-import { useProvider } from "../../hooks/useProvider"
+import { useProvider } from "../../hooks/useProvider";
 import { Loading, WalletConnect } from "../../components";
 import { getIndexInformation, getIndexComponents, sellIndex, buyIndex } from "../../web3/contracts/IndexContract";
 import { Form, Col, Row, InputNumber, Radio, Button, Divider, Typography, Table, message, Card } from "antd";
 import { formatBigNumber } from "../../web3/utils";
-import { Pie } from '@ant-design/plots';
+import { LinkOutlined } from '@ant-design/icons';
 import { addTokenToWallet } from "../../web3/wallet/functions";
 
 
@@ -32,9 +33,7 @@ function AnalyticsSection(props) {
 
         <Card>
             {[
-                <Typography.Text style={textStyle}>
-                    About: {props.productData.longDescription}
-                </Typography.Text>,
+                <Typography.Text style={textStyle}>About: {props.productData.longDescription}</Typography.Text>,
 
                 <Typography.Text style={textStyle}>
                     Your balance: {
@@ -53,7 +52,7 @@ function AnalyticsSection(props) {
                             }
                         )
                     }}>Buy Token: {props.productData.buyToken.symbol}</Typography.Text>
-            ].map((text, index) => <Col key={index}>{text} </Col>)}
+            ].map((text, index) => <Col key={index}>{text}</Col>)}
         </Card>
 
         <Row style={{ paddingTop: "1em", width: "100%", display: "flex", alignItems: "center" }} gutter={[100, 16]}>
@@ -76,11 +75,23 @@ function AnalyticsSection(props) {
             <Col>
                 <Table bordered
                     style={{ background: "none" }} pagination={{ position: ['none', 'none'] }}
-                    dataSource={productComponents.priceData.map((tokenPrice, index) => {
+                    dataSource={productComponents.priceData.map((tokenInfo, index) => {
                         return {
                             key: index,
-                            tokenName: tokenPrice.name,
-                            tokenPrice: `${formatBigNumber(tokenPrice.price)}$`,
+                            tokenName: <Row style={{ display: "flex", alignItems: "center" }}>
+                                <Typography.Link onClick={() => {
+                                    addTokenToWallet(providerData.provider, {
+                                        address: tokenInfo.token.address,
+                                        symbol: tokenInfo.token.symbol,
+                                        decimals: tokenInfo.token.decimals,
+                                        image: tokenInfo.token.image,
+                                    });
+                                }}>{tokenInfo.name}</Typography.Link>
+                                <LinkOutlined style={{ fontSize: "1.2em", marginLeft: "0.5em" }} onClick={() => {
+                                    window.open(`https://etherscan.io/token/${tokenInfo.token.address}`);
+                                }} title="Open on etherscan" />
+                            </Row>,
+                            tokenPrice: `${formatBigNumber(tokenInfo.price)}$`,
                         };
                     })}
                     columns={[

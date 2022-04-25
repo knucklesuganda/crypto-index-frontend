@@ -87,10 +87,14 @@ export async function getIndexComponents(providerData, productAddress){
             tokenName = await token.name();
         }catch(error){}
 
-        ratioData.push({ type: tokenName, value: component.indexPercentage });
+        ratioData.push({
+            type: tokenName,
+            value: component.indexPercentage,
+        });
 
         priceData.push({
             name: tokenName,
+            token: await getERC20Information(providerData, component.tokenAddress),
             price: await index.getTokenPrice(component.priceOracleAddress),
         });
 

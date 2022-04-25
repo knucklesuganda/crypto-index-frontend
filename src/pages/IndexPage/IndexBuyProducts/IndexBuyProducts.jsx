@@ -4,8 +4,9 @@ import { Title, Loading, WalletConnect } from "../../../components";
 import { listProducts } from "../../../web3/contracts/ObserverContract";
 import { useProvider } from "../../../hooks/useProvider";
 import { useNavigate } from "react-router";
-import './style.css';
 import { createProductPage } from "../../../routes";
+import settings from "../../../settings";
+import './style.css';
 
 
 function ProductCard(props) {
@@ -27,7 +28,7 @@ export function IndexBuyProducts(props) {
 
     useEffect(() => {
         if (providerData !== null) {
-            listProducts(providerData, '0xC0410faf293cDE06442fA728d76Eb6424bb6142c').then((productData) => {
+            listProducts(providerData, settings.OBSERVER_ADDRESS).then((productData) => {
                 setProductData(productData);
             });
         }

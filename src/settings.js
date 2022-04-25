@@ -1,0 +1,4 @@
+
+export default {
+    OBSERVER_ADDRESS: '0xBf514C5620EE47fB58e61DFc46413ac65C07435f',
+};
