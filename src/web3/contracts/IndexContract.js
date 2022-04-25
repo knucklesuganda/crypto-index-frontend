@@ -32,28 +32,28 @@ export async function getIndexInformation(providerData, indexAddress) {
 
 function _baseIndexTokenOperation(exchangeToken, func){
     return async (data) => {
-        // exchangeToken = data.productData[exchangeToken];
-// 
-        // if(exchangeToken.balance.lt(data.amount)){
-        //     throw new Error(
-        //         `You don't have enough tokens. Your balance: ${formatBigNumber(data.productData.buyToken.balance)}`
-        //     );
-        // }
-// 
-        // const transaction = await approveBuyTokens(
-        //     data.providerData,
-        //     data.productData.address,
-        //     exchangeToken.address,
-        //     data.amount,
-        // );
-        // await transaction.wait();
-// 
-        // const index = await createIndex(data.providerData, data.productData.address);
-        // const operationTransaction = await func(index, data);
+        exchangeToken = data.productData[exchangeToken];
+
+        if(exchangeToken.balance.lt(data.amount)){
+            throw new Error(
+                `You don't have enough tokens. Your balance: ${formatBigNumber(data.productData.buyToken.balance)}`
+            );
+        }
+
+        const transaction = await approveBuyTokens(
+            data.providerData,
+            data.productData.address,
+            exchangeToken.address,
+            data.amount,
+        );
+        await transaction.wait();
+
+        const index = await createIndex(data.providerData, data.productData.address);
+        const operationTransaction = await func(index, data);
 
         addTokenNotification(data.providerData, data.productData.productToken);
 
-        // await operationTransaction.wait();
+        await operationTransaction.wait();
     };
 }
 

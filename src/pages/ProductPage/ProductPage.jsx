@@ -7,8 +7,57 @@ import { Loading, WalletConnect } from "../../components";
 import { getIndexInformation, getIndexComponents, sellIndex, buyIndex } from "../../web3/contracts/IndexContract";
 import { Form, Col, Row, InputNumber, Radio, Button, Divider, Typography, Table, message, Card } from "antd";
 import { formatBigNumber } from "../../web3/utils";
-import { LinkOutlined } from '@ant-design/icons';
+import { SaveOutlined } from '@ant-design/icons';
 import { addTokenToWallet } from "../../web3/wallet/functions";
+
+
+function ProductBuyForm(props){
+    const providerData = props.providerData;
+    const productData = props.productData;
+    const [operationType, setOperationType] = useState('buy');
+
+    return <Form name="productInteractionForm" autoComplete="off" onFinish={(values) => {
+        const amount = ethers.utils.parseEther(values.sellAmount.toString());
+        let operation;
+
+        if (operationType === "buy") {
+            operation = buyIndex({ providerData, amount, productData });
+        } else {
+            operation = sellIndex({ providerData, amount, productData });
+        }
+
+        operation.catch((error) => {
+            message.error({ content: `Error: ${error.message}` });
+        });
+
+    }}>
+        <Form.Item name="sellAmount" rules={[{ required: true, message: "Please input the amount" }]}>
+            <InputNumber min={0} size="large" style={{ width: "100%" }} controls={false}
+                formatter={value => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                prefix={operationType === 'buy' ? '$' : productData.productToken.symbol}
+                parser={value => value.replace(/\$\s?|(,*)/g, '')} />
+        </Form.Item>
+
+        <Form.Item>
+            <Radio.Group defaultValue="buy" style={{ width: "100%", display: "flex" }}
+                onChange={(event) => { setOperationType(event.target.value); }}>
+                <Radio.Button value="buy" style={{ width: "100%" }}>Buy</Radio.Button>
+                <Radio.Button value="sell" style={{ width: "100%" }}>Sell</Radio.Button>
+            </Radio.Group>
+            {operationType === "sell" ?
+                <Typography.Text type="danger">
+                    We advise selling on <Typography.Text style={{ cursor: "pointer" }} underline
+                        target="_blank" onClick={() => {
+                            window.open("https://etherscan.io/directory/Exchanges/DEX");
+                        }} >exchanges</Typography.Text>
+                </Typography.Text> : null}
+        </Form.Item>
+
+        <Form.Item>
+            <Button type="primary" htmlType="submit" style={{ width: "100%" }}>{operationType}</Button>
+        </Form.Item>
+    </Form>;
+}
 
 
 function AnalyticsSection(props) {
@@ -28,16 +77,18 @@ function AnalyticsSection(props) {
         return <Loading />;
     }
 
-    return <Col style={{ paddingRight: "2em", paddingLeft: "2em" }}>
+    return <Col>
         <Typography.Title>Analytics</Typography.Title>
 
         <Card>
             {[
-                <Typography.Text style={textStyle}>About: {props.productData.longDescription}</Typography.Text>,
+                <Typography.Text style={textStyle}>
+                    About: {props.productData.longDescription}
+                </Typography.Text>,
 
                 <Typography.Text style={textStyle}>
-                    Your balance: {
-                        formatBigNumber(props.productData.productToken.balance)} {props.productData.productToken.symbol}
+                    Your balance: ({formatBigNumber(props.productData.productToken.balance)} {
+                        props.productData.productToken.symbol})
                 </Typography.Text>,
 
                 <Typography.Text title={`Add ${props.productData.buyToken.symbol} token to your wallet`}
@@ -80,15 +131,16 @@ function AnalyticsSection(props) {
                             key: index,
                             tokenName: <Row style={{ display: "flex", alignItems: "center" }}>
                                 <Typography.Link onClick={() => {
+                                    window.open(`https://etherscan.io/token/${tokenInfo.token.address}`);
+                                }}>{tokenInfo.name}</Typography.Link>
+
+                                <SaveOutlined style={{ fontSize: "1.2em", marginLeft: "0.5em" }} onClick={() => {
                                     addTokenToWallet(providerData.provider, {
                                         address: tokenInfo.token.address,
                                         symbol: tokenInfo.token.symbol,
                                         decimals: tokenInfo.token.decimals,
                                         image: tokenInfo.token.image,
                                     });
-                                }}>{tokenInfo.name}</Typography.Link>
-                                <LinkOutlined style={{ fontSize: "1.2em", marginLeft: "0.5em" }} onClick={() => {
-                                    window.open(`https://etherscan.io/token/${tokenInfo.token.address}`);
                                 }} title="Open on etherscan" />
                             </Row>,
                             tokenPrice: `${formatBigNumber(tokenInfo.price)}$`,
@@ -110,7 +162,6 @@ export default function ProductPage() {
     const { productAddress } = useParams();
     const { providerData, handleWalletConnection } = useProvider();
     const [productData, setProductData] = useState(null);
-    const [operationType, setOperationType] = useState('buy');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -134,62 +185,44 @@ export default function ProductPage() {
             <Divider />
 
             <Col style={{
-                width: "100%",
-                display: "flex",
-                alignItems: "center",
-                flexDirection: "column",
-                alignContent: "center",
-                justifyContent: "center",
+                width: "100%", display: "flex",
+                alignItems: "center", flexDirection: "column",
+                alignContent: "center", justifyContent: "center",
             }}>
-                <Col span={24} style={{ display: "inline-flex", alignItems: "baseline" }}>
-                    <Typography.Text style={{ fontSize: "2em" }}>{productData.name}</Typography.Text>
-                    <Typography.Text style={{ fontSize: "1.2em" }}>({formatBigNumber(productData.price)}$)</Typography.Text>
-                </Col>
+                <Row style={{ display: "flex", alignItems: "baseline" }}>
+                    <Typography.Title level={2} title="Product name" style={{
+                        cursor: "pointer",
+                        margin: 0,
+                        fontWeight: 100,
+                        marginBottom: "0.3em",
+                    }}
+                    onMouseEnter={(event) => { event.target.style.color = '#1890ff'; }}
+                    onMouseLeave={(event) => { event.target.style.color = '#bfbfbf'; }}
 
-                <Col>
-                    <Form name="productInteractionForm" autoComplete="off" onFinish={(values) => {
-                        const amount = ethers.utils.parseEther(values.sellAmount.toString());
-                        let operation;
+                    onClick={() => {
+                        addTokenToWallet(
+                            providerData.provider,
+                            {
+                                address: productData.productToken.address,
+                                symbol: productData.productToken.symbol,
+                                decimals: productData.productToken.decimals,
+                                image: productData.productToken.image,
+                            }
+                        )
+                    }}>{productData.name}</Typography.Title>
 
-                        if (operationType === "buy") {
-                            operation = buyIndex({ providerData, amount, productData });
-                        } else {
-                            operation = sellIndex({ providerData, amount, productData });
-                        }
+                    <Typography.Title level={4} style={{ margin: 0, fontWeight: 100 }} title="Product price">
+                        ({formatBigNumber(productData.price)}$)
+                    </Typography.Title>
+                </Row>
 
-                        operation.catch((error) => {
-                            message.error({ content: `Error: ${error.message}` });
-                        });
-
-                    }}>
-                        <Form.Item name="sellAmount" rules={[{ required: true, message: "Please input the amount" }]}>
-                            <InputNumber min={0} size="large" style={{ width: "100%" }} controls={false}
-                                formatter={value => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                                prefix={operationType === 'buy' ? '$' : productData.productToken.symbol}
-                                parser={value => value.replace(/\$\s?|(,*)/g, '')} />
-                        </Form.Item>
-
-                        <Form.Item>
-                            <Radio.Group defaultValue="buy" style={{ width: "100%", display: "flex" }}
-                                onChange={(event) => { setOperationType(event.target.value); }}>
-                                <Radio.Button value="buy" style={{ width: "100%" }}>Buy</Radio.Button>
-                                <Radio.Button value="sell" style={{ width: "100%" }}>Sell</Radio.Button>
-                            </Radio.Group>
-                            {operationType === "sell" ?
-                                <Typography.Text type="danger">We advise selling on exchanges</Typography.Text> : null}
-                        </Form.Item>
-
-                        <Form.Item>
-                            <Button type="primary" htmlType="submit" style={{ width: "100%" }}>{operationType}</Button>
-                        </Form.Item>
-                    </Form>
-                </Col>
+                <ProductBuyForm providerData={providerData} productData={productData} />
             </Col>
 
             <Col span={24}>
                 <AnalyticsSection providerData={providerData} productAddress={productAddress} productData={productData} />
             </Col>
-        </Fragment>
-        }</Col>;
+        </Fragment>}
+    </Col>;
 
 }
