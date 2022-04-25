@@ -22,7 +22,7 @@ export function IndexBiggestProblem(props) {
 
         currentTextInterval.current = setInterval(() => {
             setCurrentText(currentText + 1 > totalTexts ? currentText : currentText + 1);
-        }, 4000);
+        }, 3000);
 
         return () => { clearInterval(currentTextInterval.current); };
     });

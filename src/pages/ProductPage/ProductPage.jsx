@@ -21,9 +21,9 @@ function ProductBuyForm(props){
         let operation;
 
         if (operationType === "buy") {
-            operation = buyIndex({ providerData, amount, productData });
+            operation = buyIndex({ exchangeToken: productData.buyToken, providerData, amount, productData });
         } else {
-            operation = sellIndex({ providerData, amount, productData });
+            operation = sellIndex({ exchangeToken: productData.productToken, providerData, amount, productData });
         }
 
         operation.catch((error) => {
@@ -44,17 +44,21 @@ function ProductBuyForm(props){
                 <Radio.Button value="buy" style={{ width: "100%" }}>Buy</Radio.Button>
                 <Radio.Button value="sell" style={{ width: "100%" }}>Sell</Radio.Button>
             </Radio.Group>
-            {operationType === "sell" ?
+
+            { operationType === "sell" ?
                 <Typography.Text type="danger">
                     We advise selling on <Typography.Text style={{ cursor: "pointer" }} underline
-                        target="_blank" onClick={() => {
-                            window.open("https://etherscan.io/directory/Exchanges/DEX");
-                        }} >exchanges</Typography.Text>
+                    target="_blank" onClick={() => {
+                        window.open("https://etherscan.io/directory/Exchanges/DEX");
+                    }}>exchanges</Typography.Text>
                 </Typography.Text> : null}
+
         </Form.Item>
 
         <Form.Item>
-            <Button type="primary" htmlType="submit" style={{ width: "100%" }}>{operationType}</Button>
+            <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
+                {operationType === "buy" ? "Buy tokens" : "Sell tokens"}
+            </Button>
         </Form.Item>
     </Form>;
 }
@@ -89,6 +93,10 @@ function AnalyticsSection(props) {
                 <Typography.Text style={textStyle}>
                     Your balance: ({formatBigNumber(props.productData.productToken.balance)} {
                         props.productData.productToken.symbol})
+                </Typography.Text>,
+
+                <Typography.Text style={textStyle}>
+                    Total Locked Value: {formatBigNumber(props.productData.totalLockedValue)}$
                 </Typography.Text>,
 
                 <Typography.Text title={`Add ${props.productData.buyToken.symbol} token to your wallet`}
@@ -182,7 +190,7 @@ export default function ProductPage() {
     }}>{productData === null ?
         <WalletConnect handleWalletConnection={handleWalletConnection} /> :
         <Fragment>
-            <Divider />
+            <Divider style={{ marginTop: "0.2em" }} />
 
             <Col style={{
                 width: "100%", display: "flex",

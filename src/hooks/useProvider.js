@@ -6,16 +6,12 @@ export function useProvider() {
     const [providerData, setProviderData] = useState(null);
 
     const handleWalletConnection = useCallback(() => {
-        if (providerData !== null) {
-            return;
-        }
-
         connectWallet().then((providerData) => { setProviderData(providerData) });
     }, [providerData]);
 
     useEffect(() => {
         handleWalletConnection();
-    }, [providerData, handleWalletConnection]);
+    }, []);
 
     return { providerData, handleWalletConnection };
 }

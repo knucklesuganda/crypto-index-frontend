@@ -28,25 +28,25 @@ export async function getIndexInformation(providerData, indexAddress) {
         productToken: await getERC20Information(
             providerData, await product.indexToken(), productImage,
         ),
+        totalLockedValue: await product.getTotalLockedValue(),
         buyToken: await getERC20Information(providerData, await product.buyTokenAddress()),
     };
 }
 
 
-function _baseIndexTokenOperation(exchangeToken, func){
+function _baseIndexTokenOperation(func){
     return async (data) => {
-        exchangeToken = data.productData[exchangeToken];
-
-        if(exchangeToken.balance.lt(data.amount)){
+        if(data.exchangeToken.balance.lt(data.amount)){
             throw new Error(
-                `You don't have enough tokens. Your balance: ${formatBigNumber(data.productData.buyToken.balance)}`
+                `You don't have enough tokens. Your balance: ${formatBigNumber(data.exchangeToken.balance)}
+                    ${data.exchangeToken.symbol}`
             );
         }
 
         const transaction = await approveBuyTokens(
             data.providerData,
             data.productData.address,
-            exchangeToken.address,
+            data.exchangeToken.address,
             data.amount,
         );
         await transaction.wait();
@@ -71,8 +71,8 @@ async function _sellIndex(index, data) {
 }
 
 
-export const buyIndex = _baseIndexTokenOperation('buyToken', _buyIndex);
-export const sellIndex = _baseIndexTokenOperation('productToken', _sellIndex);
+export const buyIndex = _baseIndexTokenOperation(_buyIndex);
+export const sellIndex = _baseIndexTokenOperation(_sellIndex);
 
 
 export async function getIndexComponents(providerData, productAddress){
