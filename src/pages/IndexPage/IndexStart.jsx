@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { Line } from "@ant-design/plots";
 import { BarChartOutlined, GlobalOutlined, SlidersOutlined } from '@ant-design/icons';
 import { NextPage } from "../../components/NextPage";
+import { useTranslation } from "react-i18next";
 
 
 function PriceLines() {
@@ -73,7 +74,9 @@ function PriceLines() {
 export function IndexStart(props) {
     const [titleIndex, setTitleIndex] = useState(0);
     const titleIntervalId = useRef(null);
-    const allTitles = ["Derivatives", "Indices", "Products", "Safety"];
+    const { t } = useTranslation();
+
+    const allTitles = t('index.start.crypto_title.titles');
     const titleColors = ["#eb9c00", "#eb00bb", "#00e7eb", "#00eb10"];
     const iconStyle = { display: "flex", fontSize: "4em", justifyContent: "space-around" };
 
@@ -101,16 +104,18 @@ export function IndexStart(props) {
             <Row style={{ width: "100%" }}>
                 <Col span={16}>
                     <PriceLines />
-                    <Typography.Text disabled style={{ paddingLeft: "0.5em" }}>Not real data</Typography.Text>
+                    <Typography.Text disabled style={{ paddingLeft: "0.5em" }}>
+                        {t('index.start.not_real_data')}
+                    </Typography.Text>
                 </Col>
 
                 <Col span={7} style={{ display: "flex", paddingTop: "11em", justifyContent: "center" }}>
                     <Typography.Title level={1} style={{ margin: 0, padding: 0 }}>
-                        Crypto{" "}
+                        {t('index.start.crypto_title.start')}{" "}
                         <div style={{ color: titleColors[titleIndex], transition: "100ms" }} >
                             {allTitles[titleIndex]}
                         </div>
-                        For Everyone
+                        {t("index.start.crypto_title.end")}
                     </Typography.Title>
                 </Col>
             </Row>
@@ -124,9 +129,9 @@ export function IndexStart(props) {
                 marginTop: "5em",
             }}>
                 {[
-                    [<GlobalOutlined style={iconStyle} />, "Global solutions in crypto finance"],
-                    [<BarChartOutlined style={iconStyle} />, "Derivatives you have never seen before."],
-                    [<SlidersOutlined style={iconStyle} />, "Protect yourself with anti-volatility products."],
+                    [<GlobalOutlined style={iconStyle} />, t('index.start.cards.global_solutions')],
+                    [<BarChartOutlined style={iconStyle} />, t('index.start.cards.new_derivatives')],
+                    [<SlidersOutlined style={iconStyle} />, t("index.start.cards.protect")],
                 ].map((data, index) =>
                     <Col key={index}>
                         {data[0]}

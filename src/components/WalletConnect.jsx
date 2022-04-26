@@ -25,7 +25,9 @@ export function WalletConnect(props){
 
                 <Button type="primary" size="large" style={{
                     width: "20em", marginTop: "1em",
-                }} onClick={() => { props.handleWalletConnection() }}>Connect account</Button>
+                }} onClick={() => { props.handleWalletConnection() }}>
+                    Connect account
+                </Button>
             </Card>
         </Row>
     </Row>

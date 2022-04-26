@@ -3,13 +3,15 @@ import { Row, Col, Menu, Typography } from "antd";
 import { IndexBiggestProblem } from "./IndexBiggestProblem";
 import { IndexStart } from "./IndexStart";
 import { IndexBuyProducts } from "./IndexBuyProducts/IndexBuyProducts";
+import { useTranslation } from "react-i18next";
 
 
-export default function IndexPage(props) {
+export default function IndexPage() {
     const [currentPage, setCurrentPage] = useState(0);
     const startId = 'start';
     const aboutUsId = "about-us";
     const buyProductsId = "buy-products";
+    const { t } = useTranslation();
 
     useLayoutEffect(() => {
         const originalStyle = window.getComputedStyle(document.body).overflow;
@@ -26,7 +28,7 @@ export default function IndexPage(props) {
                             document.getElementById(aboutUsId).scrollIntoView({ behavior: "smooth" });
                             setCurrentPage(1);
                         }} />,
-                        <IndexBiggestProblem id={aboutUsId} setNextPage={() => {
+                        <IndexBiggestProblem id={aboutUsId} isOpen={currentPage === 1} setNextPage={() => {
                             document.getElementById(buyProductsId).scrollIntoView({ behavior: "smooth" });
                             setCurrentPage(2);
                         }} />,
@@ -44,13 +46,13 @@ export default function IndexPage(props) {
                 }} onSelect={({ _, key }) => { setCurrentPage(parseInt(key)); }}>
                     <Menu.ItemGroup>
                         <Menu.Item key='0'>
-                            <a href={`#${startId}`}>Start</a>
+                            <a href={`#${startId}`}>{t('index.menu.start')}</a>
                         </Menu.Item>
                         <Menu.Item key='1'>
-                            <a href={`#${aboutUsId}`}>About us</a>
+                            <a href={`#${aboutUsId}`}>{t('index.menu.about_us')}</a>
                         </Menu.Item>
                         <Menu.Item key='2'>
-                            <a href={`#${buyProductsId}`}>Buy Products</a>
+                            <a href={`#${buyProductsId}`}>{t('index.menu.buy_products')}</a>
                         </Menu.Item>
                     </Menu.ItemGroup>
                 </Menu>

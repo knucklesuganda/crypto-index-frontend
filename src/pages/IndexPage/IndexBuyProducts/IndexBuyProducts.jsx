@@ -6,6 +6,7 @@ import { useProvider } from "../../../hooks/useProvider";
 import { useNavigate } from "react-router";
 import { createProductPage } from "../../../routes";
 import settings from "../../../settings";
+import { useTranslation } from "react-i18next";
 import './style.css';
 
 
@@ -25,6 +26,7 @@ function ProductCard(props) {
 export function IndexBuyProducts(props) {
     const [productData, setProductData] = useState(null);
     const { providerData, handleWalletConnection } = useProvider();
+    const { t } = useTranslation();
 
     useEffect(() => {
         if (providerData !== null) {
@@ -51,7 +53,7 @@ export function IndexBuyProducts(props) {
     }
 
     return <Row>
-        <Title id={props.id}>Buy products</Title>
+        <Title id={props.id}>{t('index.buy.title')}</Title>
 
         {providerData === null ? <WalletConnect handleWalletConnection={handleWalletConnection}
             placeholder={placeholderProducts} /> : <Fragment>

@@ -1,0 +1,75 @@
+{
+    "title": "Crypto Revolution",
+    "index": {
+        "menu": {
+            "start": "Start",
+            "about_us": "Abous Us",
+            "buy_products": "Buy Products"
+        },
+        "start": {
+            "crypto_title": {
+                "titles": [
+                    "Derivatives",
+                    "Indices",
+                    "Products",
+                    "Safety"
+                ],
+                "end": "For Everyone",
+                "start": "Crypto"
+            },
+            "not_real_data": "Not real data",
+            "cards": {
+                "global_solutions": "Global solutions in crypto finance",
+                "new_derivatives": "Derivatives you have never seen before",
+                "protect": "Protect yourself with anti-volatility products"
+            }
+        },
+        "problems": {
+            "title": "Biggest problem",
+            "texts": [
+                "We are a team of developers and financiers that asked a question...",
+                "What is the biggest crypto problem?",
+                "We think - Volatility",
+                "And we created something to solve it..."
+            ],
+            "replay": "Replay"
+        },
+        "buy": {
+            "title": "Buy products"
+        }
+    },
+    "buy_product": {
+        "buy_form": {
+            "amount": {
+                "placeholder": "Amount",
+                "error": "Amount is required"
+            },
+            "operation": {
+                "buy": "Buy tokens",
+                "sell": "Sell tokens",
+                "sell_advise": {
+                    "start": "We advise selling on ",
+                    "exchanges": "exchanges"
+                }
+            }
+        },
+        "analytics": {
+            "save_token": "Save token to the wallet",
+            "title": "Analytics",
+            "about_product": "About",
+            "balance": "Your balance",
+            "total_locked_value": "Total Locked Value",
+            "buy_token": "Buy Token"
+        },
+        "product_name": "Product name",
+        "product_price": "Product price"
+    },
+    "components": {
+        "add_token": {
+            "start": "Click here to add",
+            "end": "to your wallet"
+        }
+    },
+    "not_found": "Page was not found",
+    "error": "Error"
+}

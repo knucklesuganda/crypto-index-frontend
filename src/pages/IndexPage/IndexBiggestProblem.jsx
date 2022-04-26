@@ -3,12 +3,13 @@ import { useState, useEffect, useRef, Fragment } from "react";
 import { Title } from "../../components/Title";
 import { NextPage } from "../../components/NextPage";
 import { Fade } from "../../components/animations";
+import { useTranslation } from "react-i18next";
 
 
 function TextElement(props) {
     return <Fade isActive={props.currentText === props.index}>
         <Typography.Title style={{ fontSize: "4em", textAlign: "center", wordBreak: "keep-all", 
-            whiteSpace: "nowrap", height: "40vh"}}>{props.children}</Typography.Title>
+            whiteSpace: "normal", height: "40vh"}}>{props.children}</Typography.Title>
     </Fade>;
 }
 
@@ -16,12 +17,17 @@ function TextElement(props) {
 export function IndexBiggestProblem(props) {
     const totalTexts = 4;
     const [currentText, setCurrentText] = useState(0);
+    const { t } = useTranslation();
     const currentTextInterval = useRef(null);
+    const pageTexts = t('index.problems.texts');
 
     useEffect(() => {
 
         currentTextInterval.current = setInterval(() => {
-            setCurrentText(currentText + 1 > totalTexts ? currentText : currentText + 1);
+            if(props.isOpen){
+                console.log(123);
+                setCurrentText(currentText + 1 > totalTexts ? currentText : currentText + 1);
+            }
         }, 3000);
 
         return () => { clearInterval(currentTextInterval.current); };
@@ -29,20 +35,20 @@ export function IndexBiggestProblem(props) {
 
 
     return <Row>
-        <Title id={props.id}>Biggest problem</Title>
+        <Title id={props.id}>{t('index.problems.title')}</Title>
 
         <Row style={{ height: "100vh", width: "100%", display: "flex", justifyContent: "center", paddingTop: "20vh" }}>
             <Col>
-                <TextElement currentText={currentText} index={0}>
-                    We are a team of developers and financiers that asked a question...
-                </TextElement>
-                <TextElement currentText={currentText} index={1}>What is the biggest crypto problem?</TextElement>
-                <TextElement currentText={currentText} index={2}>We think - Volatility</TextElement>
-                <TextElement currentText={currentText} index={3}>And we created something to solve it...</TextElement>
+                <TextElement currentText={currentText} index={0}>{pageTexts[0]}</TextElement>
+                <TextElement currentText={currentText} index={1}>{pageTexts[1]}</TextElement>
+                <TextElement currentText={currentText} index={2}>{pageTexts[2]}</TextElement>
+                <TextElement currentText={currentText} index={3}>{pageTexts[3]}</TextElement>
                 <TextElement currentText={currentText} index={4}>
-                    <Col>
-                        <Col>Crypto Revolution</Col>
-                        <Button type="primary" onClick={() => { setCurrentText(0) }}>Replay</Button>
+                    <Col style={{ display: "flex", flexDirection: "column" }}>
+                        {t('title')}
+                        <Button type="primary" style={{ marginTop: "1em" }} onClick={() => { setCurrentText(0) }}>
+                            {t('index.problems.replay')}
+                        </Button>
                     </Col>
                 </TextElement>
             </Col>

@@ -9,12 +9,15 @@ import { Form, Col, Row, InputNumber, Radio, Button, Divider, Typography, Table,
 import { formatBigNumber } from "../../web3/utils";
 import { SaveOutlined } from '@ant-design/icons';
 import { addTokenToWallet } from "../../web3/wallet/functions";
+import { useTranslation } from "react-i18next";
+import { t } from "i18next";
 
 
 function ProductBuyForm(props){
     const providerData = props.providerData;
     const productData = props.productData;
     const [operationType, setOperationType] = useState('buy');
+    const { t } = useTranslation();
 
     return <Form name="productInteractionForm" autoComplete="off" onFinish={(values) => {
         const amount = ethers.utils.parseEther(values.sellAmount.toString());
@@ -27,11 +30,11 @@ function ProductBuyForm(props){
         }
 
         operation.catch((error) => {
-            message.error({ content: `Error: ${error.message}` });
+            message.error({ content: `${t('error')}: ${error.message}` });
         });
 
     }}>
-        <Form.Item name="sellAmount" rules={[{ required: true, message: "Please input the amount" }]}>
+        <Form.Item name="sellAmount" rules={[{ required: true, message: t('buy_product.buy_form.amount.error') }]}>
             <InputNumber min={0} size="large" style={{ width: "100%" }} controls={false}
                 formatter={value => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                 prefix={operationType === 'buy' ? '$' : productData.productToken.symbol}
@@ -40,24 +43,30 @@ function ProductBuyForm(props){
 
         <Form.Item>
             <Radio.Group defaultValue="buy" style={{ width: "100%", display: "flex" }}
-                onChange={(event) => { setOperationType(event.target.value); }}>
-                <Radio.Button value="buy" style={{ width: "100%" }}>Buy</Radio.Button>
-                <Radio.Button value="sell" style={{ width: "100%" }}>Sell</Radio.Button>
+                onChange={(event) => { setOperationType(event.target.value) }}>
+                <Radio.Button value="buy" style={{ width: "100%" }}>
+                    {t('buy_product.buy_form.operation.buy')}
+                </Radio.Button>
+
+                <Radio.Button value="sell" style={{ width: "100%" }}>
+                    {t("buy_product.buy_form.operation.sell")}
+                </Radio.Button>
             </Radio.Group>
 
             { operationType === "sell" ?
                 <Typography.Text type="danger">
-                    We advise selling on <Typography.Text style={{ cursor: "pointer" }} underline
-                    target="_blank" onClick={() => {
+                    {t('buy_product.buy_form.operation.sell_advise.start')}
+                    <Typography.Text style={{ cursor: "pointer" }} underline target="_blank" onClick={() => {
                         window.open("https://etherscan.io/directory/Exchanges/DEX");
-                    }}>exchanges</Typography.Text>
+                    }}>{t('buy_product.buy_form.operation.sell_advise.exchanges')}</Typography.Text>
                 </Typography.Text> : null}
 
         </Form.Item>
 
         <Form.Item>
             <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
-                {operationType === "buy" ? "Buy tokens" : "Sell tokens"}
+                {operationType === "buy" ? t('buy_product.buy_form.operation.buy') : 
+                    t('buy_product.buy_form.operation.sell')}
             </Button>
         </Form.Item>
     </Form>;
@@ -82,24 +91,24 @@ function AnalyticsSection(props) {
     }
 
     return <Col>
-        <Typography.Title>Analytics</Typography.Title>
+        <Typography.Title>{t('buy_product.analytics.title')}</Typography.Title>
 
         <Card>
             {[
                 <Typography.Text style={textStyle}>
-                    About: {props.productData.longDescription}
+                    {t('buy_product.analytics.about_product')}: {props.productData.longDescription}
                 </Typography.Text>,
 
                 <Typography.Text style={textStyle}>
-                    Your balance: ({formatBigNumber(props.productData.productToken.balance)} {
+                    {t('buy_product.analytics.balance')}: ({formatBigNumber(props.productData.productToken.balance)} {
                         props.productData.productToken.symbol})
                 </Typography.Text>,
 
                 <Typography.Text style={textStyle}>
-                    Total Locked Value: {formatBigNumber(props.productData.totalLockedValue)}$
+                    {t('buy_product.analytics.total_locked_value')}: {formatBigNumber(props.productData.totalLockedValue)}$
                 </Typography.Text>,
 
-                <Typography.Text title={`Add ${props.productData.buyToken.symbol} token to your wallet`}
+                <Typography.Text title={t('buy_product.analytics.save_token')}
                     style={{ ...textStyle, cursor: "pointer", color: '#1890ff' }} onClick={() => {
                         addTokenToWallet(
                             providerData.provider,
@@ -110,7 +119,7 @@ function AnalyticsSection(props) {
                                 image: props.productData.buyToken.image,
                             }
                         )
-                    }}>Buy Token: {props.productData.buyToken.symbol}</Typography.Text>
+                    }}>{t('buy_product.analytics.buy_token')}: {props.productData.buyToken.symbol}</Typography.Text>
             ].map((text, index) => <Col key={index}>{text}</Col>)}
         </Card>
 
@@ -149,7 +158,7 @@ function AnalyticsSection(props) {
                                         decimals: tokenInfo.token.decimals,
                                         image: tokenInfo.token.image,
                                     });
-                                }} title="Open on etherscan" />
+                                }} title={t('buy_product.analytics.save_token')} />
                             </Row>,
                             tokenPrice: `${formatBigNumber(tokenInfo.price)}$`,
                         };
@@ -183,7 +192,7 @@ export default function ProductPage() {
         }
 
         return () => { };
-    }, [providerData, productAddress]);
+    }, [providerData]);
 
     return <Col style={{
         paddingRight: "1em", paddingBottom: "4em", paddingLeft: "1em", width: "100wv"
@@ -198,7 +207,7 @@ export default function ProductPage() {
                 alignContent: "center", justifyContent: "center",
             }}>
                 <Row style={{ display: "flex", alignItems: "baseline" }}>
-                    <Typography.Title level={2} title="Product name" style={{
+                    <Typography.Title level={2} title={t('buy_product.product_name')} style={{
                         cursor: "pointer",
                         margin: 0,
                         fontWeight: 100,
@@ -219,7 +228,7 @@ export default function ProductPage() {
                         )
                     }}>{productData.name}</Typography.Title>
 
-                    <Typography.Title level={4} style={{ margin: 0, fontWeight: 100 }} title="Product price">
+                    <Typography.Title level={4} style={{ margin: 0, fontWeight: 100 }} title={t('buy_product.product_price')}>
                         ({formatBigNumber(productData.price)}$)
                     </Typography.Title>
                 </Row>

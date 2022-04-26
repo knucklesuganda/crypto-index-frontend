@@ -3,6 +3,7 @@ import { store } from "../store/store";
 import { addSavedTokenAction } from "../store/savedTokens";
 import { addTokenToWallet } from "../web3/wallet/functions";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 
 const notificationId = "addTokenNotification";
@@ -10,6 +11,7 @@ const notificationId = "addTokenNotification";
 
 export function AddToken(props) {
     const savedTokens = useSelector(state => state.savedTokens);
+    const { t } = useTranslation();
 
     if(savedTokens.includes(props.token.address)){
         return <Col></Col>;
@@ -28,16 +30,18 @@ export function AddToken(props) {
             ).then((result) => {
                 store.dispatch(addSavedTokenAction(result.suggestedAssetMeta.asset.address));
             }).catch((error) => {
-                message.error({ content: `Error: ${error}` });
+                message.error({ content: `${t('error')}: ${error}` });
             });
 
             notification.close(notificationId);
-        }}>Click here to add {props.productData.name} to your wallet</Button>
+        }}>{t('components.add_token.start')} {props.productData.name} {t('components.add_token.end')}</Button>
     </Col>;
 }
 
 
 export function addTokenNotification(providerData, token) {
+    // TODO: translations
+
     setTimeout(() => {
         notification.info(({
             key: notificationId,

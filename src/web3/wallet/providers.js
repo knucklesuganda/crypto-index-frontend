@@ -9,11 +9,11 @@ let web3Modal;
 const providerOptions = {
     // walletconnect: {
     //     package: WalletConnectProvider,
-    //    options: {
-    //        rpc: {
-    //            1337: process.env.PUBLIC_RPC_URL,
-    //        }
-    //    },
+    //     options: {
+    //         rpc: {
+    //             1337: process.env.PUBLIC_RPC_URL,
+    //         }
+    //     },
     // }
 };
 
@@ -26,7 +26,7 @@ export async function connectWallet() {
         return { account: await _getWallet(), signer, provider};
     }
 
-    web3Modal = new Web3Modal({cacheProvider: false, providerOptions});
+    web3Modal = new Web3Modal({ cacheProvider: false, providerOptions });
 
     const web3ModalProvider = await web3Modal.connect();
     provider = new ethers.providers.Web3Provider(web3ModalProvider);
