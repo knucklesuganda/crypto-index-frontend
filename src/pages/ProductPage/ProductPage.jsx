@@ -13,13 +13,13 @@ import { useTranslation } from "react-i18next";
 import { t } from "i18next";
 
 
-function ProductBuyForm(props){
+function ProductBuyForm(props) {
     const providerData = props.providerData;
     const productData = props.productData;
     const [operationType, setOperationType] = useState('buy');
     const { t } = useTranslation();
 
-    return <Form name="productInteractionForm" autoComplete="off" onFinish={(values) => {
+    return <Form name="productInteractionForm" style={{ minWidth: "20vw " }} autoComplete="off" onFinish={(values) => {
         const amount = ethers.utils.parseEther(values.sellAmount.toString());
         let operation;
 
@@ -42,8 +42,9 @@ function ProductBuyForm(props){
         </Form.Item>
 
         <Form.Item>
-            <Radio.Group defaultValue="buy" style={{ width: "100%", display: "flex" }}
+            <Radio.Group defaultValue="buy" style={{ display: "flex" }}
                 onChange={(event) => { setOperationType(event.target.value) }}>
+
                 <Radio.Button value="buy" style={{ width: "100%" }}>
                     {t('buy_product.buy_form.operation.buy')}
                 </Radio.Button>
@@ -53,21 +54,22 @@ function ProductBuyForm(props){
                 </Radio.Button>
             </Radio.Group>
 
-            { operationType === "sell" ?
-                <Typography.Text type="danger">
-                    {t('buy_product.buy_form.operation.sell_advise.start')}
-                    <Typography.Text style={{ cursor: "pointer" }} underline target="_blank" onClick={() => {
-                        window.open("https://etherscan.io/directory/Exchanges/DEX");
-                    }}>{t('buy_product.buy_form.operation.sell_advise.exchanges')}</Typography.Text>
-                </Typography.Text> : null}
 
+            {
+                operationType === "sell" ?
+                    <Typography.Text type="danger">
+                        {t('buy_product.buy_form.operation.sell_advise.start')}
+                        <Typography.Text style={{ cursor: "pointer" }} underline target="_blank" onClick={() => {
+                            window.open("https://etherscan.io/directory/Exchanges/DEX");
+                        }}>{t('buy_product.buy_form.operation.sell_advise.exchanges')}</Typography.Text>
+                    </Typography.Text> : null
+            }
         </Form.Item>
 
         <Form.Item>
-            <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
-                {operationType === "buy" ? t('buy_product.buy_form.operation.buy') : 
-                    t('buy_product.buy_form.operation.sell')}
-            </Button>
+            <Button type="primary" htmlType="submit" style={{ width: "100%" }}>{
+                operationType === "buy" ? t('buy_product.buy_form.operation.buy') : t('buy_product.buy_form.operation.sell')
+            }</Button>
         </Form.Item>
     </Form>;
 }
@@ -187,21 +189,25 @@ export default function ProductPage() {
             getIndexInformation(providerData, productAddress).then(product => {
                 setProductData(product);
             }).catch((error) => {
-                navigate('/not_found');
+                // navigate('/not_found');
             });
         }
 
         return () => { };
     }, [providerData]);
 
+    if (providerData === null) {
+        return <WalletConnect handleWalletConnection={handleWalletConnection} />;
+    }
+
     return <Col style={{
         paddingRight: "1em", paddingBottom: "4em", paddingLeft: "1em", width: "100wv"
-    }}>{productData === null ?
-        <WalletConnect handleWalletConnection={handleWalletConnection} /> :
+    }}>{productData === null ? <Loading /> :
+
         <Fragment>
             <Divider style={{ marginTop: "0.2em" }} />
 
-            <Col style={{
+            <Row style={{
                 width: "100%", display: "flex",
                 alignItems: "center", flexDirection: "column",
                 alignContent: "center", justifyContent: "center",
@@ -213,20 +219,20 @@ export default function ProductPage() {
                         fontWeight: 100,
                         marginBottom: "0.3em",
                     }}
-                    onMouseEnter={(event) => { event.target.style.color = '#1890ff'; }}
-                    onMouseLeave={(event) => { event.target.style.color = '#bfbfbf'; }}
+                        onMouseEnter={(event) => { event.target.style.color = '#1890ff'; }}
+                        onMouseLeave={(event) => { event.target.style.color = '#bfbfbf'; }}
 
-                    onClick={() => {
-                        addTokenToWallet(
-                            providerData.provider,
-                            {
-                                address: productData.productToken.address,
-                                symbol: productData.productToken.symbol,
-                                decimals: productData.productToken.decimals,
-                                image: productData.productToken.image,
-                            }
-                        )
-                    }}>{productData.name}</Typography.Title>
+                        onClick={() => {
+                            addTokenToWallet(
+                                providerData.provider,
+                                {
+                                    address: productData.productToken.address,
+                                    symbol: productData.productToken.symbol,
+                                    decimals: productData.productToken.decimals,
+                                    image: productData.productToken.image,
+                                }
+                            )
+                        }}>{productData.name}</Typography.Title>
 
                     <Typography.Title level={4} style={{ margin: 0, fontWeight: 100 }} title={t('buy_product.product_price')}>
                         ({formatBigNumber(productData.price)}$)
@@ -234,7 +240,18 @@ export default function ProductPage() {
                 </Row>
 
                 <ProductBuyForm providerData={providerData} productData={productData} />
-            </Col>
+
+                {productData.userDebt > 0 ?
+                    <Card>
+                        <Col style={{ display: "flex", flexDirection: "column", alignContent: 'center' }}>
+                            <Typography.Text style={{ fontSize: "1.2em" }}>
+                                {t('buy_product.user_debt_text')}: {formatBigNumber(productData.userDebt)}$
+                            </Typography.Text>
+
+                            <Button type="primary">{t('buy_product.user_debt_claim')}</Button>
+                        </Col>
+                    </Card> : null}
+            </Row>
 
             <Col span={24}>
                 <AnalyticsSection providerData={providerData} productAddress={productAddress} productData={productData} />

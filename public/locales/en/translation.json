@@ -62,7 +62,9 @@
             "buy_token": "Buy Token"
         },
         "product_name": "Product name",
-        "product_price": "Product price"
+        "product_price": "Product price",
+        "user_debt_text": "You have unclaimed debt",
+        "user_debt_claim": "Claim"
     },
     "components": {
         "add_token": {

@@ -62,7 +62,9 @@
             "buy_token": "Купить токен"
         },
         "product_name": "Название продукта",
-        "product_price": "Цена продукта"
+        "product_price": "Цена продукта",
+        "user_debt_text": "Для вас есть долг",
+        "user_debt_claim": "Забрать"
     },
     "components": {
         "add_token": {

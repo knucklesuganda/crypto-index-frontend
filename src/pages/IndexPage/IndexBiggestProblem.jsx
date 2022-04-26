@@ -25,7 +25,6 @@ export function IndexBiggestProblem(props) {
 
         currentTextInterval.current = setInterval(() => {
             if(props.isOpen){
-                console.log(123);
                 setCurrentText(currentText + 1 > totalTexts ? currentText : currentText + 1);
             }
         }, 3000);

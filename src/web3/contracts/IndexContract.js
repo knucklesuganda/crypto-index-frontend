@@ -3,7 +3,6 @@ import { addTokenNotification } from "../../components";
 import { createERC20, approveBuyTokens, getERC20Information } from "./ERC20Contract";
 import contract from './sources/BaseIndex.json';
 import { formatBigNumber } from "../utils";
-import { useSelector } from "react-redux";
 
 
 const IndexABI = contract.abi;
@@ -29,13 +28,14 @@ export async function getIndexInformation(providerData, indexAddress) {
             providerData, await product.indexToken(), productImage,
         ),
         totalLockedValue: await product.getTotalLockedValue(),
+        userDebt: await product.usersDebt(providerData.account),
         buyToken: await getERC20Information(providerData, await product.buyTokenAddress()),
     };
 }
 
 
 function _baseIndexTokenOperation(func){
-    return async (data) => {
+    return async (data) => {    // TODO: translation
         if(data.exchangeToken.balance.lt(data.amount)){
             throw new Error(
                 `You don't have enough tokens. Your balance: ${formatBigNumber(data.exchangeToken.balance)}
