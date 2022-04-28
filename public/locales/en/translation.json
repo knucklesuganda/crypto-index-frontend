@@ -59,7 +59,8 @@
             "about_product": "About",
             "balance": "Your balance",
             "total_locked_value": "Total Locked Value",
-            "buy_token": "Buy Token"
+            "buy_token": "Buy Token",
+            "product_fee": "Product fee"
         },
         "product_name": "Product name",
         "product_price": "Product price",

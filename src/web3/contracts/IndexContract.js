@@ -17,6 +17,7 @@ export function createIndex(providerData, indexAddress) {
 export async function getIndexInformation(providerData, indexAddress) {
     const product = createIndex(providerData, indexAddress);
     const productImage = await product.image();
+    const feeData = await product.getFee();
 
     return {
         address: indexAddress,
@@ -28,6 +29,7 @@ export async function getIndexInformation(providerData, indexAddress) {
         productToken: await getERC20Information(
             providerData, await product.indexToken(), productImage,
         ),
+        fee: feeData[0].toNumber() / feeData[1].toNumber(),
         totalLockedValue: await product.getTotalLockedValue(),
         userDebt: await product.usersDebt(providerData.account),
         totalAvailableDebt: await product.totalAvailableDebt(),
@@ -36,43 +38,55 @@ export async function getIndexInformation(providerData, indexAddress) {
 }
 
 
-function _baseIndexTokenOperation(func) {
-    return async (data) => {    // TODO: translation. Check that index is not locked
-        const { providerData, productData, exchangeToken, amount } = data;
+// TODO: translation. Check that index is not locked
 
-        if (exchangeToken.balance.lt(amount)) {
-            throw new Error(
-                `You don't have enough tokens. Your balance: ${formatBigNumber(exchangeToken.balance)}
-                    ${exchangeToken.symbol}`
-            );
-        }
 
-        const approveTransaction = await approveBuyTokens(
-            providerData, productData.address, exchangeToken.address, amount);
-        await approveTransaction.wait();
+export async function buyIndex(data) {
+    const { providerData, productData, amount } = data;
+    const buyTokenAmount = productData.price.mul(amount).div(ethers.BigNumber.from('10').pow(18));
+    console.log(productData.buyToken.balance.lt(amount), productData.buyToken.balance.toString(), amount.toString());
 
-        const index = await createIndex(providerData, productData.address);
-        const operationTransaction = await func(index, amount, providerData.account);
+    if (productData.buyToken.balance.lt(buyTokenAmount)) {
+        throw new Error(
+            `You do not have enough tokens. Your balance: ${formatBigNumber(productData.buyToken.balance)}
+                    ${productData.buyToken.symbol}`
+        );
+    }
 
-        addTokenNotification(providerData, productData.productToken);
-        await operationTransaction.wait();
-    };
+    const approveTransaction = await approveBuyTokens(providerData, productData.address,
+        productData.buyToken.address, buyTokenAmount);
+    await approveTransaction.wait();
+
+    const index = await createIndex(providerData, productData.address);
+    const buyTransaction = await index.buy(amount, { from: providerData.account });
+
+    addTokenNotification(providerData, productData.productToken);
+    await buyTransaction.wait();
+    message.info(`Buy transaction succeeded: ${buyTransaction.hash}`);
 }
 
 
-async function _buyIndex(index, amount, account) {
-    return await index.buy(amount, { from: account });
+export async function sellIndex(data) {
+    const { providerData, productData, amount } = data;
+    const productToken = productData.productToken;
+
+    if (productToken.balance.lt(amount)) {
+        throw new Error(
+            `You do not have enough tokens. Your balance: ${formatBigNumber(productToken.balance)}
+                    ${productToken.symbol}`
+        );
+    }
+
+    const approveTransaction = await approveBuyTokens(providerData, productData.address, productToken.address, amount);
+    await approveTransaction.wait();
+
+    const index = await createIndex(providerData, productData.address);
+    const sellTransaction = await index.sell(amount, { from: providerData.account });
+
+    addTokenNotification(providerData, productToken);
+    await sellTransaction.wait();
+    message.info(`Sell transaction succeeded: ${sellTransaction.hash}`);
 }
-
-
-async function _sellIndex(index, amount, account) {
-    return await index.sell(amount, { from: account });
-}
-
-
-export const buyIndex = _baseIndexTokenOperation(_buyIndex);
-export const sellIndex = _baseIndexTokenOperation(_sellIndex);
-
 
 export async function getIndexComponents(providerData, productAddress) {
     const index = createIndex(providerData, productAddress);
@@ -106,13 +120,13 @@ export async function getIndexComponents(providerData, productAddress) {
 }
 
 
-export async function retrieveIndexDebt(amount, productData, providerData){
+export async function retrieveIndexDebt(amount, productData, providerData) {
 
     const index = createIndex(providerData, productData.address);
 
-    if(await productData.isLocked()){   // TODO: translation
+    if (await productData.isLocked()) {   // TODO: translation
         message.error("This product is locked, you cannot withdraw your funds, only sell the tokens");
-    }else{
+    } else {
         const debtTransaction = await index.retrieveDebt(amount, { from: providerData.account });
         await debtTransaction.wait();
     }

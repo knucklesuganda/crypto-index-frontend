@@ -18,7 +18,7 @@ function ProductBuyForm(props) {
     const providerData = props.providerData;
     const productData = props.productData;
     const [operationType, setOperationType] = useState('buy');
-    const [ amount, setAmount ] = useState(0);
+    const [amount, setAmount] = useState(0);
     const { t } = useTranslation();
 
     return <Form name="productInteractionForm" style={{ minWidth: "20vw " }} autoComplete="off" onFinish={(values) => {
@@ -26,14 +26,9 @@ function ProductBuyForm(props) {
         let operation;
 
         if (operationType === "buy") {
-            operation = buyIndex({
-                exchangeToken: productData.buyToken,
-                amount: amount.mul(productData.price).div(ethers.BigNumber.from("10").pow(18)),
-                providerData,
-                productData,
-            });
+            operation = buyIndex({ amount, providerData, productData });
         } else {
-            operation = sellIndex({ exchangeToken: productData.productToken, amount, providerData, productData});
+            operation = sellIndex({ amount, providerData, productData });
         }
 
         operation.catch((error) => {
@@ -46,7 +41,7 @@ function ProductBuyForm(props) {
                 onChange={(value) => { setAmount(parseFloat(value)) }} value={amount}
                 formatter={formatNumber} prefix={productData.productToken.symbol}
                 addonAfter={<Typography.Text>
-                    { !isNaN(amount) ? 
+                    {!isNaN(amount) ?
                         formatNumber(
                             Math.round(((formatBigNumber(productData.price) * amount) + Number.EPSILON) * 100) / 100
                         ) : "0"}$
@@ -67,13 +62,13 @@ function ProductBuyForm(props) {
                 </Radio.Button>
             </Radio.Group>
 
-            { operationType === "sell" ?
+            {operationType === "sell" ?
                 <Typography.Text type="danger">
                     {t('buy_product.buy_form.operation.sell_advise.start')}
                     <Typography.Text style={{ cursor: "pointer" }} underline target="_blank" onClick={() => {
                         window.open("https://etherscan.io/directory/Exchanges/DEX");
                     }}>{t('buy_product.buy_form.operation.sell_advise.exchanges')}</Typography.Text>
-                </Typography.Text> : null }
+                </Typography.Text> : null}
         </Form.Item>
 
         <Form.Item>
@@ -116,13 +111,17 @@ function AnalyticsSection(props) {
                     {t('buy_product.analytics.about_product')}: {props.productData.longDescription}
                 </Typography.Text>,
 
-                <Typography.Text style={textStyle}>
-                    {t('buy_product.analytics.balance')}: ({formatBigNumber(props.productData.productToken.balance)} {
-                        props.productData.productToken.symbol})
+                <Typography.Text style={textStyle} title="Your product balance">
+                    {t('buy_product.analytics.balance')}: {formatBigNumber(props.productData.productToken.balance)} {
+                        props.productData.productToken.symbol}
                 </Typography.Text>,
 
-                <Typography.Text style={textStyle}>
+                <Typography.Text style={textStyle} title="Total balance of the product">
                     {t('buy_product.analytics.total_locked_value')}: {formatBigNumber(props.productData.totalLockedValue)}$
+                </Typography.Text>,
+
+                <Typography.Text style={textStyle} title="Fee that you will pay when you buy or sell">
+                    {t('buy_product.analytics.product_fee')}: {props.productData.fee}%
                 </Typography.Text>,
 
                 <Typography.Text title={t('buy_product.analytics.save_token')}
@@ -237,7 +236,7 @@ export default function ProductPage() {
 
                     <Typography.Title level={4} style={{ margin: 0, fontWeight: 100 }}
                         title={t('buy_product.product_price')}>
-                            ({formatBigNumber(productData.price)}$)
+                        ({formatBigNumber(productData.price)}$)
                     </Typography.Title>
                 </Row>
 
@@ -250,7 +249,8 @@ export default function ProductPage() {
                                 {t('buy_product.user_debt_text')}: {formatBigNumber(productData.userDebt)}$
                             </Typography.Text>
 
-                            <Typography.Text style={{ paddingBottom: "0.2em", fontSize: "1.2em" }}>
+                            <Typography.Text style={{ paddingBottom: "0.2em", fontSize: "1.2em" }}
+                                title="Total debt to the users that is available right now">
                                 {t('buy_product.total_available_debt_text')}: {
                                     formatBigNumber(productData.totalAvailableDebt)}$
                             </Typography.Text>
@@ -258,9 +258,9 @@ export default function ProductPage() {
                             <Button type="primary" danger={productData.userDebt.gt(productData.totalAvailableDebt)}
                                 onClick={() => {
 
-                                    if(productData.userDebt.gt(productData.totalAvailableDebt)){
+                                    if (productData.userDebt.gt(productData.totalAvailableDebt)) {
                                         message.error(t('buy_product.error_debt_exceeded'));
-                                    }else{
+                                    } else {
                                         retrieveIndexDebt(productData.userDebt);
                                     }
 
