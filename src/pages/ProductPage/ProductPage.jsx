@@ -1,32 +1,45 @@
 import { ethers } from "ethers";
 import { Pie } from '@ant-design/plots';
-import { useNavigate, useParams } from "react-router";
-import { useState, useEffect, Fragment } from 'react';
-import { useProvider } from "../../hooks/useProvider";
+import { useParams } from "react-router";
+import { useState, useEffect, Fragment, useRef } from 'react';
+import { useProvider, useProductData } from "../../hooks";
 import { Loading, WalletConnect } from "../../components";
-import { getIndexInformation, getIndexComponents, sellIndex, buyIndex } from "../../web3/contracts/IndexContract";
+import { getIndexComponents, sellIndex, buyIndex } from "../../web3/contracts/IndexContract";
 import { Form, Col, Row, InputNumber, Radio, Button, Divider, Typography, Table, message, Card } from "antd";
-import { formatBigNumber } from "../../web3/utils";
+import { formatBigNumber, formatNumber } from "../../web3/utils";
 import { SaveOutlined } from '@ant-design/icons';
 import { addTokenToWallet } from "../../web3/wallet/functions";
 import { useTranslation } from "react-i18next";
 import { t } from "i18next";
+import settings from "../../settings";
 
 
 function ProductBuyForm(props) {
     const providerData = props.providerData;
     const productData = props.productData;
     const [operationType, setOperationType] = useState('buy');
+    const [ amount, setAmount ] = useState(0);
     const { t } = useTranslation();
 
     return <Form name="productInteractionForm" style={{ minWidth: "20vw " }} autoComplete="off" onFinish={(values) => {
         const amount = ethers.utils.parseEther(values.sellAmount.toString());
         let operation;
+        console.log(amount.div(productData.price).toString(), amount.toString(), productData.price)
 
         if (operationType === "buy") {
-            operation = buyIndex({ exchangeToken: productData.buyToken, providerData, amount, productData });
+            operation = buyIndex({
+                exchangeToken: productData.buyToken,
+                amount: amount.div(productData.price),
+                providerData,
+                productData,
+            });
         } else {
-            operation = sellIndex({ exchangeToken: productData.productToken, providerData, amount, productData });
+            operation = sellIndex({
+                exchangeToken: productData.productToken,
+                amount: amount.div(productData.price),
+                providerData,
+                productData,
+            });
         }
 
         operation.catch((error) => {
@@ -36,8 +49,14 @@ function ProductBuyForm(props) {
     }}>
         <Form.Item name="sellAmount" rules={[{ required: true, message: t('buy_product.buy_form.amount.error') }]}>
             <InputNumber min={0} size="large" style={{ width: "100%" }} controls={false}
-                formatter={value => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                prefix={operationType === 'buy' ? '$' : productData.productToken.symbol}
+                onChange={(value) => { setAmount(parseFloat(value)) }} value={amount}
+                formatter={formatNumber} prefix={productData.productToken.symbol}
+                addonAfter={<Typography.Text>
+                    { !isNaN(amount) ? 
+                        formatNumber(
+                            Math.round(((formatBigNumber(productData.price) * amount) + Number.EPSILON) * 100) / 100
+                        ) : "0"}$
+                </Typography.Text>}
                 parser={value => value.replace(/\$\s?|(,*)/g, '')} />
         </Form.Item>
 
@@ -54,16 +73,13 @@ function ProductBuyForm(props) {
                 </Radio.Button>
             </Radio.Group>
 
-
-            {
-                operationType === "sell" ?
-                    <Typography.Text type="danger">
-                        {t('buy_product.buy_form.operation.sell_advise.start')}
-                        <Typography.Text style={{ cursor: "pointer" }} underline target="_blank" onClick={() => {
-                            window.open("https://etherscan.io/directory/Exchanges/DEX");
-                        }}>{t('buy_product.buy_form.operation.sell_advise.exchanges')}</Typography.Text>
-                    </Typography.Text> : null
-            }
+            { operationType === "sell" ?
+                <Typography.Text type="danger">
+                    {t('buy_product.buy_form.operation.sell_advise.start')}
+                    <Typography.Text style={{ cursor: "pointer" }} underline target="_blank" onClick={() => {
+                        window.open("https://etherscan.io/directory/Exchanges/DEX");
+                    }}>{t('buy_product.buy_form.operation.sell_advise.exchanges')}</Typography.Text>
+                </Typography.Text> : null }
         </Form.Item>
 
         <Form.Item>
@@ -78,14 +94,19 @@ function ProductBuyForm(props) {
 function AnalyticsSection(props) {
     const providerData = props.providerData;
     const [productComponents, setProductComponents] = useState(null);
+    const [initialRender, setInitialRender] = useState(true);
     const textStyle = { fontSize: "1.2em" };
+    const timeoutId = useRef(null);
 
     useEffect(() => {
         getIndexComponents(providerData, props.productAddress).then(components => {
             setProductComponents(components);
+            timeoutId.current = setTimeout(() => { setInitialRender(false); }, settings.STATE_UPDATE_INTERVAL);
         });
 
-        return () => { };
+        return () => {
+            clearTimeout(timeoutId.current);
+        };
     }, [providerData, props.productAddress]);
 
     if (props.productData === null || productComponents === null) {
@@ -138,7 +159,7 @@ function AnalyticsSection(props) {
                             textAlign: 'center',
                         },
                     }}
-                    interactions={[{ type: 'element-active' }]}
+                    animation={initialRender} interactions={[{ type: 'element-active' }]}
                 />
             </Col>
 
@@ -180,21 +201,7 @@ function AnalyticsSection(props) {
 export default function ProductPage() {
     const { productAddress } = useParams();
     const { providerData, handleWalletConnection } = useProvider();
-    const [productData, setProductData] = useState(null);
-    const navigate = useNavigate();
-
-    useEffect(() => {
-
-        if (providerData !== null) {
-            getIndexInformation(providerData, productAddress).then(product => {
-                setProductData(product);
-            }).catch((error) => {
-                // navigate('/not_found');
-            });
-        }
-
-        return () => { };
-    }, [providerData]);
+    const productData = useProductData(productAddress, providerData);
 
     if (providerData === null) {
         return <WalletConnect handleWalletConnection={handleWalletConnection} />;

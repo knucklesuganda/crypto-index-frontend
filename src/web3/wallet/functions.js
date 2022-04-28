@@ -11,3 +11,4 @@ export async function addTokenToWallet(provider, indexToken) {
     });
 
 }
+
