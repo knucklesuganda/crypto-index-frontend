@@ -64,7 +64,9 @@
         "product_name": "Название продукта",
         "product_price": "Цена продукта",
         "user_debt_text": "Для вас есть долг",
-        "user_debt_claim": "Забрать"
+        "user_debt_claim": "Забрать",
+        "total_available_debt_text": "Доступный для снятия долг",
+        "error_debt_exceeded": "Не хватает доступного долга продукта, подождите еще"
     },
     "components": {
         "add_token": {

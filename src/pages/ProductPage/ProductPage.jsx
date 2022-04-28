@@ -1,16 +1,16 @@
 import { ethers } from "ethers";
 import { Pie } from '@ant-design/plots';
 import { useParams } from "react-router";
+import { t } from "i18next";
 import { useState, useEffect, Fragment, useRef } from 'react';
 import { useProvider, useProductData } from "../../hooks";
 import { Loading, WalletConnect } from "../../components";
-import { getIndexComponents, sellIndex, buyIndex } from "../../web3/contracts/IndexContract";
+import { getIndexComponents, sellIndex, buyIndex, retrieveIndexDebt } from "../../web3/contracts/IndexContract";
 import { Form, Col, Row, InputNumber, Radio, Button, Divider, Typography, Table, message, Card } from "antd";
 import { formatBigNumber, formatNumber } from "../../web3/utils";
 import { SaveOutlined } from '@ant-design/icons';
 import { addTokenToWallet } from "../../web3/wallet/functions";
 import { useTranslation } from "react-i18next";
-import { t } from "i18next";
 import settings from "../../settings";
 
 
@@ -24,22 +24,16 @@ function ProductBuyForm(props) {
     return <Form name="productInteractionForm" style={{ minWidth: "20vw " }} autoComplete="off" onFinish={(values) => {
         const amount = ethers.utils.parseEther(values.sellAmount.toString());
         let operation;
-        console.log(amount.div(productData.price).toString(), amount.toString(), productData.price)
 
         if (operationType === "buy") {
             operation = buyIndex({
                 exchangeToken: productData.buyToken,
-                amount: amount.div(productData.price),
+                amount: amount.mul(productData.price).div(ethers.BigNumber.from("10").pow(18)),
                 providerData,
                 productData,
             });
         } else {
-            operation = sellIndex({
-                exchangeToken: productData.productToken,
-                amount: amount.div(productData.price),
-                providerData,
-                productData,
-            });
+            operation = sellIndex({ exchangeToken: productData.productToken, amount, providerData, productData});
         }
 
         operation.catch((error) => {
@@ -241,8 +235,9 @@ export default function ProductPage() {
                             )
                         }}>{productData.name}</Typography.Title>
 
-                    <Typography.Title level={4} style={{ margin: 0, fontWeight: 100 }} title={t('buy_product.product_price')}>
-                        ({formatBigNumber(productData.price)}$)
+                    <Typography.Title level={4} style={{ margin: 0, fontWeight: 100 }}
+                        title={t('buy_product.product_price')}>
+                            ({formatBigNumber(productData.price)}$)
                     </Typography.Title>
                 </Row>
 
@@ -251,11 +246,25 @@ export default function ProductPage() {
                 {productData.userDebt > 0 ?
                     <Card>
                         <Col style={{ display: "flex", flexDirection: "column", alignContent: 'center' }}>
-                            <Typography.Text style={{ fontSize: "1.2em" }}>
+                            <Typography.Text style={{ paddingBottom: "0.2em", fontSize: "1.2em" }}>
                                 {t('buy_product.user_debt_text')}: {formatBigNumber(productData.userDebt)}$
                             </Typography.Text>
 
-                            <Button type="primary">{t('buy_product.user_debt_claim')}</Button>
+                            <Typography.Text style={{ paddingBottom: "0.2em", fontSize: "1.2em" }}>
+                                {t('buy_product.total_available_debt_text')}: {
+                                    formatBigNumber(productData.totalAvailableDebt)}$
+                            </Typography.Text>
+
+                            <Button type="primary" danger={productData.userDebt.gt(productData.totalAvailableDebt)}
+                                onClick={() => {
+
+                                    if(productData.userDebt.gt(productData.totalAvailableDebt)){
+                                        message.error(t('buy_product.error_debt_exceeded'));
+                                    }else{
+                                        retrieveIndexDebt(productData.userDebt);
+                                    }
+
+                                }}>{t('buy_product.user_debt_claim')}</Button>
                         </Col>
                     </Card> : null}
             </Row>

@@ -10,9 +10,12 @@ export function useProductData(productAddress, providerData) {
     useEffect(() => {
 
         if (providerData !== null) {
+            getIndexInformation(providerData, productAddress).then(product => {
+                setProductData(product);
+            });
+
             updateInterval.current = setInterval(() => {
                 getIndexInformation(providerData, productAddress).then(product => {
-                    console.log(product.price.toString());
                     setProductData(product);
                 });
             }, settings.STATE_UPDATE_INTERVAL);
