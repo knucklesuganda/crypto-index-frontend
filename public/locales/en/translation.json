@@ -76,5 +76,6 @@
         }
     },
     "not_found": "Page was not found",
-    "error": "Error"
+    "error": "Error",
+    "add_token_notification": "Add token to the wallet"
 }

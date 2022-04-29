@@ -39,13 +39,11 @@ export function AddToken(props) {
 }
 
 
-export function addTokenNotification(providerData, token) {
-    // TODO: translations
-
+export function addTokenNotification(providerData, token, message) {
     setTimeout(() => {
         notification.info(({
             key: notificationId,
-            message: 'Add tokens to your wallet!',
+            message,
             description: <AddToken token={token} providerData={providerData} />,
         }));
     }, 3000);

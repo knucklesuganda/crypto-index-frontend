@@ -1,17 +1,16 @@
+import { t } from "i18next";
 import { ethers } from "ethers";
 import { Pie } from '@ant-design/plots';
 import { useParams } from "react-router";
-import { t } from "i18next";
-import { useState, useEffect, Fragment, useRef } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import { useProvider, useProductData } from "../../hooks";
 import { Loading, WalletConnect } from "../../components";
-import { getIndexComponents, sellIndex, buyIndex, retrieveIndexDebt } from "../../web3/contracts/IndexContract";
-import { Form, Col, Row, InputNumber, Radio, Button, Divider, Typography, Table, message, Card } from "antd";
 import { formatBigNumber, formatNumber } from "../../web3/utils";
-import { SaveOutlined } from '@ant-design/icons';
+import { SaveOutlined, LockOutlined } from '@ant-design/icons';
 import { addTokenToWallet } from "../../web3/wallet/functions";
 import { useTranslation } from "react-i18next";
-import settings from "../../settings";
+import { getIndexComponents, sellIndex, buyIndex, retrieveIndexDebt } from "../../web3/contracts/IndexContract";
+import { Form, Col, Row, InputNumber, Radio, Button, Divider, Typography, Table, message, Card } from "antd";
 
 
 function ProductBuyForm(props) {
@@ -26,9 +25,13 @@ function ProductBuyForm(props) {
         let operation;
 
         if (operationType === "buy") {
-            operation = buyIndex({ amount, providerData, productData });
+            operation = buyIndex({
+                amount, providerData, productData, notificationMessage: t('add_token_notification')
+            });
         } else {
-            operation = sellIndex({ amount, providerData, productData });
+            operation = sellIndex({
+                amount, providerData, productData, notificationMessage: t('add_token_notification')
+            });
         }
 
         operation.catch((error) => {
@@ -57,12 +60,13 @@ function ProductBuyForm(props) {
                     {t('buy_product.buy_form.operation.buy')}
                 </Radio.Button>
 
+                { productData.isLocked ? null : 
                 <Radio.Button value="sell" style={{ width: "100%" }}>
                     {t("buy_product.buy_form.operation.sell")}
-                </Radio.Button>
+                </Radio.Button> }
             </Radio.Group>
 
-            {operationType === "sell" ?
+            { operationType === "sell" ?
                 <Typography.Text type="danger">
                     {t('buy_product.buy_form.operation.sell_advise.start')}
                     <Typography.Text style={{ cursor: "pointer" }} underline target="_blank" onClick={() => {
@@ -83,19 +87,14 @@ function ProductBuyForm(props) {
 function AnalyticsSection(props) {
     const providerData = props.providerData;
     const [productComponents, setProductComponents] = useState(null);
-    const [initialRender, setInitialRender] = useState(true);
     const textStyle = { fontSize: "1.2em" };
-    const timeoutId = useRef(null);
 
     useEffect(() => {
         getIndexComponents(providerData, props.productAddress).then(components => {
             setProductComponents(components);
-            timeoutId.current = setTimeout(() => { setInitialRender(false); }, settings.STATE_UPDATE_INTERVAL);
         });
 
-        return () => {
-            clearTimeout(timeoutId.current);
-        };
+        return () => {};
     }, [providerData, props.productAddress]);
 
     if (props.productData === null || productComponents === null) {
@@ -152,7 +151,7 @@ function AnalyticsSection(props) {
                             textAlign: 'center',
                         },
                     }}
-                    animation={initialRender} interactions={[{ type: 'element-active' }]}
+                    animation={false} interactions={[{ type: 'element-active' }]}
                 />
             </Col>
 
@@ -238,6 +237,9 @@ export default function ProductPage() {
                         title={t('buy_product.product_price')}>
                         ({formatBigNumber(productData.price)}$)
                     </Typography.Title>
+
+                    { productData.isLocked ? <LockOutlined style={{ fontSize: "1.2em", marginLeft: "0.5em" }}
+                        title="Product is locked. You can only sell tokens on exchanges" /> : null }
                 </Row>
 
                 <ProductBuyForm providerData={providerData} productData={productData} />

@@ -38,8 +38,7 @@ export async function getERC20Information(providerData, tokenAddress, tokenImage
         symbol,
         address: token.address,
         decimals: await token.decimals(),
-        image: tokenImage ? tokenImage : 
-            `https://raw.githubusercontent.com/TrustWallet/tokens/master/images/${token.address}.png`,
+        image: tokenImage ? tokenImage : null,
         balance: await token.balanceOf(providerData.account),
     };
 
