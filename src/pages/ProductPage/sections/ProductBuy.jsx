@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import { useState, Fragment } from 'react';
 import { formatBigNumber, formatNumber } from "../../../web3/utils";
 import { useTranslation } from "react-i18next";
-import { sellIndex, buyIndex, retrieveIndexDebt } from "../../../web3/contracts/IndexContract";
+import { sellIndex, buyIndex, retrieveIndexDebt, BalanceError, ProductLockedError } from "../../../web3/contracts/IndexContract";
 import { Form, Col, InputNumber, Radio, Button, Divider, Typography, message, Card } from "antd";
 
 
@@ -17,21 +17,44 @@ export function ProductBuySection(props) {
     return <Fragment>
         <Form name="productInteractionForm" style={{ minWidth: "20vw " }} autoComplete="off" onFinish={(values) => {
             const amount = ethers.utils.parseEther(values.sellAmount.toString());
+            let isBuyOperation = operationType === "buy";
             let operation;
 
-            if (operationType === "buy") {
+            if (isBuyOperation) {
                 operation = buyIndex({
-                    amount, providerData, productData, notificationMessage: t('add_token_notification')
+                    amount,
+                    providerData,
+                    productData,
+                    notificationMessage: t('add_token_notification'),
                 });
             } else {
                 operation = sellIndex({
-                    amount, providerData, productData, notificationMessage: t('add_token_notification')
+                    amount,
+                    providerData,
+                    productData,
+                    notificationMessage: t('add_token_notification'),
                 });
             }
 
-            operation.catch((error) => {
-                message.error({ content: `${t('error')}: ${error.message}` });
+            operation.then((transactionHash) => {
+                message.info(`
+                    ${t('buy_product.buy_form.success_message')}: ${transactionHash}
+                `);
+            }).catch((error) => {
+
+                if(error instanceof BalanceError){
+                    message.error({
+                        content: `${t('buy_product.buy_form.balance_error')}: ${
+                            isBuyOperation ? `${productData.buyToken.balance} ${productData.buyToken.symbol}`
+                                : `${productData.productToken.balance} ${productData.productToken.symbol}`
+                        }`,
+                    });
+                }else if(error instanceof ProductLockedError){
+                    message.error({ content: t('buy_product.buy_form.product_locked_error') });
+                }
+
             });
+
         }}>
             <Form.Item name="sellAmount" rules={[{ required: true, message: t('buy_product.buy_form.amount.error') }]}>
                 <InputNumber min={0} size="large" style={{ width: "100%" }} controls={false}
@@ -46,7 +69,7 @@ export function ProductBuySection(props) {
                     parser={value => value.replace(/\$\s?|(,*)/g, '')} />
             </Form.Item>
 
-            <Form.Item>
+            {productData.isLocked ? null : <Form.Item>
                 <Radio.Group defaultValue="buy" style={{ display: "flex" }}
                     onChange={(event) => { setOperationType(event.target.value) }}>
 
@@ -54,10 +77,9 @@ export function ProductBuySection(props) {
                         {t('buy_product.buy_form.operation.buy')}
                     </Radio.Button>
 
-                    {productData.isLocked ? null :
-                        <Radio.Button value="sell" style={{ width: "100%" }}>
-                            {t("buy_product.buy_form.operation.sell")}
-                        </Radio.Button>}
+                    <Radio.Button value="sell" style={{ width: "100%" }}>
+                        {t("buy_product.buy_form.operation.sell")}
+                    </Radio.Button>
                 </Radio.Group>
 
                 {operationType === "sell" ?
@@ -67,7 +89,7 @@ export function ProductBuySection(props) {
                             window.open("https://etherscan.io/directory/Exchanges/DEX");
                         }}>{t('buy_product.buy_form.operation.sell_advise.exchanges')}</Typography.Text>
                     </Typography.Text> : null}
-            </Form.Item>
+            </Form.Item>}
 
             <Form.Item>
                 <Button type="primary" htmlType="submit" style={{ width: "100%" }}>{
