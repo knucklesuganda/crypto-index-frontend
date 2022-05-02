@@ -1,8 +1,5 @@
 import { Col, Button, notification, message } from "antd";
-import { store } from "../store/store";
-import { addSavedTokenAction } from "../store/savedTokens";
 import { addTokenToWallet } from "../web3/wallet/functions";
-import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 
 
@@ -10,12 +7,7 @@ const notificationId = "addTokenNotification";
 
 
 export function AddToken(props) {
-    const savedTokens = useSelector(state => state.savedTokens);
     const { t } = useTranslation();
-
-    if(savedTokens.includes(props.token.address)){
-        return <Col></Col>;
-    }
 
     return <Col>
         <Button type="primary" onClick={() => {
@@ -27,24 +19,23 @@ export function AddToken(props) {
                     decimals: props.token.decimals,
                     image: props.token.image,
                 }
-            ).then((result) => {
-                store.dispatch(addSavedTokenAction(result.suggestedAssetMeta.asset.address));
-            }).catch((error) => {
+            ).catch((error) => {
                 message.error({ content: `${t('error')}: ${error}` });
             });
 
             notification.close(notificationId);
-        }}>{t('components.add_token.start')} {props.productData.name} {t('components.add_token.end')}</Button>
+        }}>{t('components.add_token.start')} {props.productName} {t('components.add_token.end')}</Button>
     </Col>;
 }
 
 
-export function addTokenNotification(providerData, token, message) {
+export function addTokenNotification(notificationData) {
+    const { providerData, token, message, productName } = notificationData;
+
     setTimeout(() => {
         notification.info(({
-            key: notificationId,
-            message,
-            description: <AddToken token={token} providerData={providerData} />,
+            key: notificationId, message,
+            description: <AddToken token={token} providerData={providerData} productName={productName} />,
         }));
-    }, 3000);
+    }, 3);
 }

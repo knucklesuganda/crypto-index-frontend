@@ -56,7 +56,12 @@ export async function buyIndex(data) {
     // const index = await createIndex(providerData, productData.address);
     // const buyTransaction = await index.buy(amount, { from: providerData.account });
 
-    addTokenNotification(providerData, productData.productToken, notificationMessage);
+    addTokenNotification({
+        providerData,
+        token: productData.productToken,
+        message: notificationMessage,
+        productName: productData.name,
+    });
     // await buyTransaction.wait();
     // message.info(`Buy transaction succeeded: ${buyTransaction.hash}`);
 }

@@ -1,5 +1,5 @@
 import { Row, Typography, Col, Button } from "antd";
-import { useState, useEffect, useRef, Fragment } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Title } from "../../components/Title";
 import { NextPage } from "../../components/NextPage";
 import { Fade } from "../../components/animations";

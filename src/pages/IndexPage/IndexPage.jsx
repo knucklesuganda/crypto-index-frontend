@@ -1,5 +1,5 @@
 import { useState, useLayoutEffect } from "react";
-import { Row, Col, Menu, Typography } from "antd";
+import { Row, Col, Menu } from "antd";
 import { IndexBiggestProblem } from "./IndexBiggestProblem";
 import { IndexStart } from "./IndexStart";
 import { IndexBuyProducts } from "./IndexBuyProducts/IndexBuyProducts";
