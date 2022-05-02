@@ -1,7 +1,6 @@
 import App from './App';
 import { render } from 'react-dom';
 import reportWebVitals from './reportWebVitals';
-import { Suspense } from 'react';
 import './index.css';
 import './i18n';
 

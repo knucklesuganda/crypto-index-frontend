@@ -40,21 +40,21 @@ export async function getIndexInformation(providerData, indexAddress) {
 
 export async function buyIndex(data) {
     const { providerData, productData, amount, notificationMessage } = data;
-    // const buyTokenAmount = productData.price.mul(amount).div(ethers.BigNumber.from('10').pow(18));
-// 
-    // if (productData.buyToken.balance.lt(buyTokenAmount)) {
-    //     throw new Error(
-    //         `You do not have enough tokens. Your balance: ${formatBigNumber(productData.buyToken.balance)}
-    //                 ${productData.buyToken.symbol}`
-    //     );
-    // }
-// 
-    // const approveTransaction = await approveBuyTokens(providerData, productData.address,
-    //     productData.buyToken.address, buyTokenAmount);
-    // await approveTransaction.wait();
-// 
-    // const index = await createIndex(providerData, productData.address);
-    // const buyTransaction = await index.buy(amount, { from: providerData.account });
+    const buyTokenAmount = productData.price.mul(amount).div(ethers.BigNumber.from('10').pow(18));
+
+    if (productData.buyToken.balance.lt(buyTokenAmount)) {
+        throw new Error(
+            `You do not have enough tokens. Your balance: ${formatBigNumber(productData.buyToken.balance)}
+                    ${productData.buyToken.symbol}`
+        );
+    }
+
+    const approveTransaction = await approveBuyTokens(providerData, productData.address,
+        productData.buyToken.address, buyTokenAmount);
+    await approveTransaction.wait();
+
+    const index = await createIndex(providerData, productData.address);
+    const buyTransaction = await index.buy(amount, { from: providerData.account });
 
     addTokenNotification({
         providerData,
@@ -62,8 +62,8 @@ export async function buyIndex(data) {
         message: notificationMessage,
         productName: productData.name,
     });
-    // await buyTransaction.wait();
-    // message.info(`Buy transaction succeeded: ${buyTransaction.hash}`);
+    await buyTransaction.wait();
+    message.info(`Buy transaction succeeded: ${buyTransaction.hash}`);
 }
 
 
