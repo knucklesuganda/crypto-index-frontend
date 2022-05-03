@@ -1,12 +1,12 @@
-import { Row, Col, Card } from "antd";
+import { Row, Col, Card, Typography } from "antd";
 import { useState, useEffect, Fragment } from "react";
-import { Title, Loading, WalletConnect } from "../../../components";
+import { Title, Loading, WalletConnector } from "../../../components";
 import { listProducts } from "../../../web3/contracts/ObserverContract";
 import { useProvider } from "../../../hooks/useProvider";
 import { useNavigate } from "react-router";
 import { createProductPage } from "../../../routes";
-import settings from "../../../settings";
 import { useTranslation } from "react-i18next";
+import settings from "../../../settings";
 import './style.css';
 
 
@@ -15,10 +15,10 @@ function ProductCard(props) {
 
     return <Col style={props.style}>
         <Card title={props.product.name} hoverable onClick={() => {
-            navigate(createProductPage(props.product.address));
+            navigate(createProductPage(props.product.address))
         }} className={props.className}
             extra={<img style={{ width: "4em" }} alt='' src={props.product.image} />}>
-                {props.product.description}
+            {props.product.description}
         </Card>
     </Col>
 }
@@ -52,22 +52,23 @@ export function IndexBuyProducts(props) {
         );
     }
 
+
     return <Row>
         <Title id={props.id}>{t('index.buy.title')}</Title>
 
-        {providerData === null ? <WalletConnect handleWalletConnection={handleWalletConnection}
-            placeholder={placeholderProducts} /> : <Fragment>
-            {!productData ? <Loading style={{ height: "10vh", width: "100wv" }} /> :
+        {providerData === null ? <WalletConnector handleWalletConnection={handleWalletConnection} /> :
+
+            <Fragment>{!productData ? <Loading style={{ height: "10vh", width: "100wv" }} /> :
                 <Row style={{ display: "flex", justifyContent: "center" }}>
                     <Col style={{ height: "80vh" }}>
                         <Row gutter={[16, 16]} style={{ paddingTop: "2em", paddingLeft: "1em", paddingRight: "1em" }}>{
-                            productData.map((product, index) =>
-                                <ProductCard key={index} product={product} 
-                                    className="productCard" style={{ cursor: "pointer" }} />
-                            )}</Row>
+                            productData.map((product, index) => <ProductCard key={index} product={product}
+                                className="productCard" style={{ cursor: "pointer" }} />)}
+                        </Row>
                     </Col>
-                </Row>
-            }
-        </Fragment>}
+                </Row>}
+            </Fragment>
+        }
+
     </Row>;
 }

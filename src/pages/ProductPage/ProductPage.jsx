@@ -2,8 +2,8 @@ import { t } from "i18next";
 import { useParams } from "react-router";
 import { Fragment } from 'react';
 import { useProvider, useProductData } from "../../hooks";
-import { Loading, WalletConnect } from "../../components";
-import { formatBigNumber, formatNumber } from "../../web3/utils";
+import { Loading, WalletConnector } from "../../components";
+import { formatBigNumber } from "../../web3/utils";
 import { LockOutlined } from '@ant-design/icons';
 import { addTokenToWallet } from "../../web3/wallet/functions";
 import { Col, Row, Divider, Typography } from "antd";
@@ -18,7 +18,7 @@ export default function ProductPage() {
     const productData = useProductData(productAddress, providerData);
 
     if (providerData === null) {
-        return <WalletConnect handleWalletConnection={handleWalletConnection} />;
+        return <WalletConnector handleWalletConnection={handleWalletConnection} />;
     }
 
     return <Col style={{

@@ -1,20 +1,22 @@
 import { ethers } from "ethers";
-import { useState, Fragment } from 'react';
+import { useState } from 'react';
 import { formatBigNumber, formatNumber } from "../../../web3/utils";
 import { useTranslation } from "react-i18next";
-import { sellIndex, buyIndex, retrieveIndexDebt, BalanceError, ProductLockedError } from "../../../web3/contracts/IndexContract";
-import { Form, Col, InputNumber, Radio, Button, Divider, Typography, message, Card } from "antd";
+import { sellIndex, buyIndex, retrieveIndexDebt,
+    BalanceError, ProductLockedError } from "../../../web3/contracts/IndexContract";
+import { Form, Col, InputNumber, Radio, Button, Typography, message, Card, Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 
 
 
 export function ProductBuySection(props) {
-    const providerData = props.providerData;
-    const productData = props.productData;
+    const { providerData, productData } = props;
+    const [inProgress, setInProgress] = useState(false);
     const [operationType, setOperationType] = useState('buy');
     const [amount, setAmount] = useState(0);
     const { t } = useTranslation();
 
-    return <Fragment>
+    return <Spin spinning={inProgress} indicator={<LoadingOutlined style={{ fontSize: "2em" }} />}>
         <Form name="productInteractionForm" style={{ minWidth: "20vw " }} autoComplete="off" onFinish={(values) => {
             const amount = ethers.utils.parseEther(values.sellAmount.toString());
             let isBuyOperation = operationType === "buy";
@@ -36,10 +38,13 @@ export function ProductBuySection(props) {
                 });
             }
 
+            setInProgress(true);
+
             operation.then((transactionHash) => {
                 message.info(`
                     ${t('buy_product.buy_form.success_message')}: ${transactionHash}
                 `);
+                setInProgress(false);
             }).catch((error) => {
 
                 if(error instanceof BalanceError){
@@ -52,6 +57,8 @@ export function ProductBuySection(props) {
                 }else if(error instanceof ProductLockedError){
                     message.error({ content: t('buy_product.buy_form.product_locked_error') });
                 }
+
+                setInProgress(false);
 
             });
 
@@ -123,5 +130,5 @@ export function ProductBuySection(props) {
                     }}>{t('buy_product.user_debt_claim')}</Button>
             </Col>
         </Card> : null}
-    </Fragment>;
+    </Spin>;
 }

@@ -79,5 +79,8 @@
     },
     "not_found": "Page was not found",
     "error": "Error",
-    "add_token_notification": "Add token to the wallet"
+    "add_token_notification": "Add token to the wallet",
+    "wallet_connector": {
+        "no_provider_error": "No wallet provider was found"
+    }
 }

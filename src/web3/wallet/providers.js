@@ -1,39 +1,42 @@
 import Web3Modal from "web3modal";
 import { ethers } from "ethers";
 import { setupEvents } from "./events";
-// import WalletConnectProvider from '@walletconnect/web3-provider';
+import settings from "../../settings";
 
-
-let web3Modal;
 
 const providerOptions = {
-    // walletconnect: {
-    //     package: WalletConnectProvider,
-    //     options: {
-    //         rpc: {
-    //             1337: process.env.PUBLIC_RPC_URL,
-    //         }
-    //     },
-    // }
+    walletconnect: {
+        package: window.WalletConnectProvider.default,
+        options: { rpc: { 1337: settings.PUBLIC_RPC_URL } },
+    },
 };
+
+class NoProviderError extends Error{}
 
 
 let signer = null, provider = null;
+const web3Modal = new Web3Modal({ cacheProvider: false, providerOptions, theme: "dark" });
 
 
 export async function connectWallet() {
-    if(provider !== null && signer !== null){
-        return { account: await _getWallet(), signer, provider};
+    if (provider !== null && signer !== null) {
+        return { account: await _getWallet(), signer, provider };
     }
 
-    web3Modal = new Web3Modal({ cacheProvider: false, providerOptions });
+    let web3ModalProvider;
 
-    const web3ModalProvider = await web3Modal.connect();
+    try{
+        console.log(web3Modal);
+        web3ModalProvider = await web3Modal.connect();
+    }catch(erorr){
+        throw new NoProviderError();
+    }
+
     provider = new ethers.providers.Web3Provider(web3ModalProvider);
     signer = provider.getSigner();
     setupEvents(provider);
 
-    return { account: await _getWallet(), signer, provider};
+    return { account: await _getWallet(), signer, provider };
 }
 
 
