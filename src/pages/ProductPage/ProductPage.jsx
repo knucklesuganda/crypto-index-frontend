@@ -68,7 +68,8 @@ export default function ProductPage() {
             </Row>
 
             <Col span={24}>
-                <AnalyticsSection providerData={providerData} productAddress={productAddress} productData={productData} />
+                <AnalyticsSection providerData={providerData} 
+                    productAddress={productAddress} productData={productData} />
             </Col>
 
             <Col span={24}>

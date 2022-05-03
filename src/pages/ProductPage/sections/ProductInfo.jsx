@@ -1,11 +1,11 @@
-import { Avatar, List, Typography } from "antd";
+import { Avatar, List, Typography, Col } from "antd";
 import { QuestionOutlined } from "@ant-design/icons";
 
 
 export function ProductInfo(props){
     // TODO: translatoin
 
-    return <div>
+    return <Col>
         <Typography.Title>Frequently asked questions</Typography.Title>
 
         <List itemLayout="horizontal" dataSource={props.data} renderItem={item => (
@@ -17,8 +17,12 @@ export function ProductInfo(props){
                 }
                 title={<Typography.Text style={{ fontWeight: "bold",
                     fontSize: "1.2em" }}>{item.question}</Typography.Text>}
-                description={item.answer} />
+                description={
+                    <Col style={{ width: "20wv" }}>
+                        <Typography.Text>{item.answer}</Typography.Text>
+                    </Col>
+                } />
             </List.Item>
         )} />
-    </div>;
+    </Col>;
 }

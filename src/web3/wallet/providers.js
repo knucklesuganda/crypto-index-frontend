@@ -11,11 +11,22 @@ const providerOptions = {
     },
 };
 
-class NoProviderError extends Error{}
+class NoProviderError extends Error { }
 
 
 let signer = null, provider = null;
-const web3Modal = new Web3Modal({ cacheProvider: false, providerOptions, theme: "dark" });
+const web3Modal = new Web3Modal({
+    cacheProvider: false,
+    providerOptions,
+
+    theme: {
+        background: "#141414",
+        main: "#ffffff",
+        secondary: "#177ddc",
+        border: "#303030",
+        hover: "#272323"
+    }
+});
 
 
 export async function connectWallet() {
@@ -25,10 +36,10 @@ export async function connectWallet() {
 
     let web3ModalProvider;
 
-    try{
+    try {
         console.log(web3Modal);
         web3ModalProvider = await web3Modal.connect();
-    }catch(erorr){
+    } catch (erorr) {
         throw new NoProviderError();
     }
 
