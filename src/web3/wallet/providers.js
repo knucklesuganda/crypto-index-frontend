@@ -1,4 +1,4 @@
-import Web3Modal from "web3modal";
+import Web3Modal, { getInjectedProvider, getInjectedProviderName } from "web3modal";
 import { ethers } from "ethers";
 import { setupEvents } from "./events";
 import settings from "../../settings";
@@ -16,6 +16,7 @@ class NoProviderError extends Error { }
 
 let signer = null, provider = null;
 const web3Modal = new Web3Modal({
+
     cacheProvider: false,
     providerOptions,
 
@@ -30,17 +31,20 @@ const web3Modal = new Web3Modal({
 
 
 export async function connectWallet() {
-    if (provider !== null && signer !== null) {
-        return { account: await _getWallet(), signer, provider };
-    }
 
     let web3ModalProvider;
 
     try {
-        console.log(web3Modal);
-        web3ModalProvider = await web3Modal.connect();
-    } catch (erorr) {
-        throw new NoProviderError();
+
+        if(sessionStorage.provider){
+            web3ModalProvider = await web3Modal.connectTo(sessionStorage.provider);
+        }else{
+            web3ModalProvider = await web3Modal.connect();
+            sessionStorage.provider = getInjectedProvider()['id'];
+        }
+
+    } catch (error) {
+        throw new NoProviderError(error);
     }
 
     provider = new ethers.providers.Web3Provider(web3ModalProvider);
