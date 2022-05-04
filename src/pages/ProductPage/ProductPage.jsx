@@ -86,7 +86,7 @@ export default function ProductPage() {
                         answer: `We don't sell your tokens right away(Blockchain does not allow that). But,
                         instead, we add debt to the system that indicates that you need to receive some money in the future.
                         You can get it the next day with a special panel on that website`},
-                    { question: "Why are fees so high?", answer: `Fees is the only way for us tomake money.
+                    { question: "Why are fees so high?", answer: `Fees is the only way for us to make money.
                         When you buy our indices, the majority of your dollars goes to the underlying assets(BTC, ETH...).
                         But, in order to operate the system, we need to run additional settlement transactions off-chain,
                         and that is the main place for your fees. Also, we use them to support the project development`},

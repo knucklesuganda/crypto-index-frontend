@@ -79,15 +79,8 @@ export async function sellIndex(data) {
     await approveTransaction.wait();
 
     const index = await createIndex(providerData, productData.address);
+
     const sellTransaction = await index.sell(amount, { from: providerData.account });
-
-    addTokenNotification({
-        providerData,
-        token: productToken,
-        message: notificationMessage,
-        productName: productData.name,
-    });
-
     await sellTransaction.wait();
     return sellTransaction.hash;
 
