@@ -53,7 +53,8 @@
                 }
             },
             "balance_error": "You do not have enough tokens. Your balance",
-            "product_locked_error": "This product is locked, you cannot withdraw your funds, only sell the tokens"
+            "product_locked_error": "This product is locked, you cannot withdraw your funds, only sell the tokens",
+            "settlement_error": "You cannot interact with the product while the funds are being settled"
         },
         "analytics": {
             "save_token": "Save token to the wallet",

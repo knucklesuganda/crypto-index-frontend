@@ -32,6 +32,7 @@ export async function getIndexInformation(providerData, indexAddress) {
             providerData, await product.indexToken(), productImage,
         ),
         isLocked: await product.isLocked(),
+        isSettlement: await product.isSettlementActive(),
         fee: feeData[0].toNumber() / feeData[1].toNumber(),
         totalLockedValue: await product.getTotalLockedValue(),
         userDebt: await product.usersDebt(providerData.account),
@@ -39,6 +40,7 @@ export async function getIndexInformation(providerData, indexAddress) {
         buyToken: await getERC20Information(providerData, await product.buyTokenAddress()),
     };
 }
+
 
 export async function buyIndex(data) {
     const { providerData, productData, amount, notificationMessage } = data;

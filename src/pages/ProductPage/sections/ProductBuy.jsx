@@ -2,8 +2,10 @@ import { ethers } from "ethers";
 import { useState } from 'react';
 import { formatBigNumber, formatNumber } from "../../../web3/utils";
 import { useTranslation } from "react-i18next";
-import { sellIndex, buyIndex, retrieveIndexDebt,
-    BalanceError, ProductLockedError } from "../../../web3/contracts/IndexContract";
+import {
+    sellIndex, buyIndex, retrieveIndexDebt,
+    BalanceError, ProductLockedError
+} from "../../../web3/contracts/IndexContract";
 import { Form, Col, InputNumber, Radio, Button, Typography, message, Card, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 
@@ -18,6 +20,11 @@ export function ProductBuySection(props) {
 
     return <Spin spinning={inProgress} indicator={<LoadingOutlined style={{ fontSize: "2em" }} />}>
         <Form name="productInteractionForm" style={{ minWidth: "20vw " }} autoComplete="off" onFinish={(values) => {
+            if(productData.isSettlement){
+                message.error(t("buy_product.buy_form.settlement_error"));
+                return;
+            }
+
             const amount = ethers.utils.parseEther(values.sellAmount.toString());
             let isBuyOperation = operationType === "buy";
             let operation;
@@ -47,14 +54,13 @@ export function ProductBuySection(props) {
                 setInProgress(false);
             }).catch((error) => {
 
-                if(error instanceof BalanceError){
+                if (error instanceof BalanceError) {
                     message.error({
-                        content: `${t('buy_product.buy_form.balance_error')}: ${
-                            isBuyOperation ? `${productData.buyToken.balance} ${productData.buyToken.symbol}`
+                        content: `${t('buy_product.buy_form.balance_error')}: ${isBuyOperation ? `${productData.buyToken.balance} ${productData.buyToken.symbol}`
                                 : `${productData.productToken.balance} ${productData.productToken.symbol}`
-                        }`,
+                            }`,
                     });
-                }else if(error instanceof ProductLockedError){
+                } else if (error instanceof ProductLockedError) {
                     message.error({ content: t('buy_product.buy_form.product_locked_error') });
                 }
 
@@ -99,10 +105,12 @@ export function ProductBuySection(props) {
             </Form.Item>}
 
             <Form.Item>
-                <Button type="primary" htmlType="submit" style={{ width: "100%" }}>{
-                    operationType === "buy" ? t('buy_product.buy_form.operation.buy') :
-                        t('buy_product.buy_form.operation.sell')
-                }</Button>
+                <Button htmlType="submit" style={{ width: "100%" }}
+                    title={productData.isSettlement ? t('buy_product.buy_form.settlement_error') : null}
+                    type={productData.isSettlement ? "danger" : "primary"}>{
+                        operationType === "buy" ? t('buy_product.buy_form.operation.buy') :
+                            t('buy_product.buy_form.operation.sell')
+                    }</Button>
             </Form.Item>
         </Form>
 
