@@ -55,10 +55,20 @@ export function ProductBuySection(props) {
             }).catch((error) => {
 
                 if (error instanceof BalanceError) {
+                    let tokenBalance;
+                    let tokenSymbol;
+
+                    if(isBuyOperation){
+                        tokenBalance = productData.buyToken.balance;
+                        tokenSymbol = productData.buyToken.symbol;
+                    }else{
+                        tokenBalance = productData.productToken.balance;
+                        tokenSymbol = productData.productToken.symbol;
+                    }
+
                     message.error({
-                        content: `${t('buy_product.buy_form.balance_error')}: ${isBuyOperation ? `${productData.buyToken.balance} ${productData.buyToken.symbol}`
-                                : `${productData.productToken.balance} ${productData.productToken.symbol}`
-                            }`,
+                        content: `${t('buy_product.buy_form.balance_error')}:
+                         ${formatBigNumber(tokenBalance)} ${tokenSymbol} `,
                     });
                 } else if (error instanceof ProductLockedError) {
                     message.error({ content: t('buy_product.buy_form.product_locked_error') });

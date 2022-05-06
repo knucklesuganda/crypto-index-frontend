@@ -44,7 +44,7 @@ export function AnalyticsSection(props) {
                     {t('buy_product.analytics.total_locked_value')}: {formatBigNumber(props.productData.totalLockedValue)}$
                 </Typography.Text>,
 
-                <Typography.Text style={textStyle} title="Fee that you will pay when you buy or sell">
+                <Typography.Text style={textStyle} title="Fee that you will pay when you buy or sell(may change in the future)">
                     {t('buy_product.analytics.product_fee')}: {props.productData.fee}%
                 </Typography.Text>,
 

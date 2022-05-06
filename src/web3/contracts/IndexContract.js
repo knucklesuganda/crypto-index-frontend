@@ -33,7 +33,7 @@ export async function getIndexInformation(providerData, indexAddress) {
         ),
         isLocked: await product.isLocked(),
         isSettlement: await product.isSettlementActive(),
-        fee: feeData[0].toNumber() / feeData[1].toNumber(),
+        fee: (feeData[1].toNumber() * feeData[0].toNumber()) / 100,
         totalLockedValue: await product.getTotalLockedValue(),
         userDebt: await product.usersDebt(providerData.account),
         totalAvailableDebt: await product.totalAvailableDebt(),
