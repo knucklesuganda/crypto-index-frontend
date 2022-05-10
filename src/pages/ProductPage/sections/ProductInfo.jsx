@@ -9,7 +9,7 @@ export function ProductInfo(props) {
         <Typography.Title>Frequently asked questions</Typography.Title>
 
         <Row>
-            {props.data.map((item, index) => <Col span={12}>
+            {props.data.map((item, index) => <Col key={index} span={12}>
                 <Card style={{ background: "none", height: "100%", borderRadius: 0 }}>
                     <Row style={{ padding: 0, display: "flex", alignItems: "center" }}>
                         <Avatar icon={<QuestionOutlined style={{ fontSize: "1.2em" }} />} />

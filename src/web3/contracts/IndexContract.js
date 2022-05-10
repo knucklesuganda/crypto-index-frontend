@@ -7,8 +7,8 @@ import contract from './sources/BaseIndex.json';
 const IndexABI = contract.abi;
 
 
-export class BalanceError extends Error {}
-export class ProductLockedError extends Error {}
+export class BalanceError extends Error { }
+export class ProductLockedError extends Error { }
 
 
 export function createIndex(providerData, indexAddress) {
@@ -49,11 +49,11 @@ export async function buyIndex(data) {
     }
 
     const tokenAllowance = await getTokenAllowance(
-        providerData, productData.buyToken.address, 
+        providerData, productData.buyToken.address,
         providerData.account, productData.address,
     );
 
-    if(!tokenAllowance.gte(buyTokenAmount)){
+    if (!tokenAllowance.gte(buyTokenAmount)) {
         const approveTransaction = await approveBuyTokens(providerData, productData.address,
             productData.buyToken.address, buyTokenAmount);
         await approveTransaction.wait();
@@ -83,11 +83,11 @@ export async function sellIndex(data) {
     }
 
     const tokenAllowance = await getTokenAllowance(
-        providerData, productData.productToken.address, 
+        providerData, productData.productToken.address,
         providerData.account, productData.address,
     );
 
-    if(!tokenAllowance.gte(amount)){
+    if (!tokenAllowance.gte(amount)) {
         const approveTransaction = await approveBuyTokens(providerData, productData.address,
             productToken.address, amount);
         await approveTransaction.wait();
@@ -109,24 +109,10 @@ export async function getIndexComponents(providerData, productAddress) {
     const priceData = [];
 
     for (let component of rawComponents) {
-        const token = createERC20(providerData, component.tokenAddress);
-        let tokenName = token.address;
+        const token = await getERC20Information(providerData, component.tokenAddress);
 
-        try {
-            tokenName = await token.name();
-        } catch (error) { }
-
-        ratioData.push({
-            type: tokenName,
-            value: component.indexPercentage,
-        });
-
-        priceData.push({
-            name: tokenName,
-            token: await getERC20Information(providerData, component.tokenAddress),
-            price: await index.getTokenPrice(component.priceOracleAddress),
-        });
-
+        ratioData.push({ type: token.name, value: component.indexPercentage });
+        priceData.push({ name: token.name, token, price: await index.getTokenPrice(component) });
     }
 
     return { ratioData, priceData };
