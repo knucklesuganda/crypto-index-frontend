@@ -37,12 +37,7 @@ export function ProductBuySection(props) {
                     notificationMessage: t('add_token_notification'),
                 });
             } else {
-                operation = sellIndex({
-                    amount,
-                    providerData,
-                    productData,
-                    notificationMessage: t('add_token_notification'),
-                });
+                operation = sellIndex({amount, providerData, productData});
             }
 
             setInProgress(true);

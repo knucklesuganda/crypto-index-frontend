@@ -43,3 +43,8 @@ export async function getERC20Information(providerData, tokenAddress, tokenImage
     };
 
 }
+
+
+export async function getTokenAllowance(providerData, tokenAddress, owner, spender){
+    return await createERC20(providerData, tokenAddress).allowance(owner, spender);
+}

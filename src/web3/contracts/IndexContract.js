@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { addTokenNotification } from "../../components";
-import { createERC20, approveBuyTokens, getERC20Information } from "./ERC20Contract";
+import { createERC20, approveBuyTokens, getERC20Information, getTokenAllowance } from "./ERC20Contract";
 import contract from './sources/BaseIndex.json';
 
 
@@ -28,9 +28,7 @@ export async function getIndexInformation(providerData, indexAddress) {
         description: await product.shortDescription(),
         longDescription: await product.longDescription(),
         price: await product.getPrice(),
-        productToken: await getERC20Information(
-            providerData, await product.indexToken(), productImage,
-        ),
+        productToken: await getERC20Information(providerData, await product.indexToken(), productImage),
         isLocked: await product.isLocked(),
         isSettlement: await product.isSettlementActive(),
         fee: (feeData[1].toNumber() * feeData[0].toNumber()) / 100,
@@ -50,9 +48,16 @@ export async function buyIndex(data) {
         throw new BalanceError();
     }
 
-    const approveTransaction = await approveBuyTokens(providerData, productData.address,
-        productData.buyToken.address, buyTokenAmount);
-    await approveTransaction.wait();
+    const tokenAllowance = await getTokenAllowance(
+        providerData, productData.buyToken.address, 
+        providerData.account, productData.address,
+    );
+
+    if(!tokenAllowance.gte(buyTokenAmount)){
+        const approveTransaction = await approveBuyTokens(providerData, productData.address,
+            productData.buyToken.address, buyTokenAmount);
+        await approveTransaction.wait();
+    }
 
     const index = await createIndex(providerData, productData.address);
     const buyTransaction = await index.buy(amount, { from: providerData.account });
@@ -70,15 +75,23 @@ export async function buyIndex(data) {
 
 
 export async function sellIndex(data) {
-    const { providerData, productData, amount, notificationMessage } = data;
+    const { providerData, productData, amount } = data;
     const productToken = productData.productToken;
 
     if (productToken.balance.lt(amount)) {
         throw new BalanceError();
     }
 
-    const approveTransaction = await approveBuyTokens(providerData, productData.address, productToken.address, amount);
-    await approveTransaction.wait();
+    const tokenAllowance = await getTokenAllowance(
+        providerData, productData.productToken.address, 
+        providerData.account, productData.address,
+    );
+
+    if(!tokenAllowance.gte(amount)){
+        const approveTransaction = await approveBuyTokens(providerData, productData.address,
+            productToken.address, amount);
+        await approveTransaction.wait();
+    }
 
     const index = await createIndex(providerData, productData.address);
 
