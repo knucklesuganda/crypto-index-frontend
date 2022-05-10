@@ -30,7 +30,7 @@ const web3Modal = new Web3Modal({
 });
 
 
-export async function connectWallet() {
+export async function connectWallet(isInitial) {
 
     let web3ModalProvider;
 
@@ -39,6 +39,11 @@ export async function connectWallet() {
         if(sessionStorage.provider){
             web3ModalProvider = await web3Modal.connectTo(sessionStorage.provider);
         }else{
+
+            if(isInitial){
+                throw new Error("No cached provider found for the initial connection");
+            }
+
             web3ModalProvider = await web3Modal.connect();
             sessionStorage.provider = getInjectedProvider()['id'];
         }

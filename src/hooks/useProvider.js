@@ -4,16 +4,16 @@ import { connectWallet } from "../web3/wallet/providers";
 export function useProvider() {
     const [providerData, setProviderData] = useState(null);
 
-    const handleWalletConnection = useCallback(() => {
+    const handleWalletConnection = useCallback((isInitial) => {
 
-        return connectWallet().then((providerData) => {
+        return connectWallet(isInitial).then((providerData) => {
             setProviderData(providerData);
-        });
+        }).catch((error) => { if(!isInitial){ throw error; } });
 
     }, [providerData]);
 
     useEffect(() => {
-        handleWalletConnection();
+        handleWalletConnection(true);
     }, []);
 
     return { providerData, handleWalletConnection };
