@@ -1,11 +1,22 @@
 import { Row, Card, Typography, Button, message } from "antd";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import { clearProvider } from "../web3/wallet/providers";
 
 
 export function WalletConnector(props) {
     const [isHidden, setIsHidden] = useState(false);
     const { t } = useTranslation();
+
+    const handleWalletConnection = useCallback(() => {
+
+        setIsHidden(true);
+        return props.handleWalletConnection().catch((error) => {
+            message.error(t("wallet_connector.no_provider_error"));
+            setIsHidden(false);
+        });
+
+    }, [props, t]);
 
     return <Row gutter={[25, 55]} style={{
         display: isHidden ? "none" : "flex", paddingLeft: "1em", rowGap: "10px", columnGap: "10px",
@@ -25,15 +36,12 @@ export function WalletConnector(props) {
                 </Typography.Text>
 
                 <Button type="primary" size="large" style={{ width: "20em", marginTop: "1em" }}
-                    onClick={() => {
-                        setIsHidden(true);
-
-                        props.handleWalletConnection().catch((error) => {
-                            message.error(t("wallet_connector.no_provider_error"));
-                            setIsHidden(false);
-                        });
-
-                    }}>Connect account</Button>
+                    onClick={() => { handleWalletConnection(); }}>Connect account</Button>
+                
+                <Button type="text" size="middle" style={{ marginTop: "0.5em" }} onClick={() => {
+                    clearProvider();
+                    handleWalletConnection();
+                }}>Choose another provider</Button>
             </Card>
         </Row>
     </Row>

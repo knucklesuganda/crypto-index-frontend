@@ -15,11 +15,15 @@ export function AnalyticsSection(props) {
     const textStyle = { fontSize: "1.2em" };
 
     useEffect(() => {
-        getIndexComponents(providerData, props.productAddress).then(components => {
+        const componentsTask = getIndexComponents(providerData, props.productAddress);
+
+        componentsTask.then(components => {
             setProductComponents(components);
         });
 
-        return () => { };
+        return () => {
+            
+        };
     }, [providerData, props.productAddress]);
 
     if (props.productData === null || productComponents === null) {

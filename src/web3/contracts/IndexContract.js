@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { addTokenNotification } from "../../components";
-import { createERC20, approveBuyTokens, getERC20Information, getTokenAllowance } from "./ERC20Contract";
+import { approveBuyTokens, getERC20Information, getTokenAllowance } from "./ERC20Contract";
 import contract from './sources/BaseIndex.json';
 
 

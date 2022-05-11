@@ -1,21 +1,40 @@
 import { t } from "i18next";
-import { useParams } from "react-router";
-import { Fragment } from 'react';
+import { useNavigate, useParams } from "react-router";
+import { Fragment, useEffect } from 'react';
 import { useProvider, useProductData } from "../../hooks";
 import { Loading, WalletConnector } from "../../components";
 import { formatBigNumber } from "../../web3/utils";
+import { checkProductExists } from "../../web3/contracts/ObserverContract";
 import { LockOutlined } from '@ant-design/icons';
 import { addTokenToWallet } from "../../web3/wallet/functions";
 import { Col, Row, Divider, Typography } from "antd";
 import { AnalyticsSection } from "./sections/Analytics";
 import { ProductBuySection } from "./sections/ProductBuy";
 import { ProductInfo } from "./sections/ProductInfo";
+import settings from "../../settings";
 
 
 export default function ProductPage() {
     const { productAddress } = useParams();
     const { providerData, handleWalletConnection } = useProvider();
     const productData = useProductData(productAddress, providerData);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if(providerData === null || settings.DEBUG){
+            return;
+        }
+
+        checkProductExists(providerData, settings.OBSERVER_ADDRESS, productAddress).then((doesExist) => {
+
+            if(!doesExist){
+                navigate('/not_found/');
+            }
+
+        });
+
+        return () => {};
+    }, [productAddress, navigate, providerData]);
 
     if (providerData === null) {
         return <WalletConnector handleWalletConnection={handleWalletConnection} />;

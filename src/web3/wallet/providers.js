@@ -60,6 +60,11 @@ export async function connectWallet(isInitial) {
 }
 
 
+export function clearProvider(){
+    sessionStorage.removeItem('provider');
+}
+
+
 export async function _getWallet() {
     return (await provider.listAccounts())[0];
 }

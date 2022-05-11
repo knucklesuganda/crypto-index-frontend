@@ -27,3 +27,8 @@ export async function listProducts(providerData, observerAddress) {
 
     return productsList;
 }
+
+
+export async function checkProductExists(providerData, observerAddress, productAddress){
+    return await createObserver(providerData, observerAddress).checkProductExists(productAddress);
+}

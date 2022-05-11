@@ -2,7 +2,8 @@ import { formatEther } from "ethers/lib/utils";
 
 
 export function formatBigNumber(amount){
-    return parseFloat(formatEther(amount));
+    const decimalPlaces = Math.pow(10, 3);
+    return Math.round(parseFloat(formatEther(amount)) * decimalPlaces) / decimalPlaces;
 }
 
 
