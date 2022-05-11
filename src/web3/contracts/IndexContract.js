@@ -118,7 +118,6 @@ export async function getIndexComponents(providerData, productAddress) {
     return { ratioData, priceData };
 }
 
-
 export async function retrieveIndexDebt(amount, productData, providerData) {
 
     const index = createIndex(providerData, productData.address);
