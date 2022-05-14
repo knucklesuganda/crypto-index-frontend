@@ -4,11 +4,44 @@ import { formatBigNumber, formatNumber } from "../../../web3/utils";
 import { useTranslation } from "react-i18next";
 import {
     sellIndex, buyIndex, retrieveIndexDebt,
-    BalanceError, ProductLockedError
+    BalanceError, ProductLockedError,
 } from "../../../web3/contracts/IndexContract";
-import { Form, Col, InputNumber, Radio, Button, Typography, message, Card, Spin } from "antd";
+import { Form, Col, InputNumber, Radio, Row, Button, Typography, message, Card, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 
+
+function DebtSection(props){
+    const {userDebt, totalDebt, sectionTitle} = props;
+    const { t } = useTranslation();
+
+    if(userDebt.eq(0)){
+        return null;
+    }
+
+    return <Card title={sectionTitle}>
+        <Col style={{ display: "flex", flexDirection: "column", alignContent: 'center' }}>
+            <Typography.Text style={{ paddingBottom: "0.2em", fontSize: "1.2em" }}>
+                {t('buy_product.user_debt_text')}: {formatBigNumber(userDebt)}$
+            </Typography.Text>
+
+            <Typography.Text style={{ paddingBottom: "0.2em", fontSize: "1.2em" }}
+                title="Total debt to the users that is available right now">
+                {t('buy_product.total_available_debt_text')}: {formatBigNumber(totalDebt)}$
+            </Typography.Text>
+
+            <Button type="primary" danger={userDebt.gt(totalDebt)}
+                onClick={() => {
+
+                    if (userDebt.gt(totalDebt)) {
+                        message.error(t('buy_product.error_debt_exceeded'));
+                    } else {
+                        retrieveIndexDebt(userDebt);
+                    }
+
+                }}>{t('buy_product.user_debt_claim')}</Button>
+        </Col>
+    </Card>;
+}
 
 
 export function ProductBuySection(props) {
@@ -119,29 +152,11 @@ export function ProductBuySection(props) {
             </Form.Item>
         </Form>
 
-        {productData.userDebt > 0 ? <Card>
-            <Col style={{ display: "flex", flexDirection: "column", alignContent: 'center' }}>
-                <Typography.Text style={{ paddingBottom: "0.2em", fontSize: "1.2em" }}>
-                    {t('buy_product.user_debt_text')}: {formatBigNumber(productData.userDebt)}$
-                </Typography.Text>
-
-                <Typography.Text style={{ paddingBottom: "0.2em", fontSize: "1.2em" }}
-                    title="Total debt to the users that is available right now">
-                    {t('buy_product.total_available_debt_text')}: {
-                        formatBigNumber(productData.totalAvailableDebt)}$
-                </Typography.Text>
-
-                <Button type="primary" danger={productData.userDebt.gt(productData.totalAvailableDebt)}
-                    onClick={() => {
-
-                        if (productData.userDebt.gt(productData.totalAvailableDebt)) {
-                            message.error(t('buy_product.error_debt_exceeded'));
-                        } else {
-                            retrieveIndexDebt(productData.userDebt);
-                        }
-
-                    }}>{t('buy_product.user_debt_claim')}</Button>
-            </Col>
-        </Card> : null}
+        <Row style={{ width: "100%" }}>
+            <DebtSection sectionTitle="Buy debt"
+                userDebt={productData.userBuyDebt} totalDebt={productData.totalBuyDebt} />
+            <DebtSection sectionTitle="Sell debt"
+                userDebt={productData.userSellDebt} totalDebt={productData.totalSellDebt} />
+        </Row>
     </Spin>;
 }

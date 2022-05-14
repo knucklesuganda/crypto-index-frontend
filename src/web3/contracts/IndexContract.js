@@ -21,6 +21,8 @@ export async function getIndexInformation(providerData, indexAddress) {
     const productImage = await product.image();
     const feeData = await product.getFee();
 
+    console.log(123, await product.getUserDebt(providerData.account, false));
+
     return {
         address: indexAddress,
         image: productImage,
@@ -33,8 +35,10 @@ export async function getIndexInformation(providerData, indexAddress) {
         isSettlement: await product.isSettlementActive(),
         fee: (feeData[1].toNumber() * feeData[0].toNumber()) / 100,
         totalLockedValue: await product.getTotalLockedValue(),
-        userDebt: await product.usersDebt(providerData.account),
-        totalAvailableDebt: await product.totalAvailableDebt(),
+        userSellDebt: await product.getUserDebt(providerData.account, false),
+        userBuyDebt: await product.getUserDebt(providerData.account, true),
+        totalSellDebt: await product.getTotalDebt(false),
+        totalBuyDebt: await product.getTotalDebt(true),
         buyToken: await getERC20Information(providerData, await product.buyTokenAddress()),
     };
 }
