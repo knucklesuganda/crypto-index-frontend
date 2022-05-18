@@ -4,19 +4,17 @@ import { formatBigNumber, formatNumber } from "../../../web3/utils";
 import { useTranslation } from "react-i18next";
 import {
     sellIndex, buyIndex, retrieveIndexDebt,
-    BalanceError, ProductLockedError,
+    BalanceError, ProductLockedError, ProductSettlementError,
 } from "../../../web3/contracts/IndexContract";
 import { Form, Col, InputNumber, Radio, Row, Button, Typography, message, Card, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 
 
 function DebtSection(props){
-    const {userDebt, totalDebt, sectionTitle} = props;
+    const {userDebt, totalDebt, productAddress, isLocked, isSettlement, providerData, sectionTitle} = props;
     const { t } = useTranslation();
 
-    if(userDebt.eq(0)){
-        return null;
-    }
+    if(userDebt.eq(0)){ return null; }
 
     return <Card title={sectionTitle}>
         <Col style={{ display: "flex", flexDirection: "column", alignContent: 'center' }}>
@@ -35,7 +33,17 @@ function DebtSection(props){
                     if (userDebt.gt(totalDebt)) {
                         message.error(t('buy_product.error_debt_exceeded'));
                     } else {
-                        retrieveIndexDebt(userDebt);
+                        retrieveIndexDebt({
+                            amount: userDebt, productAddress, isLocked, providerData, isSettlement,
+                        }).catch(error => {
+
+                            if(error instanceof ProductLockedError){
+                                message.error(t('buy_product.error_product_locked'));
+                            }else if(error instanceof ProductSettlementError){
+                                message.error(t('buy_product.error_product_settlement'));
+                            }
+
+                        });
                     }
 
                 }}>{t('buy_product.user_debt_claim')}</Button>
@@ -154,9 +162,21 @@ export function ProductBuySection(props) {
 
         <Row style={{ width: "100%" }}>
             <DebtSection sectionTitle="Buy debt"
-                userDebt={productData.userBuyDebt} totalDebt={productData.totalBuyDebt} />
+                productAddress={productData.address}
+                isLocked={productData.isLocked}
+                providerData={providerData}
+                userDebt={productData.userBuyDebt}
+                totalDebt={productData.totalBuyDebt}
+                isSettlement={productData.isSettlement}
+            />
             <DebtSection sectionTitle="Sell debt"
-                userDebt={productData.userSellDebt} totalDebt={productData.totalSellDebt} />
+                productAddress={productData.address}
+                isLocked={productData.isLocked}
+                providerData={providerData}
+                userDebt={productData.userSellDebt}
+                totalDebt={productData.totalSellDebt}
+                isSettlement={productData.isSettlement}
+            />
         </Row>
     </Spin>;
 }

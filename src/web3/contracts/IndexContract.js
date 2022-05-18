@@ -9,6 +9,7 @@ const IndexABI = contract.abi;
 
 export class BalanceError extends Error { }
 export class ProductLockedError extends Error { }
+export class ProductSettlementError extends Error { }
 
 
 export function createIndex(providerData, indexAddress) {
@@ -21,8 +22,6 @@ export async function getIndexInformation(providerData, indexAddress) {
     const productImage = await product.image();
     const feeData = await product.getFee();
 
-    console.log(123, await product.getUserDebt(providerData.account, false));
-
     return {
         address: indexAddress,
         image: productImage,
@@ -33,12 +32,12 @@ export async function getIndexInformation(providerData, indexAddress) {
         productToken: await getERC20Information(providerData, await product.indexToken(), productImage),
         isLocked: await product.isLocked(),
         isSettlement: await product.isSettlementActive(),
-        fee: (feeData[1].toNumber() * feeData[0].toNumber()) / 100,
         totalLockedValue: await product.getTotalLockedValue(),
         userSellDebt: await product.getUserDebt(providerData.account, false),
         userBuyDebt: await product.getUserDebt(providerData.account, true),
         totalSellDebt: await product.getTotalDebt(false),
         totalBuyDebt: await product.getTotalDebt(true),
+        fee: (feeData[1].toNumber() * feeData[0].toNumber()) / 100,
         buyToken: await getERC20Information(providerData, await product.buyTokenAddress()),
     };
 }
@@ -98,7 +97,6 @@ export async function sellIndex(data) {
     }
 
     const index = await createIndex(providerData, productData.address);
-
     const sellTransaction = await index.sell(amount, { from: providerData.account });
     await sellTransaction.wait();
     return sellTransaction.hash;
@@ -122,16 +120,20 @@ export async function getIndexComponents(providerData, productAddress) {
     return { ratioData, priceData };
 }
 
-export async function retrieveIndexDebt(amount, productData, providerData) {
+export async function retrieveIndexDebt(data) {
+    const {isSettlement, providerData, productAddress, amount, isLocked} = data;
+    const index = createIndex(providerData, productAddress);
 
-    const index = createIndex(providerData, productData.address);
-
-    if (await productData.isLocked()) {
+    if (isLocked) {
         throw new ProductLockedError();
+    } else if(isSettlement){
+        throw new ProductSettlementError();
     } else {
+
         const debtTransaction = await index.retrieveDebt(amount, { from: providerData.account });
         await debtTransaction.wait();
         return debtTransaction.hash;
+
     }
 
 }

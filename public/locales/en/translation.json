@@ -70,7 +70,9 @@
         "user_debt_text": "You have unclaimed debt",
         "user_debt_claim": "Claim",
         "total_available_debt_text": "Total available debt",
-        "error_debt_exceeded": "Not enough debt yet, wait until the funds are settled"
+        "error_debt_exceeded": "Not enough debt yet, wait until the funds are settled",
+        "error_product_locked": "This product is locked, you cannot withdraw your funds",
+        "error_product_settlement": "You cannot interact with the product while the funds are being settled"
     },
     "components": {
         "add_token": {
