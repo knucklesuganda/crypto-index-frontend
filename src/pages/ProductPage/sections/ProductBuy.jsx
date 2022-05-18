@@ -11,7 +11,10 @@ import { LoadingOutlined } from "@ant-design/icons";
 
 
 function DebtSection(props){
-    const {userDebt, totalDebt, productAddress, isLocked, isSettlement, providerData, sectionTitle} = props;
+    const {
+        userDebt, totalDebt, productAddress, isLocked,
+        isSettlement, providerData, sectionTitle, sectionSymbol,
+    } = props;
     const { t } = useTranslation();
 
     if(userDebt.eq(0)){ return null; }
@@ -19,12 +22,12 @@ function DebtSection(props){
     return <Card title={sectionTitle}>
         <Col style={{ display: "flex", flexDirection: "column", alignContent: 'center' }}>
             <Typography.Text style={{ paddingBottom: "0.2em", fontSize: "1.2em" }}>
-                {t('buy_product.user_debt_text')}: {formatBigNumber(userDebt)}$
+                {t('buy_product.user_debt_text')}: {formatBigNumber(userDebt)} {sectionSymbol}
             </Typography.Text>
 
             <Typography.Text style={{ paddingBottom: "0.2em", fontSize: "1.2em" }}
                 title="Total debt to the users that is available right now">
-                {t('buy_product.total_available_debt_text')}: {formatBigNumber(totalDebt)}$
+                {t('buy_product.total_available_debt_text')}: {formatBigNumber(totalDebt)} {sectionSymbol}
             </Typography.Text>
 
             <Button type="primary" danger={userDebt.gt(totalDebt)}
@@ -168,7 +171,7 @@ export function ProductBuySection(props) {
                 userDebt={productData.userBuyDebt}
                 totalDebt={productData.totalBuyDebt}
                 isSettlement={productData.isSettlement}
-            />
+                sectionSymbol={productData.productToken.symbol} />
             <DebtSection sectionTitle="Sell debt"
                 productAddress={productData.address}
                 isLocked={productData.isLocked}
@@ -176,7 +179,7 @@ export function ProductBuySection(props) {
                 userDebt={productData.userSellDebt}
                 totalDebt={productData.totalSellDebt}
                 isSettlement={productData.isSettlement}
-            />
+                sectionSymbol="$" />
         </Row>
     </Spin>;
 }
