@@ -3,8 +3,8 @@ import { useState } from 'react';
 import { formatBigNumber, formatNumber } from "../../../web3/utils";
 import { useTranslation } from "react-i18next";
 import {
-    sellIndex, buyIndex, retrieveIndexDebt,
-    BalanceError, ProductLockedError, ProductSettlementError,
+    sellIndex, buyIndex, retrieveIndexDebt, BalanceError,
+    ProductLockedError, ProductSettlementError, addIndexFee,
 } from "../../../web3/contracts/IndexContract";
 import { Form, Col, InputNumber, Radio, Row, Button, Typography, message, Card, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -60,6 +60,7 @@ export function ProductBuySection(props) {
     const [inProgress, setInProgress] = useState(false);
     const [operationType, setOperationType] = useState('buy');
     const [amount, setAmount] = useState(0);
+    const [tokenUsdPrice, setTokenUsdPrice] = useState(null);
     const { t } = useTranslation();
 
     return <Spin spinning={inProgress} indicator={<LoadingOutlined style={{ fontSize: "2em" }} />}>
@@ -69,24 +70,28 @@ export function ProductBuySection(props) {
                 return;
             }
 
-            const amount = ethers.utils.parseEther(values.sellAmount.toString());
+            const amountWithFee = ethers.utils.parseEther(
+                addIndexFee(formatBigNumber(productData.price), productData.fee, values.amount).toString()
+            );
+            console.log(amountWithFee.mul(ethers.BigNumber.from('10').pow(18)).div(productData.price));
+
             let isBuyOperation = operationType === "buy";
-            let operation;
+            let operationPromise;
 
             if (isBuyOperation) {
-                operation = buyIndex({
-                    amount,
+                operationPromise = buyIndex({
+                    amount: amountWithFee.mul(ethers.BigNumber.from('10').pow(18)).div(productData.price),
                     providerData,
                     productData,
+                    approveAmount: amountWithFee,
                     notificationMessage: t('add_token_notification'),
                 });
             } else {
-                operation = sellIndex({amount, providerData, productData});
+                operationPromise = sellIndex({amount, providerData, productData});
             }
 
             setInProgress(true);
-
-            operation.then((transactionHash) => {
+            operationPromise.then((transactionHash) => {
                 message.info(`
                     ${t('buy_product.buy_form.success_message')}: ${transactionHash}
                 `);
@@ -111,6 +116,8 @@ export function ProductBuySection(props) {
                     });
                 } else if (error instanceof ProductLockedError) {
                     message.error({ content: t('buy_product.buy_form.product_locked_error') });
+                }else{
+                    message.error({ content: "Error: " + error.message });
                 }
 
                 setInProgress(false);
@@ -118,16 +125,23 @@ export function ProductBuySection(props) {
             });
 
         }}>
-            <Form.Item name="sellAmount" rules={[{ required: true, message: t('buy_product.buy_form.amount.error') }]}>
+            <Form.Item name="amount" rules={[{ required: true, message: t('buy_product.buy_form.amount.error') }]}>
                 <InputNumber min={0} size="large" style={{ width: "100%" }} controls={false}
-                    onChange={(value) => { setAmount(parseFloat(value)) }} value={amount}
+                    onChange={(value) => {
+                        const newAmount = parseFloat(value);
+
+                        if(!isNaN(newAmount)){
+                            const totalPrice = addIndexFee(formatBigNumber(productData.price), productData.fee, newAmount);
+                            const roundedPrice = formatNumber(Math.round((totalPrice + Number.EPSILON) * 100) / 100);
+                            setTokenUsdPrice(roundedPrice);
+                        }else{
+                            setTokenUsdPrice("0");
+                        }
+
+                        setAmount(newAmount);
+                    }} value={amount}
                     formatter={formatNumber} prefix={productData.productToken.symbol}
-                    addonAfter={<Typography.Text>
-                        {!isNaN(amount) ?
-                            formatNumber(
-                                Math.round(((formatBigNumber(productData.price) * amount) + Number.EPSILON) * 100) / 100
-                            ) : "0"}$
-                    </Typography.Text>}
+                    addonAfter={<Typography.Text>{tokenUsdPrice}$</Typography.Text>}
                     parser={value => value.replace(/\$\s?|(,*)/g, '')} />
             </Form.Item>
 

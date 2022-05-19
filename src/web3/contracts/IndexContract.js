@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 import { addTokenNotification } from "../../components";
+import { formatBigNumber } from "../utils";
 import { approveBuyTokens, getERC20Information, getTokenAllowance } from "./ERC20Contract";
 import contract from './sources/BaseIndex.json';
 
@@ -42,12 +43,10 @@ export async function getIndexInformation(providerData, indexAddress) {
     };
 }
 
-
 export async function buyIndex(data) {
-    const { providerData, productData, amount, notificationMessage } = data;
-    const buyTokenAmount = productData.price.mul(amount).div(ethers.BigNumber.from('10').pow(18));
+    const { providerData, productData, amount, approveAmount, notificationMessage } = data;
 
-    if (productData.buyToken.balance.lt(buyTokenAmount)) {
+    if (productData.buyToken.balance.lt(approveAmount)) {
         throw new BalanceError();
     }
 
@@ -56,9 +55,9 @@ export async function buyIndex(data) {
         providerData.account, productData.address,
     );
 
-    if (!tokenAllowance.gte(buyTokenAmount)) {
+    if (!tokenAllowance.gte(approveAmount)) {
         const approveTransaction = await approveBuyTokens(providerData, productData.address,
-            productData.buyToken.address, buyTokenAmount);
+            productData.buyToken.address, approveAmount);
         await approveTransaction.wait();
     }
 
@@ -75,7 +74,6 @@ export async function buyIndex(data) {
     await buyTransaction.wait();
     return buyTransaction.hash;
 }
-
 
 export async function sellIndex(data) {
     const { providerData, productData, amount } = data;
@@ -136,4 +134,11 @@ export async function retrieveIndexDebt(data) {
 
     }
 
+}
+
+
+export function addIndexFee(productPrice, productFee, amount){
+    const totalPrice = productPrice * amount;
+    const feePrice = totalPrice / 100 * productFee;
+    return totalPrice + feePrice;
 }
