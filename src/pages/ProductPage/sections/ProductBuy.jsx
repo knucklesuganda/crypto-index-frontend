@@ -1,21 +1,21 @@
 import { ethers } from "ethers";
 import { useState } from 'react';
-import { formatBigNumber, formatNumber } from "../../../web3/utils";
+import { formatBigNumber } from "../../../web3/utils";
 import { useTranslation } from "react-i18next";
-import {
-    sellIndex, buyIndex, retrieveIndexDebt, BalanceError,
-    ProductLockedError, ProductSettlementError, addIndexFee,
-} from "../../../web3/contracts/IndexContract";
-import { Form, Col, InputNumber, Radio, Row, Button, Typography, message, Card, Spin } from "antd";
+import { sellIndex, buyIndex, retrieveIndexDebt, BalanceError, 
+    ProductLockedError, ProductSettlementError, addIndexFee } from "../../../web3/contracts/IndexContract";
+import { Form, Col, Radio, Row, Button, Typography, message, Card, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
+import { TokenInput } from "../../../components/TokenInput";
 
 
 function DebtSection(props){
     const {
-        userDebt, totalDebt, productAddress, isLocked,
-        isSettlement, providerData, sectionTitle, sectionSymbol,
+        userDebt, totalDebt, productAddress, isLocked, productPrice,
+        isSettlement, providerData, sectionTitle, sectionSymbol, productFee,
     } = props;
     const { t } = useTranslation();
+    const [amount, setAmount] = useState(0);
 
     if(userDebt.eq(0)){ return null; }
 
@@ -30,7 +30,12 @@ function DebtSection(props){
                 {t('buy_product.total_available_debt_text')}: {formatBigNumber(totalDebt)} {sectionSymbol}
             </Typography.Text>
 
-            <Button type="primary" danger={userDebt.gt(totalDebt)}
+            <Col style={{ marginTop: "0.4em", marginBottom: "0.4em" }}>
+                <TokenInput productPrice={productPrice} productFee={productFee}
+                    productSymbol={sectionSymbol} inputValue={amount} setInputValue={setAmount} />
+            </Col>
+
+            <Button type="primary" danger={userDebt.eq(0)}
                 onClick={() => {
 
                     if (userDebt.gt(totalDebt)) {
@@ -60,7 +65,6 @@ export function ProductBuySection(props) {
     const [inProgress, setInProgress] = useState(false);
     const [operationType, setOperationType] = useState('buy');
     const [amount, setAmount] = useState(0);
-    const [tokenUsdPrice, setTokenUsdPrice] = useState(null);
     const { t } = useTranslation();
 
     return <Spin spinning={inProgress} indicator={<LoadingOutlined style={{ fontSize: "2em" }} />}>
@@ -73,8 +77,6 @@ export function ProductBuySection(props) {
             const amountWithFee = ethers.utils.parseEther(
                 addIndexFee(formatBigNumber(productData.price), productData.fee, values.amount).toString()
             );
-            console.log(amountWithFee.mul(ethers.BigNumber.from('10').pow(18)).div(productData.price));
-
             let isBuyOperation = operationType === "buy";
             let operationPromise;
 
@@ -91,12 +93,14 @@ export function ProductBuySection(props) {
             }
 
             setInProgress(true);
+
             operationPromise.then((transactionHash) => {
                 message.info(`
                     ${t('buy_product.buy_form.success_message')}: ${transactionHash}
                 `);
                 setInProgress(false);
             }).catch((error) => {
+                let errorMessage;
 
                 if (error instanceof BalanceError) {
                     let tokenBalance;
@@ -110,39 +114,26 @@ export function ProductBuySection(props) {
                         tokenSymbol = productData.productToken.symbol;
                     }
 
-                    message.error({
-                        content: `${t('buy_product.buy_form.balance_error')}:
-                         ${formatBigNumber(tokenBalance)} ${tokenSymbol} `,
-                    });
+                    errorMessage = `${t('buy_product.buy_form.balance_error')}: ${formatBigNumber(tokenBalance)}
+                     ${tokenSymbol}`;
                 } else if (error instanceof ProductLockedError) {
-                    message.error({ content: t('buy_product.buy_form.product_locked_error') });
+                    errorMessage = t('buy_product.buy_form.product_locked_error');
                 }else{
-                    message.error({ content: "Error: " + error.message });
+                    errorMessage = `Error: ${error.message}`;
                 }
 
+                errorMessage.error({ content: errorMessage });
                 setInProgress(false);
-
             });
 
         }}>
-            <Form.Item name="amount" rules={[{ required: true, message: t('buy_product.buy_form.amount.error') }]}>
-                <InputNumber min={0} size="large" style={{ width: "100%" }} controls={false}
-                    onChange={(value) => {
-                        const newAmount = parseFloat(value);
-
-                        if(!isNaN(newAmount)){
-                            const totalPrice = addIndexFee(formatBigNumber(productData.price), productData.fee, newAmount);
-                            const roundedPrice = formatNumber(Math.round((totalPrice + Number.EPSILON) * 100) / 100);
-                            setTokenUsdPrice(roundedPrice);
-                        }else{
-                            setTokenUsdPrice("0");
-                        }
-
-                        setAmount(newAmount);
-                    }} value={amount}
-                    formatter={formatNumber} prefix={productData.productToken.symbol}
-                    addonAfter={<Typography.Text>{tokenUsdPrice}$</Typography.Text>}
-                    parser={value => value.replace(/\$\s?|(,*)/g, '')} />
+            <Form.Item name="amount" rules={[{
+                required: true, message: t('buy_product.buy_form.amount.error'),
+            }]}>
+                <TokenInput productPrice={productData.price}
+                    productFee={productData.fee}
+                    productSymbol={productData.productToken.symbol}
+                    inputValue={amount} setInputValue={setAmount} />
             </Form.Item>
 
             {productData.isLocked ? null : <Form.Item>
@@ -185,7 +176,10 @@ export function ProductBuySection(props) {
                 userDebt={productData.userBuyDebt}
                 totalDebt={productData.totalBuyDebt}
                 isSettlement={productData.isSettlement}
-                sectionSymbol={productData.productToken.symbol} />
+                sectionSymbol={productData.productToken.symbol}
+                productFee={productData.fee}
+                productPrice={productData.price}
+            />
             <DebtSection sectionTitle="Sell debt"
                 productAddress={productData.address}
                 isLocked={productData.isLocked}
@@ -193,7 +187,10 @@ export function ProductBuySection(props) {
                 userDebt={productData.userSellDebt}
                 totalDebt={productData.totalSellDebt}
                 isSettlement={productData.isSettlement}
-                sectionSymbol="$" />
+                sectionSymbol="$"
+                productFee={productData.fee}
+                productPrice={productData.price}
+            />
         </Row>
     </Spin>;
 }
