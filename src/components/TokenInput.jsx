@@ -12,8 +12,7 @@ export function TokenInput(props) {
     const { t } = useTranslation();
 
     return <Form.Item name="amount" rules={[{ required: true, message: t('buy_product.buy_form.amount.error') }]}>
-        <InputNumber min={0} size="large" style={{ width: "100%" }} status={status}
-            onChange={(value) => {
+        <InputNumber onChange={(value) => {
                 const newAmount = parseFloat(value);
 
                 if (!isNaN(newAmount)) {
@@ -35,9 +34,9 @@ export function TokenInput(props) {
 
                 setInputValue(newAmount);
             }}
+            min={0} size="large" style={{ width: "100%" }} status={status}
             value={inputValue} controls={false} formatter={formatNumber} prefix={productSymbol}
-            addonAfter={<Typography.Text>{tokenUsdPrice}$</Typography.Text>}
-            parser={value => value.replace(/\$\s?|(,*)/g, '')}
-        />
+            parser={value => value.replace(/\$\s?|(,*)/g, '')} 
+            addonAfter={<Typography.Text>{tokenUsdPrice}$</Typography.Text>} />
     </Form.Item>;
 }

@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { useState } from 'react';
-import { formatBigNumber } from "../../../web3/utils";
+import { formatBigNumber, bigNumberToString } from "../../../web3/utils";
 import { useTranslation } from "react-i18next";
 import {
     sellIndex, buyIndex, retrieveIndexDebt, BalanceError,
@@ -19,17 +19,19 @@ function DebtSection(props) {
     const { t } = useTranslation();
     const [amount, setAmount] = useState(0);
 
-    if (userDebt.eq(0)) { return null; }
+    if (userDebt.eq(0)) {
+        return null;
+    }
 
     return <Card title={sectionTitle}>
         <Col style={{ display: "flex", flexDirection: "column", alignContent: 'center' }}>
             <Typography.Text style={{ paddingBottom: "0.2em", fontSize: "1.2em" }}>
-                {t('buy_product.user_debt_text')}: {formatBigNumber(userDebt)} {sectionSymbol}
+                {t('buy_product.user_debt_text')}: {formatBigNumber(userDebt, 6)} {sectionSymbol}
             </Typography.Text>
 
             <Typography.Text style={{ paddingBottom: "0.2em", fontSize: "1.2em" }}
                 title="Total debt to the users that is available right now">
-                {t('buy_product.total_available_debt_text')}: {formatBigNumber(totalDebt)} {sectionSymbol}
+                {t('buy_product.total_available_debt_text')}: {formatBigNumber(totalDebt, 6)} {sectionSymbol}
             </Typography.Text>
 
             <Col style={{ marginTop: "0.4em", marginBottom: "0.4em" }}>
@@ -85,7 +87,11 @@ export function ProductBuySection(props) {
             }
 
             const amountWithFee = ethers.utils.parseEther(
-                addIndexFee(formatBigNumber(productData.price), productData.fee, values.amount).toString()
+                addIndexFee(
+                    bigNumberToString(productData.price),
+                    productData.fee,
+                    values.amount,
+                ).toString()
             );
             let isBuyOperation = operationType === "buy";
             let operationPromise;

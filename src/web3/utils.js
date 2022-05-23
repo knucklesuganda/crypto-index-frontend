@@ -1,9 +1,18 @@
 import { formatEther } from "ethers/lib/utils";
 
 
-export function formatBigNumber(value){
-    const decimalPlaces = Math.pow(10, 3);
-    return Math.round(parseFloat(formatEther(value)) * decimalPlaces) / decimalPlaces;
+export function bigNumberToString(value){
+    return parseFloat(formatEther(value));
+}
+
+
+export function formatBigNumber(value, precision){
+    if(isNaN(precision)){
+        precision = 3;
+    }
+
+    const decimalPlaces = Math.pow(10, precision);
+    return Math.round(bigNumberToString(value) * decimalPlaces) / decimalPlaces;
 }
 
 export function formatNumber(value){
