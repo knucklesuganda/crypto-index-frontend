@@ -2,14 +2,16 @@ import { ethers } from "ethers";
 import { useState } from 'react';
 import { formatBigNumber } from "../../../web3/utils";
 import { useTranslation } from "react-i18next";
-import { sellIndex, buyIndex, retrieveIndexDebt, BalanceError, 
-    ProductLockedError, ProductSettlementError, addIndexFee } from "../../../web3/contracts/IndexContract";
+import {
+    sellIndex, buyIndex, retrieveIndexDebt, BalanceError,
+    ProductLockedError, ProductSettlementError, addIndexFee
+} from "../../../web3/contracts/IndexContract";
 import { Form, Col, Radio, Row, Button, Typography, message, Card, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { TokenInput } from "../../../components/TokenInput";
 
 
-function DebtSection(props){
+function DebtSection(props) {
     const {
         userDebt, totalDebt, productAddress, isLocked, productPrice,
         isSettlement, providerData, sectionTitle, sectionSymbol, productFee,
@@ -17,7 +19,7 @@ function DebtSection(props){
     const { t } = useTranslation();
     const [amount, setAmount] = useState(0);
 
-    if(userDebt.eq(0)){ return null; }
+    if (userDebt.eq(0)) { return null; }
 
     return <Card title={sectionTitle}>
         <Col style={{ display: "flex", flexDirection: "column", alignContent: 'center' }}>
@@ -31,30 +33,38 @@ function DebtSection(props){
             </Typography.Text>
 
             <Col style={{ marginTop: "0.4em", marginBottom: "0.4em" }}>
-                <TokenInput productPrice={productPrice} productFee={productFee}
-                    productSymbol={sectionSymbol} inputValue={amount} setInputValue={setAmount} />
-            </Col>
+                <Form onFinish={(values) => {
+                    const realAmount = ethers.BigNumber.from(ethers.utils.parseEther(values.amount.toString()));
 
-            <Button type="primary" danger={userDebt.eq(0)}
-                onClick={() => {
-
-                    if (userDebt.gt(totalDebt)) {
+                    if (realAmount.gt(totalDebt)) {
                         message.error(t('buy_product.error_debt_exceeded'));
                     } else {
                         retrieveIndexDebt({
-                            amount: userDebt, productAddress, isLocked, providerData, isSettlement,
+                            amount: realAmount, productAddress,
+                            isLocked, providerData, isSettlement,
                         }).catch(error => {
+                            let errorMessage;
 
-                            if(error instanceof ProductLockedError){
-                                message.error(t('buy_product.error_product_locked'));
-                            }else if(error instanceof ProductSettlementError){
-                                message.error(t('buy_product.error_product_settlement'));
+                            if (error instanceof ProductLockedError) {
+                                errorMessage = t('buy_product.error_product_locked');
+                            } else if (error instanceof ProductSettlementError) {
+                                errorMessage = t('buy_product.error_product_settlement');
                             }
 
+                            message.error(errorMessage);
                         });
                     }
 
-                }}>{t('buy_product.user_debt_claim')}</Button>
+                }}>
+                    <TokenInput productPrice={productPrice} productSymbol={sectionSymbol}
+                        inputValue={amount} setInputValue={setAmount} />
+
+                    <Button htmlType="submit" type="primary" danger={isSettlement} style={{ width: "100%" }}>
+                        {t('buy_product.user_debt_claim')}
+                    </Button>
+                </Form>
+            </Col>
+
         </Col>
     </Card>;
 }
@@ -69,7 +79,7 @@ export function ProductBuySection(props) {
 
     return <Spin spinning={inProgress} indicator={<LoadingOutlined style={{ fontSize: "2em" }} />}>
         <Form name="productInteractionForm" style={{ minWidth: "20vw " }} autoComplete="off" onFinish={(values) => {
-            if(productData.isSettlement){
+            if (productData.isSettlement) {
                 message.error(t("buy_product.buy_form.settlement_error"));
                 return;
             }
@@ -89,7 +99,7 @@ export function ProductBuySection(props) {
                     notificationMessage: t('add_token_notification'),
                 });
             } else {
-                operationPromise = sellIndex({amount, providerData, productData});
+                operationPromise = sellIndex({ amount, providerData, productData });
             }
 
             setInProgress(true);
@@ -106,10 +116,10 @@ export function ProductBuySection(props) {
                     let tokenBalance;
                     let tokenSymbol;
 
-                    if(isBuyOperation){
+                    if (isBuyOperation) {
                         tokenBalance = productData.buyToken.balance;
                         tokenSymbol = productData.buyToken.symbol;
-                    }else{
+                    } else {
                         tokenBalance = productData.productToken.balance;
                         tokenSymbol = productData.productToken.symbol;
                     }
@@ -118,23 +128,19 @@ export function ProductBuySection(props) {
                      ${tokenSymbol}`;
                 } else if (error instanceof ProductLockedError) {
                     errorMessage = t('buy_product.buy_form.product_locked_error');
-                }else{
+                } else {
                     errorMessage = `Error: ${error.message}`;
                 }
 
-                errorMessage.error({ content: errorMessage });
+                message.error({ content: errorMessage });
                 setInProgress(false);
             });
 
         }}>
-            <Form.Item name="amount" rules={[{
-                required: true, message: t('buy_product.buy_form.amount.error'),
-            }]}>
-                <TokenInput productPrice={productData.price}
-                    productFee={productData.fee}
-                    productSymbol={productData.productToken.symbol}
-                    inputValue={amount} setInputValue={setAmount} />
-            </Form.Item>
+            <TokenInput productPrice={productData.price}
+                productFee={productData.fee}
+                productSymbol={productData.productToken.symbol}
+                inputValue={amount} setInputValue={setAmount} />
 
             {productData.isLocked ? null : <Form.Item>
                 <Radio.Group defaultValue="buy" style={{ display: "flex" }}
