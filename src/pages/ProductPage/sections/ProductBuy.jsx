@@ -14,7 +14,7 @@ import { parseEther } from "ethers/lib/utils";
 
 
 function DebtSection(props) {
-    const {providerData, userDebt, totalDebt, sectionSymbol, productData, sectionTitle} = props;
+    const {providerData, userDebt, totalDebt, changeProgress, sectionSymbol, productData, sectionTitle} = props;
     const { t } = useTranslation();
     const [amount, setAmount] = useState(0);
 
@@ -41,6 +41,8 @@ function DebtSection(props) {
                         message.error(t('buy_product.error_debt_exceeded'));
                     } else {
 
+                        changeProgress();
+
                         retrieveIndexDebt({
                             providerData,
                             amount: realAmount,
@@ -64,6 +66,8 @@ function DebtSection(props) {
                             }
 
                             message.error(errorMessage);
+                        }).finally(() => {
+                            changeProgress();
                         });
 
                     }
@@ -100,23 +104,22 @@ export function ProductBuySection(props) {
             let isBuyOperation = operationType === "buy";
             let operationPromise;
 
-            console.log(productData.price.mul(values.amount).toString());
-
             if (isBuyOperation) {
                 operationPromise = buyIndex({
+                    providerData,
+                    productData,
                     approveAmount: productData.price.mul(values.amount),
                     amount: parseEther(values.amount.toString()),
-                    providerData, productData, notificationMessage: t('add_token_notification'),
+                    notificationMessage: t('add_token_notification'),
                 });
             } else {
                 operationPromise = sellIndex({ amount, providerData, productData });
             }
 
             setInProgress(true);
+
             operationPromise.then((transactionHash) => {
-                message.info(`
-                    ${t('buy_product.buy_form.success_message')}: ${transactionHash}
-                `);
+                message.info(`${t('buy_product.buy_form.success_message')}: ${transactionHash}`);
                 setInProgress(false);
             }).catch((error) => {
                 let errorMessage;
@@ -141,8 +144,8 @@ export function ProductBuySection(props) {
                     errorMessage = `Error: ${error.message}`;
                 }
 
-                message.error({ content: errorMessage });
                 setInProgress(false);
+                message.error({ content: errorMessage });
             });
 
         }}>
@@ -188,6 +191,7 @@ export function ProductBuySection(props) {
                 totalDebt={productData.totalBuyDebt}
                 sectionSymbol={productData.productToken.symbol}
                 productData={productData}
+                changeProgress={() => { setInProgress(!inProgress); }}
             />
 
             <DebtSection sectionTitle="Sell debt"
@@ -195,6 +199,7 @@ export function ProductBuySection(props) {
                 userDebt={productData.userSellDebt}
                 totalDebt={productData.totalSellDebt}
                 sectionSymbol="$"
+                changeProgress={() => { setInProgress(!inProgress); }}
             />
         </Row>
     </Spin>;

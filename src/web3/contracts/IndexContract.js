@@ -51,7 +51,8 @@ export async function buyIndex(data) {
     }
 
     const tokenAllowance = await getTokenAllowance(
-        providerData, productData.buyToken.address, providerData.account, productData.address,
+        providerData, productData.buyToken.address,
+        providerData.account, productData.address,
     );
 
     if (!tokenAllowance.gte(approveAmount)) {
