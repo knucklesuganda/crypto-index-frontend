@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { formatBigNumber, formatNumber } from "../web3/utils";
-import { addIndexFee } from "../web3/contracts/IndexContract";
 import { InputNumber, Typography, Form } from "antd";
 import { useTranslation } from 'react-i18next';
 
 
 export function TokenInput(props) {
-    const { productPrice, productFee, productSymbol, inputValue, setInputValue } = props;
+    const { productPrice, productSymbol, inputValue, setInputValue } = props;
     const [tokenUsdPrice, setTokenUsdPrice] = useState(0);
     const [status, setStatus] = useState("");
     const { t } = useTranslation();
@@ -16,14 +15,7 @@ export function TokenInput(props) {
                 const newAmount = parseFloat(value);
 
                 if (!isNaN(newAmount)) {
-                    let totalPrice;
-
-                    if(!isNaN(productFee) && productFee !== undefined && productFee !== null){
-                        totalPrice = addIndexFee(formatBigNumber(productPrice), productFee, newAmount);
-                    }else{
-                        totalPrice = formatBigNumber(productPrice) * newAmount;
-                    }
-
+                    let totalPrice = formatBigNumber(productPrice) * newAmount;
                     const roundedPrice = formatNumber(Math.round((totalPrice + Number.EPSILON) * 100) / 100);
                     setTokenUsdPrice(roundedPrice);
                     setStatus("");

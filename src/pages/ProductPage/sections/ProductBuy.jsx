@@ -1,10 +1,10 @@
 import { ethers } from "ethers";
 import { useState } from 'react';
-import { formatBigNumber, bigNumberToString } from "../../../web3/utils";
+import { formatBigNumber } from "../../../web3/utils";
 import { useTranslation } from "react-i18next";
 import {
-    sellIndex, buyIndex, retrieveIndexDebt, BalanceError,
-    ProductLockedError, ProductSettlementError, addIndexFee
+    sellIndex, buyIndex, retrieveIndexDebt,
+    BalanceError, ProductLockedError, ProductSettlementError,
 } from "../../../web3/contracts/IndexContract";
 import { Form, Col, Radio, Row, Button, Typography, message, Card, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -97,32 +97,22 @@ export function ProductBuySection(props) {
                 return;
             }
 
-            const usdAmountWithFee = ethers.utils.parseEther(
-                addIndexFee(
-                    bigNumberToString(productData.price),
-                    productData.fee,
-                    values.amount,
-                ).toString()
-            );
             let isBuyOperation = operationType === "buy";
             let operationPromise;
 
-            console.log(parseEther(values.amount.toString()).toString());
+            console.log(productData.price.mul(values.amount).toString());
 
             if (isBuyOperation) {
                 operationPromise = buyIndex({
+                    approveAmount: productData.price.mul(values.amount),
                     amount: parseEther(values.amount.toString()),
-                    providerData,
-                    productData,
-                    approveAmount: usdAmountWithFee,
-                    notificationMessage: t('add_token_notification'),
+                    providerData, productData, notificationMessage: t('add_token_notification'),
                 });
             } else {
                 operationPromise = sellIndex({ amount, providerData, productData });
             }
 
             setInProgress(true);
-
             operationPromise.then((transactionHash) => {
                 message.info(`
                     ${t('buy_product.buy_form.success_message')}: ${transactionHash}
@@ -156,9 +146,7 @@ export function ProductBuySection(props) {
             });
 
         }}>
-            <TokenInput productPrice={productData.price}
-                productFee={productData.fee}
-                productSymbol={productData.productToken.symbol}
+            <TokenInput productPrice={productData.price} productSymbol={productData.productToken.symbol}
                 inputValue={amount} setInputValue={setAmount} />
 
             {productData.isLocked ? null : <Form.Item>

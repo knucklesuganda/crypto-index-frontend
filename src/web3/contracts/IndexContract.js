@@ -134,9 +134,3 @@ export async function retrieveIndexDebt(data) {
     }
 
 }
-
-export function addIndexFee(productPrice, productFee, amount){
-    const totalPrice = productPrice * amount;
-    const feePrice = totalPrice / 100 * productFee;
-    return totalPrice + feePrice;
-}
