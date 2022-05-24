@@ -89,8 +89,7 @@ export async function sellIndex(data) {
     );
 
     if (!tokenAllowance.gte(amount)) {
-        const approveTransaction = await approveBuyTokens(providerData, productData.address,
-            productToken.address, amount);
+        const approveTransaction = await approveBuyTokens(providerData, productData.address, productToken.address, amount);
         await approveTransaction.wait();
     }
 
@@ -119,7 +118,7 @@ export async function getIndexComponents(providerData, productAddress) {
 }
 
 export async function retrieveIndexDebt(data) {
-    const {isSettlement, providerData, productAddress, amount, isLocked} = data;
+    const {isSettlement, providerData, productAddress, amount, isBuyDebt, isLocked} = data;
     const index = createIndex(providerData, productAddress);
 
     if (isLocked) {
@@ -128,7 +127,7 @@ export async function retrieveIndexDebt(data) {
         throw new ProductSettlementError();
     } else {
 
-        const debtTransaction = await index.retrieveDebt(amount, { from: providerData.account });
+        const debtTransaction = await index.retrieveDebt(amount, isBuyDebt, { from: providerData.account });
         await debtTransaction.wait();
         return debtTransaction.hash;
 

@@ -14,7 +14,7 @@ import { parseEther } from "ethers/lib/utils";
 
 
 function DebtSection(props) {
-    const {providerData, userDebt, totalDebt, changeProgress, sectionSymbol, productData, sectionTitle} = props;
+    const {providerData, userDebt, isBuyDebt, totalDebt, changeProgress, productData, sectionTitle} = props;
     const { t } = useTranslation();
     const [amount, setAmount] = useState(0);
 
@@ -24,13 +24,14 @@ function DebtSection(props) {
 
     return <Card title={sectionTitle}>
         <Col style={{ display: "flex", flexDirection: "column", alignContent: 'center' }}>
-            <Typography.Text style={{ paddingBottom: "0.2em", fontSize: "1.2em" }}>
-                {t('buy_product.user_debt_text')}: {formatBigNumber(userDebt, 6)} {sectionSymbol}
-            </Typography.Text>
-
             <Typography.Text style={{ paddingBottom: "0.2em", fontSize: "1.2em" }}
                 title="Total debt to the users that is available right now">
-                {t('buy_product.total_available_debt_text')}: {formatBigNumber(totalDebt, 6)} {sectionSymbol}
+                {t('buy_product.total_available_debt_text')}: {' '}
+                {formatBigNumber(totalDebt, 6)} {productData.productToken.symbol}
+            </Typography.Text>
+
+            <Typography.Text style={{ paddingBottom: "0.2em", fontSize: "1.2em" }}>
+                {t('buy_product.user_debt_text')}: {formatBigNumber(userDebt, 6)} {productData.productToken.symbol}
             </Typography.Text>
 
             <Col style={{ marginTop: "0.4em", marginBottom: "0.4em" }}>
@@ -40,8 +41,9 @@ function DebtSection(props) {
                     if (realAmount.gt(totalDebt)) {
                         message.error(t('buy_product.error_debt_exceeded'));
                     } else {
+                        changeProgress(true);
 
-                        changeProgress();
+                        console.log()
 
                         retrieveIndexDebt({
                             providerData,
@@ -49,15 +51,19 @@ function DebtSection(props) {
                             productAddress: productData.address,
                             isLocked: productData.isLocked,
                             isSettlement: productData.isSettlement,
+                            isBuyDebt: isBuyDebt,
                         }).then(() => {
                             addTokenNotification({
                                 providerData,
-                                token: productData.token,
+                                token: productData.productToken,
                                 message: t('add_token_notification'),
                                 productName: productData.name,
                             });
+                            changeProgress(false);
+
                         }).catch(error => {
-                            let errorMessage;
+                            changeProgress(false);
+                            let errorMessage = t('error');
 
                             if (error instanceof ProductLockedError) {
                                 errorMessage = t('buy_product.error_product_locked');
@@ -66,17 +72,17 @@ function DebtSection(props) {
                             }
 
                             message.error(errorMessage);
-                        }).finally(() => {
-                            changeProgress();
                         });
 
                     }
 
                 }}>
-                    <TokenInput productPrice={productData.price} productSymbol={sectionSymbol}
+                    <TokenInput productPrice={productData.price} productSymbol={productData.productToken.symbol}
                         inputValue={amount} setInputValue={setAmount} />
 
-                    <Button htmlType="submit" type="primary" danger={productData.isSettlement} style={{ width: "100%" }}>
+                    <Button htmlType="submit" type="primary" danger={
+                        productData.isSettlement || totalDebt.eq(0)
+                    } style={{ width: "100%" }}>
                         {t('buy_product.user_debt_claim')}
                     </Button>
                 </Form>
@@ -113,7 +119,9 @@ export function ProductBuySection(props) {
                     notificationMessage: t('add_token_notification'),
                 });
             } else {
-                operationPromise = sellIndex({ amount, providerData, productData });
+                operationPromise = sellIndex({
+                    amount: parseEther(values.amount.toString()), providerData, productData,
+                });
             }
 
             setInProgress(true);
@@ -189,18 +197,15 @@ export function ProductBuySection(props) {
                 providerData={providerData}
                 userDebt={productData.userBuyDebt}
                 totalDebt={productData.totalBuyDebt}
-                sectionSymbol={productData.productToken.symbol}
                 productData={productData}
-                changeProgress={() => { setInProgress(!inProgress); }}
-            />
+                isBuyDebt={true} changeProgress={setInProgress} />
 
             <DebtSection sectionTitle="Sell debt"
                 providerData={providerData}
                 userDebt={productData.userSellDebt}
                 totalDebt={productData.totalSellDebt}
-                sectionSymbol="$"
-                changeProgress={() => { setInProgress(!inProgress); }}
-            />
+                productData={productData}
+                isBuyDebt={false} changeProgress={setInProgress} />
         </Row>
     </Spin>;
 }
