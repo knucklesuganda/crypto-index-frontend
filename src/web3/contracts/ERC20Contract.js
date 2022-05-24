@@ -34,8 +34,7 @@ export async function getERC20Information(providerData, tokenAddress, tokenImage
     try{ name = await token.name() }catch(error){}
 
     return {
-        name,
-        symbol,
+        name, symbol,
         address: token.address,
         decimals: await token.decimals(),
         image: tokenImage ? tokenImage : null,

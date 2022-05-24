@@ -9,13 +9,12 @@ import {
 import { Form, Col, Radio, Row, Button, Typography, message, Card, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { TokenInput } from "../../../components/TokenInput";
+import { addTokenNotification } from "../../../components";
+import { parseEther } from "ethers/lib/utils";
 
 
 function DebtSection(props) {
-    const {
-        userDebt, totalDebt, productAddress, isLocked, productPrice,
-        isSettlement, providerData, sectionTitle, sectionSymbol, productFee,
-    } = props;
+    const {providerData, userDebt, totalDebt, sectionSymbol, productData, sectionTitle} = props;
     const { t } = useTranslation();
     const [amount, setAmount] = useState(0);
 
@@ -41,9 +40,20 @@ function DebtSection(props) {
                     if (realAmount.gt(totalDebt)) {
                         message.error(t('buy_product.error_debt_exceeded'));
                     } else {
+
                         retrieveIndexDebt({
-                            amount: realAmount, productAddress,
-                            isLocked, providerData, isSettlement,
+                            providerData,
+                            amount: realAmount,
+                            productAddress: productData.address,
+                            isLocked: productData.isLocked,
+                            isSettlement: productData.isSettlement,
+                        }).then(() => {
+                            addTokenNotification({
+                                providerData,
+                                token: productData.token,
+                                message: t('add_token_notification'),
+                                productName: productData.name,
+                            });
                         }).catch(error => {
                             let errorMessage;
 
@@ -55,13 +65,14 @@ function DebtSection(props) {
 
                             message.error(errorMessage);
                         });
+
                     }
 
                 }}>
-                    <TokenInput productPrice={productPrice} productSymbol={sectionSymbol}
+                    <TokenInput productPrice={productData.price} productSymbol={sectionSymbol}
                         inputValue={amount} setInputValue={setAmount} />
 
-                    <Button htmlType="submit" type="primary" danger={isSettlement} style={{ width: "100%" }}>
+                    <Button htmlType="submit" type="primary" danger={productData.isSettlement} style={{ width: "100%" }}>
                         {t('buy_product.user_debt_claim')}
                     </Button>
                 </Form>
@@ -86,7 +97,7 @@ export function ProductBuySection(props) {
                 return;
             }
 
-            const amountWithFee = ethers.utils.parseEther(
+            const usdAmountWithFee = ethers.utils.parseEther(
                 addIndexFee(
                     bigNumberToString(productData.price),
                     productData.fee,
@@ -96,12 +107,14 @@ export function ProductBuySection(props) {
             let isBuyOperation = operationType === "buy";
             let operationPromise;
 
+            console.log(parseEther(values.amount.toString()).toString());
+
             if (isBuyOperation) {
                 operationPromise = buyIndex({
-                    amount: amountWithFee.mul(ethers.BigNumber.from('10').pow(18)).div(productData.price),
+                    amount: parseEther(values.amount.toString()),
                     providerData,
                     productData,
-                    approveAmount: amountWithFee,
+                    approveAmount: usdAmountWithFee,
                     notificationMessage: t('add_token_notification'),
                 });
             } else {
@@ -182,26 +195,18 @@ export function ProductBuySection(props) {
 
         <Row style={{ width: "100%" }}>
             <DebtSection sectionTitle="Buy debt"
-                productAddress={productData.address}
-                isLocked={productData.isLocked}
                 providerData={providerData}
                 userDebt={productData.userBuyDebt}
                 totalDebt={productData.totalBuyDebt}
-                isSettlement={productData.isSettlement}
                 sectionSymbol={productData.productToken.symbol}
-                productFee={productData.fee}
-                productPrice={productData.price}
+                productData={productData}
             />
+
             <DebtSection sectionTitle="Sell debt"
-                productAddress={productData.address}
-                isLocked={productData.isLocked}
                 providerData={providerData}
                 userDebt={productData.userSellDebt}
                 totalDebt={productData.totalSellDebt}
-                isSettlement={productData.isSettlement}
                 sectionSymbol="$"
-                productFee={productData.fee}
-                productPrice={productData.price}
             />
         </Row>
     </Spin>;
