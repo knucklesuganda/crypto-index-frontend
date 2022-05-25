@@ -54,9 +54,10 @@ export async function connectWallet(isInitial) {
 
     provider = new ethers.providers.Web3Provider(web3ModalProvider);
     signer = provider.getSigner();
+    sessionStorage.account = await _getWallet();
     setupEvents(provider);
 
-    return { account: await _getWallet(), signer, provider };
+    return { account: sessionStorage.account, signer, provider };
 }
 
 

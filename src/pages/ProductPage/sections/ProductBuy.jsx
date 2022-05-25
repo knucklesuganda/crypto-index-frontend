@@ -198,14 +198,16 @@ export function ProductBuySection(props) {
                 userDebt={productData.userBuyDebt}
                 totalDebt={productData.totalBuyDebt}
                 productData={productData}
-                isBuyDebt={true} changeProgress={setInProgress} />
+                isBuyDebt={true}
+                changeProgress={setInProgress} />
 
             <DebtSection sectionTitle="Sell debt"
                 providerData={providerData}
                 userDebt={productData.userSellDebt}
                 totalDebt={productData.totalSellDebt}
                 productData={productData}
-                isBuyDebt={false} changeProgress={setInProgress} />
+                isBuyDebt={false}
+                changeProgress={setInProgress} />
         </Row>
     </Spin>;
 }

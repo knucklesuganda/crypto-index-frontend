@@ -22,21 +22,25 @@ export function Header(props) {
                 </Title>
             </Col>
 
-            <Col style={{ display: "flex", alignItems: "flex-end", cursor: "pointer" }}
-                onClick={() => {
-                    if (i18n.language === "en") {
-                        i18n.changeLanguage("ru");
-                    } else {
-                        i18n.changeLanguage("en");
-                    }
-                }}>
-                    <Fade isActive>
-                        <Typography.Text style={{ fontSize: "1.5em", paddingRight: '0.2em' }}>
-                            {i18n.language}
-                        </Typography.Text>
+            <Col style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+                <Fade isActive>
+                    <Col style={{ marginRight: "1em" }}>
+                        {sessionStorage.getItem('account') === null ? null :
+                            <Typography.Text style={{ fontSize: "1.2em" }} title={sessionStorage.account}>
+                                {sessionStorage.account.slice(0, 20)}...
+                            </Typography.Text>
+                        }
+                    </Col>
 
-                        <TranslationOutlined style={{ fontSize: "2.2em" }} />
-                    </Fade>
+                    <TranslationOutlined onClick={() => {
+                        if (i18n.language === "en") {
+                            i18n.changeLanguage("ru");
+                        } else {
+                            i18n.changeLanguage("en");
+                        }
+                    }} style={{ fontSize: "2.2em" }} />
+                </Fade>
+
             </Col>
         </Row>
 
