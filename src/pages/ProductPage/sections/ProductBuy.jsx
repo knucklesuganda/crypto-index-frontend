@@ -21,11 +21,6 @@ function DebtSection(props) {
     } = props;
     const { t } = useTranslation();
     const [amount, setAmount] = useState(0);
-    const titleIconStyle = {};
-
-    if (userDebt.eq(0)) {
-        return null;
-    }
 
     return <Col style={{ display: "flex", flexDirection: "column", alignContent: 'center' }}>
         <Typography.Text style={{ paddingBottom: "0.2em", fontSize: "1.2em" }}
@@ -93,7 +88,11 @@ function DebtSection(props) {
 
 
 function DebtSectionCollapse(props) {
-    const { sectionTitle, sectionIcon } = props;
+    const { sectionTitle, sectionIcon, debt } = props;
+
+    if(debt.eq(0)){
+        return null;
+    }
 
     return <Collapse defaultActiveKey={['1']} bordered={false} style={{ width: "25em", marginLeft: "1em" }}>
         <Collapse.Panel key="1" header={
@@ -174,9 +173,8 @@ export function ProductBuySection(props) {
                 });
 
             }}>
-                <TokenInput productPrice={productData.price}
-                    productSymbol={productData.productToken.symbol}
-                    inputValue={amount} setInputValue={setAmount} />
+                <TokenInput productPrice={productData.price} productSymbol={productData.productToken.symbol}
+                    inputValue={amount} setInputValue={setAmount} useAddon />
 
                 {productData.isLocked ? null : <Form.Item>
                     <Radio.Group defaultValue="buy" style={{ display: "flex" }}
@@ -213,8 +211,10 @@ export function ProductBuySection(props) {
 
         <Row justify="space-around" style={{ width: "100%" }}>
             <Col>
-                <DebtSectionCollapse sectionIcon={<RiseOutlined />} sectionTitle="Buy debt">
-                    <DebtSection providerData={providerData}
+                <DebtSectionCollapse sectionIcon={<RiseOutlined />} sectionTitle="Buy debt"
+                        debt={productData.userBuyDebt}>
+                    <DebtSection
+                        providerData={providerData}
                         userDebt={productData.userBuyDebt}
                         totalDebt={productData.totalBuyDebt}
                         sectionSymbol={productData.productToken.symbol}
@@ -226,8 +226,10 @@ export function ProductBuySection(props) {
             </Col>
 
             <Col>
-                <DebtSectionCollapse sectionIcon={<FallOutlined />} sectionTitle="Sell debt">
-                    <DebtSection providerData={providerData}
+                <DebtSectionCollapse sectionIcon={<FallOutlined />} sectionTitle="Sell debt"
+                        debt={productData.userSellDebt}>
+                    <DebtSection
+                        providerData={providerData}
                         userDebt={productData.userSellDebt}
                         totalDebt={productData.totalSellDebt}
                         sectionSymbol="$"

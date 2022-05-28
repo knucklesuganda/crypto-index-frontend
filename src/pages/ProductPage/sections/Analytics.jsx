@@ -33,7 +33,7 @@ export function AnalyticsSection(props) {
     return <Col>
         <Typography.Title>{t('buy_product.analytics.title')}</Typography.Title>
 
-        <Card>
+        <Col style={{ border: "1px solid #303030", background: "#0a0a0a", padding: "1em" }}>
             {[
                 <Typography.Text style={textStyle}>
                     {t('buy_product.analytics.about_product')}: {props.productData.longDescription}
@@ -65,7 +65,7 @@ export function AnalyticsSection(props) {
                         )
                     }}>{t('buy_product.analytics.buy_token')}: {props.productData.buyToken.symbol}</Typography.Text>
             ].map((text, index) => <Col key={index}>{text}</Col>)}
-        </Card>
+        </Col>
 
         <Row style={{ paddingTop: "1em", width: "100%", display: "flex", alignItems: "center" }} gutter={[100, 16]}>
             <Col span={12}>
