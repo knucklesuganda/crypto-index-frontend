@@ -1,6 +1,5 @@
 import { ethers } from "ethers";
 import { addTokenNotification } from "../../components";
-import { formatBigNumber } from "../utils";
 import { approveBuyTokens, getERC20Information, getTokenAllowance } from "./ERC20Contract";
 import contract from './sources/BaseIndex.json';
 
@@ -38,7 +37,7 @@ export async function getIndexInformation(providerData, indexAddress) {
         userBuyDebt: await product.getUserDebt(providerData.account, true),
         totalSellDebt: await product.getTotalDebt(false),
         totalBuyDebt: await product.getTotalDebt(true),
-        fee: (feeData[1].toNumber() * feeData[0].toNumber()) / 100,
+        fee: (100 / feeData[1].toNumber()) * feeData[0].toNumber(),
         buyToken: await getERC20Information(providerData, await product.buyTokenAddress()),
     };
 }
@@ -89,7 +88,9 @@ export async function sellIndex(data) {
     );
 
     if (!tokenAllowance.gte(amount)) {
-        const approveTransaction = await approveBuyTokens(providerData, productData.address, productToken.address, amount);
+        const approveTransaction = await approveBuyTokens(
+            providerData, productData.address, productToken.address, amount,
+        );
         await approveTransaction.wait();
     }
 
@@ -111,7 +112,7 @@ export async function getIndexComponents(providerData, productAddress) {
         const token = await getERC20Information(providerData, component.tokenAddress);
 
         ratioData.push({ type: token.name, value: component.indexPercentage });
-        priceData.push({ name: token.name, token, price: await index.getTokenPrice(component) });
+        priceData.push({ name: token.name, token, price: await index.getTokenPrice(component, false) });
     }
 
     return { ratioData, priceData };

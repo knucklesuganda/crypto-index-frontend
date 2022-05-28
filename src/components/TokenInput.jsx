@@ -5,13 +5,14 @@ import { useTranslation } from 'react-i18next';
 
 
 export function TokenInput(props) {
-    const { productPrice, productSymbol, inputValue, setInputValue } = props;
+    const { productPrice, productSymbol, inputValue, setInputValue, useAddon } = props;
     const [tokenUsdPrice, setTokenUsdPrice] = useState(0);
     const [status, setStatus] = useState("");
     const { t } = useTranslation();
 
     return <Form.Item name="amount" rules={[{ required: true, message: t('buy_product.buy_form.amount.error') }]}>
-        <InputNumber onChange={(value) => {
+        <InputNumber
+            onChange={(value) => {
                 const newAmount = parseFloat(value);
 
                 if (!isNaN(newAmount)) {
@@ -29,6 +30,6 @@ export function TokenInput(props) {
             min={0} size="large" style={{ width: "100%" }} status={status}
             value={inputValue} controls={false} formatter={formatNumber} prefix={productSymbol}
             parser={value => value.replace(/\$\s?|(,*)/g, '')} 
-            addonAfter={<Typography.Text>{tokenUsdPrice}$</Typography.Text>} />
+            addonAfter={useAddon ? <Typography.Text>{tokenUsdPrice}$</Typography.Text> : null} />
     </Form.Item>;
 }

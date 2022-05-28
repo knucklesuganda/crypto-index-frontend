@@ -8,7 +8,7 @@ export function bigNumberToString(value){
 
 export function formatBigNumber(value, precision){
     if(isNaN(precision)){
-        precision = 3;
+        precision = 10;
     }
 
     const decimalPlaces = Math.pow(10, precision);
