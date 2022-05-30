@@ -2,7 +2,7 @@ import { formatEther } from "ethers/lib/utils";
 
 
 export function bigNumberToString(value){
-    return parseFloat(formatEther(value));
+    return Math.floor(parseFloat(formatEther(value)));
 }
 
 
@@ -12,7 +12,7 @@ export function formatBigNumber(value, precision){
     }
 
     const decimalPlaces = Math.pow(10, precision);
-    return Math.round(bigNumberToString(value) * decimalPlaces) / decimalPlaces;
+    return Math.floor(bigNumberToString(value) * decimalPlaces) / decimalPlaces;
 }
 
 export function formatNumber(value){

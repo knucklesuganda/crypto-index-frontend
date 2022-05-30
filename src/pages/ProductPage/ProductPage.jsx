@@ -5,7 +5,6 @@ import { useProvider, useProductData } from "../../hooks";
 import { Loading, WalletConnector } from "../../components";
 import { formatBigNumber } from "../../web3/utils";
 import { checkProductExists } from "../../web3/contracts/ObserverContract";
-import { LockOutlined } from '@ant-design/icons';
 import { addTokenToWallet } from "../../web3/wallet/functions";
 import { Col, Row, Divider, Typography } from "antd";
 import { AnalyticsSection } from "./sections/Analytics";
@@ -78,9 +77,6 @@ export default function ProductPage() {
                         title={t('buy_product.product_price')}>
                         ({formatBigNumber(productData.price)}$)
                     </Typography.Title>
-
-                    { productData.isLocked ? <LockOutlined style={{ fontSize: "1.2em", marginLeft: "0.5em" }}
-                        title="Product is locked. You can only sell tokens on exchanges" /> : null }
                 </Row>
 
                 <ProductBuySection providerData={providerData} productData={productData} />

@@ -30,8 +30,8 @@ export async function getERC20Information(providerData, tokenAddress, tokenImage
     let symbol = token.address;
     let name = token.address;
 
-    try{ symbol = await token.symbol() }catch(error){}
-    try{ name = await token.name() }catch(error){}
+    try{ symbol = await token.symbol(); }catch(error){}
+    try{ name = await token.name(); }catch(error){}
 
     return {
         name, symbol,
@@ -41,6 +41,11 @@ export async function getERC20Information(providerData, tokenAddress, tokenImage
         balance: await token.balanceOf(providerData.account),
     };
 
+}
+
+export async function getTokenBalance(providerData, tokenAddress, productAddress){
+    const token = createERC20(providerData, tokenAddress);
+    return await token.balanceOf(productAddress);
 }
 
 

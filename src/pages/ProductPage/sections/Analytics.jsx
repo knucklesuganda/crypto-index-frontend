@@ -1,12 +1,12 @@
 import { t } from "i18next";
 import { Pie } from '@ant-design/plots';
 import { useState, useEffect } from 'react';
-import { Loading  } from "../../../components";
+import { Loading } from "../../../components";
 import { formatBigNumber } from "../../../web3/utils";
 import { SaveOutlined } from '@ant-design/icons';
 import { addTokenToWallet } from "../../../web3/wallet/functions";
 import { getIndexComponents } from "../../../web3/contracts/IndexContract";
-import { Col, Row, Typography, Table, Card } from "antd";
+import { Col, Row, Typography, Table } from "antd";
 
 
 export function AnalyticsSection(props) {
@@ -22,7 +22,7 @@ export function AnalyticsSection(props) {
         });
 
         return () => {
-            
+
         };
     }, [providerData, props.productAddress]);
 
@@ -62,7 +62,7 @@ export function AnalyticsSection(props) {
                                 decimals: props.productData.buyToken.decimals,
                                 image: props.productData.buyToken.image,
                             }
-                        )
+                        );
                     }}>{t('buy_product.analytics.buy_token')}: {props.productData.buyToken.symbol}</Typography.Text>
             ].map((text, index) => <Col key={index}>{text}</Col>)}
         </Col>
@@ -85,31 +85,35 @@ export function AnalyticsSection(props) {
             </Col>
 
             <Col>
-                <Table bordered
-                    style={{ background: "none" }} pagination={{ position: ['none', 'none'] }}
-                    dataSource={productComponents.priceData.map((tokenInfo, index) => {
-                        return {
-                            key: index,
-                            tokenName: <Row style={{ display: "flex", alignItems: "center" }}>
-                                <Typography.Link onClick={() => {
-                                    window.open(`https://etherscan.io/token/${tokenInfo.token.address}`);
-                                }}>{tokenInfo.name}</Typography.Link>
+                <Table bordered style={{ background: "none" }} pagination={{ position: ['none', 'none'] }}
+                    dataSource={
+                        productComponents.priceData.map((tokenInfo, index) => {
+                            return {
+                                key: index,
+                                tokenName: <Row style={{ display: "flex", alignItems: "center" }}>
+                                    <Typography.Link onClick={() => {
+                                        window.open(`https://etherscan.io/token/${tokenInfo.token.address}`);
+                                    }}>{tokenInfo.name}</Typography.Link>
 
-                                <SaveOutlined style={{ fontSize: "1.2em", marginLeft: "0.5em" }} onClick={() => {
-                                    addTokenToWallet(providerData.provider, {
-                                        address: tokenInfo.token.address,
-                                        symbol: tokenInfo.token.symbol,
-                                        decimals: tokenInfo.token.decimals,
-                                        image: tokenInfo.token.image,
-                                    });
-                                }} title={t('buy_product.analytics.save_token')} />
-                            </Row>,
-                            tokenPrice: `${formatBigNumber(tokenInfo.price)}$`,
-                        };
-                    })}
+                                    <SaveOutlined style={{ fontSize: "1.2em", marginLeft: "0.5em" }} onClick={() => {
+                                        addTokenToWallet(providerData.provider, {
+                                            address: tokenInfo.token.address,
+                                            symbol: tokenInfo.token.symbol,
+                                            decimals: tokenInfo.token.decimals,
+                                            image: tokenInfo.token.image,
+                                        });
+                                    }} title={t('buy_product.analytics.save_token')} />
+                                </Row>,
+                                tokenPrice: `${formatBigNumber(tokenInfo.price)}$`,
+                                tokenQuantity: formatBigNumber(tokenInfo.productBalance),
+                            };
+                        })
+                    }
+
                     columns={[
                         { title: 'Token name', dataIndex: 'tokenName', key: 'tokenName' },
-                        { title: 'Token price', dataIndex: 'tokenPrice', key: 'tokenPrice' },
+                        { title: 'Price', dataIndex: 'tokenPrice', key: 'tokenPrice' },
+                        { title: 'Quantity', dataIndex: 'tokenQuantity', key: 'tokenQuantity' },
                     ]}
                 />
             </Col>

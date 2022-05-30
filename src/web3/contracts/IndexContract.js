@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { addTokenNotification } from "../../components";
-import { approveBuyTokens, getERC20Information, getTokenAllowance } from "./ERC20Contract";
+import { approveBuyTokens, getERC20Information, getTokenAllowance, getTokenBalance } from "./ERC20Contract";
 import contract from './sources/BaseIndex.json';
 
 
@@ -8,7 +8,6 @@ const IndexABI = contract.abi;
 
 
 export class BalanceError extends Error { }
-export class ProductLockedError extends Error { }
 export class ProductSettlementError extends Error { }
 
 
@@ -30,7 +29,6 @@ export async function getIndexInformation(providerData, indexAddress) {
         longDescription: await product.longDescription(),
         price: await product.getPrice(),
         productToken: await getERC20Information(providerData, await product.indexToken(), productImage),
-        isLocked: await product.isLocked(),
         isSettlement: await product.isSettlementActive(),
         totalLockedValue: await product.getTotalLockedValue(),
         userSellDebt: await product.getUserDebt(providerData.account, false),
@@ -112,19 +110,22 @@ export async function getIndexComponents(providerData, productAddress) {
         const token = await getERC20Information(providerData, component.tokenAddress);
 
         ratioData.push({ type: token.name, value: component.indexPercentage });
-        priceData.push({ name: token.name, token, price: await index.getTokenPrice(component, false) });
+        priceData.push({
+            token,
+            name: token.name,
+            productBalance: await getTokenBalance(providerData, token.address, productAddress),
+            price: await index.getTokenPrice(component),
+        });
     }
 
     return { ratioData, priceData };
 }
 
 export async function retrieveIndexDebt(data) {
-    const {isSettlement, providerData, productAddress, amount, isBuyDebt, isLocked} = data;
+    const {isSettlement, providerData, productAddress, amount, isBuyDebt } = data;
     const index = createIndex(providerData, productAddress);
 
-    if (isLocked) {
-        throw new ProductLockedError();
-    } else if(isSettlement){
+    if(isSettlement){
         throw new ProductSettlementError();
     } else {
 
