@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { useState } from 'react';
-import { formatBigNumber } from "../../../web3/utils";
+import { convertToBigNumber, formatBigNumber } from "../../../web3/utils";
 import { useTranslation } from "react-i18next";
 import {
     sellIndex, buyIndex, retrieveIndexDebt, BalanceError, ProductSettlementError,
@@ -126,7 +126,7 @@ export function ProductBuySection(props) {
                     operationPromise = buyIndex({
                         providerData,
                         productData,
-                        approveAmount: productData.price.mul(values.amount),
+                        approveAmount: productData.price.mul(convertToBigNumber(values.amount)).div(convertToBigNumber(1)),
                         amount: parseEther(values.amount.toString()),
                         notificationMessage: t('add_token_notification'),
                     });

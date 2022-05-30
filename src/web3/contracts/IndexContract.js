@@ -1,5 +1,4 @@
 import { ethers } from "ethers";
-import { addTokenNotification } from "../../components";
 import { approveBuyTokens, getERC20Information, getTokenAllowance, getTokenBalance } from "./ERC20Contract";
 import contract from './sources/BaseIndex.json';
 
@@ -41,15 +40,14 @@ export async function getIndexInformation(providerData, indexAddress) {
 }
 
 export async function buyIndex(data) {
-    const { providerData, productData, amount, approveAmount, notificationMessage } = data;
+    const { providerData, productData, amount, approveAmount } = data;
 
     if (productData.buyToken.balance.lt(approveAmount)) {
         throw new BalanceError();
     }
 
     const tokenAllowance = await getTokenAllowance(
-        providerData, productData.buyToken.address,
-        providerData.account, productData.address,
+        providerData, productData.buyToken.address, providerData.account, productData.address,
     );
 
     if (!tokenAllowance.gte(approveAmount)) {
@@ -60,13 +58,6 @@ export async function buyIndex(data) {
 
     const index = await createIndex(providerData, productData.address);
     const buyTransaction = await index.buy(amount, { from: providerData.account });
-
-    addTokenNotification({
-        providerData,
-        token: productData.productToken,
-        message: notificationMessage,
-        productName: productData.name,
-    });
 
     await buyTransaction.wait();
     return buyTransaction.hash;

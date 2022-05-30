@@ -1,8 +1,9 @@
-import { formatEther } from "ethers/lib/utils";
+import { BigNumber } from "ethers";
+import { formatEther, parseEther } from "ethers/lib/utils";
 
 
 export function bigNumberToString(value){
-    return Math.floor(parseFloat(formatEther(value)));
+    return parseFloat(formatEther(value));
 }
 
 
@@ -12,9 +13,13 @@ export function formatBigNumber(value, precision){
     }
 
     const decimalPlaces = Math.pow(10, precision);
-    return Math.floor(bigNumberToString(value) * decimalPlaces) / decimalPlaces;
+    return Math.round(bigNumberToString(value) * decimalPlaces) / decimalPlaces;
 }
 
 export function formatNumber(value){
     return value.toString().replace(/(?<!(\.\d*|^.{0}))(?=(\d{3})+(?!\d))/g, ',');
+}
+
+export function convertToBigNumber(value){
+    return BigNumber.from(parseEther(value.toString()));
 }
