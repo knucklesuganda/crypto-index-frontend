@@ -3,3 +3,7 @@
     background-color: #242323;
     transition: 50ms;
 }
+
+.productCard{
+    background-color: #0a0a0a!important;
+}

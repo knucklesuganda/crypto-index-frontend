@@ -12,6 +12,7 @@ export function useProductData(productAddress, providerData) {
         if (providerData !== null) {
             getIndexInformation(providerData, productAddress).then(product => {
                 setProductData(product);
+                document.title = `Void | ${product.name}`;
             });
 
             updateInterval.current = setInterval(() => {

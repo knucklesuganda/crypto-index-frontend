@@ -15,10 +15,9 @@ function ProductCard(props) {
 
     return <Col style={props.style}>
         <Card title={props.product.name} hoverable onClick={() => {
-            navigate(createProductPage(props.product.address))
-        }} className={props.className}
-            extra={<img style={{ width: "4em" }} alt='' src={props.product.image} />}>
-            {props.product.description}
+            navigate(createProductPage(props.product.address));
+        }} className={props.className} extra={<img style={{ width: "4em" }} alt='' src={props.product.image} />}>
+                {props.product.description}
         </Card>
     </Col>
 }
@@ -41,8 +40,7 @@ export function IndexBuyProducts(props) {
     const placeholderProducts = [];
     for (let i = 0; i < 18; i++) {
         placeholderProducts.push(
-            <ProductCard
-                style={{ cursor: "inherit" }} key={i}
+            <ProductCard style={{ cursor: "inherit" }} key={i}
                 product={{
                     name: "Product image",
                     image: "https://picsum.photos/200",

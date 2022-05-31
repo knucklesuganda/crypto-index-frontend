@@ -25,11 +25,7 @@ export default function ProductPage() {
         }
 
         checkProductExists(providerData, settings.OBSERVER_ADDRESS, productAddress).then((doesExist) => {
-
-            if(!doesExist){
-                navigate('/not_found/');
-            }
-
+            if(!doesExist){ navigate('/not_found/'); }
         });
 
         return () => {};

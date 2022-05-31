@@ -26,9 +26,9 @@ export function Header(props) {
                 <Fade isActive>
                     <Col style={{ marginRight: "1em" }}>
                         {sessionStorage.getItem('account') === null ? null :
-                            <Typography.Text style={{ fontSize: "1.2em" }} title={sessionStorage.account}>
-                                {sessionStorage.account.slice(0, 20)}...
-                            </Typography.Text>
+                            <Typography.Text style={{
+                                cursor: "pointer", fontSize: "1.2em"
+                            }} title={sessionStorage.account}>{sessionStorage.account.slice(0, 20)}...</Typography.Text>
                         }
                     </Col>
 
