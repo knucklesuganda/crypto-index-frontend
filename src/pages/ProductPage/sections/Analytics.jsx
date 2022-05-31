@@ -15,15 +15,12 @@ export function AnalyticsSection(props) {
     const textStyle = { fontSize: "1.2em" };
 
     useEffect(() => {
-        const componentsTask = getIndexComponents(providerData, props.productAddress);
-
-        componentsTask.then(components => {
+        getIndexComponents(providerData, props.productAddress).then(components => {
+            console.log(components);
             setProductComponents(components);
         });
 
-        return () => {
-
-        };
+        return () => {};
     }, [providerData, props.productAddress]);
 
     if (props.productData === null || productComponents === null) {
@@ -39,21 +36,22 @@ export function AnalyticsSection(props) {
                     {t('buy_product.analytics.about_product')}: {props.productData.longDescription}
                 </Typography.Text>,
 
-                <Typography.Text style={textStyle} title="Your product balance">
+                <Typography.Text style={textStyle} title={t("buy_product.analytics.balance_hint")}>
                     {t('buy_product.analytics.balance')}: {formatBigNumber(props.productData.productToken.balance)} {
                         props.productData.productToken.symbol}
                 </Typography.Text>,
 
-                <Typography.Text style={textStyle} title="Total balance of the product">
+                <Typography.Text style={textStyle} title={t("buy_product.analytics.total_locked_value_hint")}>
                     {t('buy_product.analytics.total_locked_value')}: {formatBigNumber(props.productData.totalLockedValue)}$
                 </Typography.Text>,
 
-                <Typography.Text style={textStyle} title="Fee that you will pay when you buy or sell(may change in the future)">
+                <Typography.Text style={textStyle} title={t("buy_product.analytics.product_fee_hint")}>
                     {t('buy_product.analytics.product_fee')}: {props.productData.fee}%
                 </Typography.Text>,
 
-                <Typography.Text title={t('buy_product.analytics.save_token')}
-                    style={{ ...textStyle, cursor: "pointer", color: '#1890ff' }} onClick={() => {
+                <Typography.Text title={t('buy_product.analytics.save_token_hint')}
+                    style={{ ...textStyle, cursor: "pointer", color: '#1890ff' }}
+                    onClick={() => {
                         addTokenToWallet(
                             providerData.provider,
                             {
@@ -69,7 +67,11 @@ export function AnalyticsSection(props) {
 
         <Row style={{ paddingTop: "1em", width: "100%", display: "flex", alignItems: "center" }} gutter={[100, 16]}>
             <Col span={12}>
-                <Pie appendPadding={10} angleField='value' colorField='type' radius={0.9}
+                <Pie legend={{ flipPage: false }} 
+                    appendPadding={10}
+                    angleField='value'
+                    colorField='type'
+                    radius={0.9}
                     data={productComponents.ratioData}
                     label={{
                         type: 'inner',
@@ -85,7 +87,8 @@ export function AnalyticsSection(props) {
             </Col>
 
             <Col>
-                <Table bordered style={{ background: "none" }} pagination={{ position: ['none', 'none'] }}
+                <Table bordered style={{ background: "none" }}
+                    pagination={{ position: ['none', 'bottomLeft'], simple: true }}
                     dataSource={
                         productComponents.priceData.map((tokenInfo, index) => {
                             return {
@@ -111,9 +114,23 @@ export function AnalyticsSection(props) {
                     }
 
                     columns={[
-                        { title: 'Token name', dataIndex: 'tokenName', key: 'tokenName' },
-                        { title: 'Price', dataIndex: 'tokenPrice', key: 'tokenPrice' },
-                        { title: 'Quantity', dataIndex: 'tokenQuantity', key: 'tokenQuantity' },
+                        {
+                            title: t('buy_product.analytics.table.name'),
+                            dataIndex: 'tokenName',
+                            key: 'tokenName',
+                        },
+
+                        {
+                            title: t('buy_product.analytics.table.price'),
+                            dataIndex: 'tokenPrice',
+                            key: 'tokenPrice',
+                        },
+
+                        {
+                            title: t('buy_product.analytics.table.quantity'),
+                            dataIndex: 'tokenQuantity',
+                            key: 'tokenQuantity',
+                        },
                     ]}
                 />
             </Col>

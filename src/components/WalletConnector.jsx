@@ -32,16 +32,16 @@ export function WalletConnector(props) {
         }}>
             <Card style={{ background: "#0a0a0a", boxShadow: "5px 5px 25px 0px rgba(255, 255, 255, 0.2)" }}>
                 <Typography.Text style={{ fontSize: "1.2em" }}>
-                    You must connect your wallet in order to buy products
+                    {t("wallet_connector.must_connect")}
                 </Typography.Text>
 
                 <Button type="primary" style={{ width: "20em", marginTop: "1em" }}
-                    onClick={() => { handleWalletConnection(); }}>Connect account</Button>
+                    onClick={() => { handleWalletConnection(); }}>{t("wallet_connector.connect_wallet")}</Button>
                 
                 <Button type="text" size="middle" style={{ marginTop: "0.5em" }} onClick={() => {
                     clearProvider();
                     handleWalletConnection();
-                }}>Choose another provider</Button>
+                }}>{t("wallet_connector.choose_another_provider")}</Button>
             </Card>
         </Row>
     </Row>

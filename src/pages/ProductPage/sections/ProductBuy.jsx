@@ -2,9 +2,8 @@ import { ethers } from "ethers";
 import { useState } from 'react';
 import { convertToBigNumber, formatBigNumber } from "../../../web3/utils";
 import { useTranslation } from "react-i18next";
-import {
-    sellIndex, buyIndex, retrieveIndexDebt, BalanceError, ProductSettlementError,
-} from "../../../web3/contracts/IndexContract";
+import { sellIndex, buyIndex, retrieveIndexDebt, 
+    BalanceError, ProductSettlementError } from "../../../web3/contracts/IndexContract";
 import { Form, Col, Radio, Row, Button, Typography, Collapse, message, Avatar, Spin } from "antd";
 import { RiseOutlined, FallOutlined } from '@ant-design/icons';
 import { LoadingOutlined } from "@ant-design/icons";
@@ -23,9 +22,8 @@ function DebtSection(props) {
 
     return <Col style={{ display: "flex", flexDirection: "column", alignContent: 'center' }}>
         <Typography.Text style={{ paddingBottom: "0.2em", fontSize: "1.2em" }}
-            title="Total debt to the users that is available right now">
-            {t('buy_product.total_available_debt_text')}: {' '}
-            {formatBigNumber(totalDebt, 6)} {sectionSymbol}
+            title={t('buy_product.total_available_debt_hint')}>
+                {t('buy_product.total_available_debt_text')}: {formatBigNumber(totalDebt, 6)} {sectionSymbol}
         </Typography.Text>
 
         <Typography.Text style={{ paddingBottom: "0.2em", fontSize: "1.2em" }}>
@@ -55,7 +53,6 @@ function DebtSection(props) {
                             productName: productData.name,
                         });
                         changeProgress(false);
-
                     }).catch(error => {
                         changeProgress(false);
                         let errorMessage = t('error');
@@ -66,16 +63,18 @@ function DebtSection(props) {
 
                         message.error(errorMessage);
                     });
-
                 }
             }}>
-                <TokenInput productPrice={productData.price} productSymbol={sectionSymbol}
-                    inputValue={amount} setInputValue={setAmount} useAddon={isBuyDebt} />
+                <TokenInput
+                    prefixSymbol={isBuyDebt ? productData.productToken.symbol : productData.buyToken.symbol}
+                    productPrice={productData.price} inputValue={amount}
+                    setInputValue={setAmount}
+                    maxValue={formatBigNumber(userDebt)}
+                    useAddon={isBuyDebt} />
 
                 <Button htmlType="submit" type="primary" danger={
                     productData.isSettlement || totalDebt.eq(0)
                 } style={{ width: "100%" }}>{t('buy_product.user_debt_claim')}</Button>
-
             </Form>
         </Col>
 
@@ -91,7 +90,7 @@ function DebtSectionCollapse(props) {
     return <Col>
         <Collapse defaultActiveKey={['1']} bordered={false} style={{ width: "25em", marginLeft: "1em" }}>
             <Collapse.Panel key="1" header={
-                <Row style={{}}>
+                <Row>
                     <Typography.Text style={{
                         fontWeight: "300", fontSize: "1.4em", marginRight: "0.5em",
                     }}>{sectionTitle}</Typography.Text>
@@ -137,7 +136,6 @@ export function ProductBuySection(props) {
                 }
 
                 setInProgress(true);
-
                 operationPromise.then((transactionHash) => {
                     message.info(`${t('buy_product.buy_form.success_message')}: ${transactionHash}`);
                     setInProgress(false);
@@ -159,7 +157,7 @@ export function ProductBuySection(props) {
                         errorMessage = `${t('buy_product.buy_form.balance_error')}: ${formatBigNumber(tokenBalance)}
                      ${tokenSymbol}`;
                     } else {
-                        errorMessage = `Error: ${error.message}`;
+                        errorMessage = `${t("error")}: ${error.message}`;
                     }
 
                     setInProgress(false);
@@ -167,8 +165,13 @@ export function ProductBuySection(props) {
                 });
 
             }}>
-                <TokenInput productPrice={productData.price} productSymbol={productData.productToken.symbol}
-                    inputValue={amount} setInputValue={setAmount} useAddon />
+                <TokenInput
+                    productPrice={productData.price}
+                    productSymbol={productData.productToken.symbol}
+                    inputValue={amount}
+                    setInputValue={setAmount}
+                    useAddon
+                    prefixSymbol={productData.productToken.symbol} />
 
                 <Form.Item>
                     <Radio.Group defaultValue="buy" style={{ display: "flex" }}
@@ -203,22 +206,26 @@ export function ProductBuySection(props) {
             </Form>
         </Col>
 
-        <Row justify="space-around" style={{ width: "100%" }}>
-            <DebtSectionCollapse sectionIcon={<RiseOutlined />} sectionTitle="Buy debt" debt={productData.userBuyDebt}>
-                <DebtSection providerData={providerData}
-                    userDebt={productData.userBuyDebt}
-                    totalDebt={productData.totalBuyDebt}
-                    sectionSymbol={productData.productToken.symbol}
-                    productData={productData} isBuyDebt={true}
+        <Row justify="space-around">
+            <DebtSectionCollapse sectionIcon={<RiseOutlined />}
+                sectionTitle={t('buy_product.buy_debt')}
+                debt={productData.userBuyDebt}>
+                    <DebtSection providerData={providerData}
+                        userDebt={productData.userBuyDebt}
+                        totalDebt={productData.totalBuyDebt}
+                        sectionSymbol={productData.productToken.symbol}
+                        productData={productData} isBuyDebt={true}
                     changeProgress={setInProgress} />
             </DebtSectionCollapse>
 
-            <DebtSectionCollapse sectionIcon={<FallOutlined />} sectionTitle="Sell debt" debt={productData.userSellDebt}>
-                <DebtSection providerData={providerData}
-                    userDebt={productData.userSellDebt}
-                    totalDebt={productData.totalSellDebt}
-                    sectionSymbol="$" productData={productData}
-                    isBuyDebt={false} changeProgress={setInProgress} />
+            <DebtSectionCollapse sectionIcon={<FallOutlined />}
+                sectionTitle={t('buy_product.sell_debt')}
+                debt={productData.userSellDebt}>
+                    <DebtSection providerData={providerData}
+                        userDebt={productData.userSellDebt}
+                        totalDebt={productData.totalSellDebt}
+                        sectionSymbol="$" productData={productData}
+                        isBuyDebt={false} changeProgress={setInProgress} />
             </DebtSectionCollapse>
         </Row>
 

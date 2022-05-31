@@ -1,4 +1,4 @@
-import Web3Modal, { getInjectedProvider, getInjectedProviderName } from "web3modal";
+import Web3Modal, { getInjectedProvider } from "web3modal";
 import { ethers } from "ethers";
 import { setupEvents } from "./events";
 import settings from "../../settings";

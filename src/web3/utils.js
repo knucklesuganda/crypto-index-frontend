@@ -2,13 +2,13 @@ import { BigNumber } from "ethers";
 import { formatEther, parseEther } from "ethers/lib/utils";
 
 
-export function bigNumberToString(value){
+export function bigNumberToString(value) {
     return parseFloat(formatEther(value));
 }
 
 
-export function formatBigNumber(value, precision){
-    if(isNaN(precision)){
+export function formatBigNumber(value, precision) {
+    if (isNaN(precision)) {
         precision = 10;
     }
 
@@ -16,10 +16,10 @@ export function formatBigNumber(value, precision){
     return Math.round(bigNumberToString(value) * decimalPlaces) / decimalPlaces;
 }
 
-export function formatNumber(value){
+export function formatNumber(value) {
     return value.toString().replace(/(?<!(\.\d*|^.{0}))(?=(\d{3})+(?!\d))/g, ',');
 }
 
-export function convertToBigNumber(value){
+export function convertToBigNumber(value) {
     return BigNumber.from(parseEther(value.toString()));
 }

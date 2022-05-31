@@ -21,6 +21,6 @@ export default function NotFoundPage() {
         paddingLeft: "1em",
         height: "90vh",
         display: "flex",
-        alignItems: "center"
+        alignItems: "center",
     }}>{errorMessages}</Row>;
 }

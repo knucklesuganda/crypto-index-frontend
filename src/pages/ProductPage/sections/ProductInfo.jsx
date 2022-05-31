@@ -1,12 +1,13 @@
 import { Avatar, Row, Typography, Card, Col } from "antd";
 import { QuestionOutlined } from "@ant-design/icons";
+import { useTranslation } from "react-i18next";
 
 
 export function ProductInfo(props) {
-    // TODO: translatoin
+    const { t } = useTranslation();
 
     return <Col>
-        <Typography.Title>Frequently asked questions</Typography.Title>
+        <Typography.Title>{t('product_info.title')}</Typography.Title>
 
         <Row>
             {props.data.map((item, index) => <Col key={index} span={12}>
@@ -21,9 +22,7 @@ export function ProductInfo(props) {
                         }}>{item.question}</Typography.Text>
                     </Row>
 
-                    <Col>
-                        <Typography.Text>{item.answer}</Typography.Text>
-                    </Col>
+                    <Col><Typography.Text>{item.answer}</Typography.Text></Col>
                 </Card>
             </Col>)}
         </Row>

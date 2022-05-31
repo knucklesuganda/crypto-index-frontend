@@ -53,26 +53,75 @@
                 }
             },
             "balance_error": "You do not have enough tokens. Your balance",
-            "product_locked_error": "This product is locked, you cannot withdraw your funds, only sell the tokens",
-            "settlement_error": "You cannot interact with the product while the funds are being settled"
+            "settlement_error": "You cannot interact with the product while the funds are being settled",
+            "success_message": "Your operation was successful"
         },
         "analytics": {
-            "save_token": "Save token to the wallet",
+            "save_token_hint": "Save token to the wallet",
             "title": "Analytics",
             "about_product": "About",
+
             "balance": "Your balance",
+            "balance_hint": "Your product balance",
+
             "total_locked_value": "Total Locked Value",
+            "total_locked_value_hint": "Total value of the tokens locked in the product",
+
             "buy_token": "Buy Token",
-            "product_fee": "Product fee"
+
+            "product_fee": "Product fee",
+            "product_fee_hint": "Fee that you pay for all the operations",
+
+            "table": {
+                "name": "Token name",
+                "quantity": "Quantity",
+                "price": "Price"
+            }
         },
+        "questions": [
+            {
+                "question": "How does it work?",
+                "answer": "Indices allow you to diversify your investments without any problems with management or the price of the assets.You just buy the tokens here or on the exchanges, and each token has underlying assets that define it's price"
+            },
+            {
+                "question": "How to sell?",
+                "answer": "If your index is unlocked, you can sell your tokens here, but we advise doing that with exchanges, as the fees will be lower and the settlement will be faster."
+            },
+            {
+                "question": "What is debt?",
+                "answer": "We don't sell your tokens right away(Blockchain does not allow that). But, instead, we add debt to the system that indicates that you need to receive some money in the future. You can get it the next day with a special panel on that website"
+            },
+            {
+                "question": "Why are fees so high?",
+                "answer": "Fees is the only way for us to make money. When you buy our indices, the majority of your dollars goes to the underlying assets(BTC, ETH...). But, in order to operate the system, we need to run additional settlement transactions off-chain, and that is the main place for your fees. Also, we use them to support the project development"
+            },
+
+            {
+                "question": "What does 'locked' means?",
+                "answer": "Locked products are not available for selling. They still work as the normal instruments, but the users cannot sell the tokens on that website, which will make them use exchanges and increase the popularity of the project and tokens"
+            },
+
+            {
+                "question": "Unknown error",
+                "answer": "There may be some errors that we do not control. For example, the exchange where we buy our underlying assets may experience some problems. You can wait for a little bit, but if the problem does not go away, contact us" 
+            },
+
+            {
+                "question": "Are there any guarantees?",
+                "answer": "We don't have any guarantees. All responsibility falls on you"
+            }
+        ],
         "product_name": "Product name",
         "product_price": "Product price",
         "user_debt_text": "You have unclaimed debt",
         "user_debt_claim": "Claim",
         "total_available_debt_text": "Total available debt",
+        "total_available_debt_hint": "The total users debt in the index",
         "error_debt_exceeded": "Not enough debt yet, wait until the funds are settled",
         "error_product_locked": "This product is locked, you cannot withdraw your funds",
-        "error_product_settlement": "You cannot interact with the product while the funds are being settled"
+        "error_product_settlement": "You cannot interact with the product while the funds are being settled",
+        "buy_debt": "Buy debt",
+        "sell_debt": "Sell debt"
     },
     "components": {
         "add_token": {
@@ -80,10 +129,16 @@
             "end": "to your wallet"
         }
     },
+    "product_info": {
+        "title": "Frequently asked questions"
+    },
     "not_found": "Page was not found",
     "error": "Error",
     "add_token_notification": "Add token to the wallet",
     "wallet_connector": {
-        "no_provider_error": "No wallet provider was found"
+        "no_provider_error": "No wallet provider was found",
+        "must_connect": "You must connect your wallet in order to buy products",
+        "connect_wallet": "Connect wallet",
+        "choose_another_provider": "Choose another provider"
     }
 }

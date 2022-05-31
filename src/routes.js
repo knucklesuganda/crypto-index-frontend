@@ -1,6 +1,6 @@
 
 export const INDEX_PAGE = '/';
-export const PRODUCT_PAGE = '/product/:productAddress';
+export const PRODUCT_PAGE = '/product/index/:productAddress';
 
 
 export function createProductPage(id){
