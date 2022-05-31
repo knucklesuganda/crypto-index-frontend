@@ -1,4 +1,4 @@
-import { Row, Col, Card } from "antd";
+import { Row, Col, Card, message } from "antd";
 import { useState, useEffect, Fragment } from "react";
 import { Title, Loading, WalletConnector } from "../../../components";
 import { listProducts } from "../../../web3/contracts/ObserverContract";
@@ -31,7 +31,7 @@ export function IndexBuyProducts(props) {
         if (providerData !== null) {
             listProducts(providerData, settings.OBSERVER_ADDRESS).then((productData) => {
                 setProductData(productData);
-            });
+            }).catch((error) => {});
         }
 
         return () => { };

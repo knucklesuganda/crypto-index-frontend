@@ -1,36 +1,35 @@
-import { message, notification } from 'antd';
+import { message } from 'antd';
+import settings from '../../settings';
 
 
 export async function setupEvents(provider) {
     const { provider: ethereum } = provider;
+    let networkChangeRequest = false;
+
+    provider.on("error", (error) => {
+
+        if(error.event === "changed" && !networkChangeRequest){
+            networkChangeRequest = true;
+
+            ethereum.request({
+                method: 'wallet_switchEthereumChain',
+                params: [{ chainId: settings.CHAIN_ID }],
+            }).then(() => {
+                networkChangeRequest = false;
+            }).catch((error) => {
+                networkChangeRequest = false;
+                message.error(error.reason);
+            });
+
+        }else if(error.event !== "changed" && error.reason){
+            message.error(error.reason);
+        }
+
+    });
 
     ethereum.on('accountsChanged', (accounts) => {
         message.info(`Account changed to: ${accounts[0]}`);
         window.location.reload();
-    });
-
-    provider.on("network", (newNetwork, oldNetwork) => {
-        message.info(`Network switched to ${newNetwork.name}`);
-
-        // if (!process.env.DEBUG) {
-        //     ethereum.request({
-        //         method: 'wallet_switchEthereumChain',
-        //         params: [{ chainId: process.env.CHAIN_ID }],
-        //     });
-        // }
-
-    });
-
-    provider.on("error", (error) => {
-        let errorMessage = error ? error.data : null;
-
-        if(errorMessage !== null){
-            errorMessage = error.data.message;
-        }else{
-            errorMessage = "Unknown error";
-        }
-
-        notification.error(errorMessage)
     });
 
     provider.on("pending", (tx) => {

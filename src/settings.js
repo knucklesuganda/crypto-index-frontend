@@ -4,6 +4,7 @@ const settings = {
     STATE_UPDATE_INTERVAL: 10000,
     PUBLIC_RPC_URL: 'http://localhost:8545',
     DEBUG: true,
+    CHAIN_ID: '0x1',
 };
 
 export default settings;

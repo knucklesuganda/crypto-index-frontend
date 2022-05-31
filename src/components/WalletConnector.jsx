@@ -12,7 +12,6 @@ export function WalletConnector(props) {
 
         setIsHidden(true);
         return props.handleWalletConnection().catch((error) => {
-            message.error(t("wallet_connector.no_provider_error"));
             setIsHidden(false);
         });
 
