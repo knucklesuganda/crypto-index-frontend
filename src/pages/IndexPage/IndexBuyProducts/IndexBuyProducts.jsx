@@ -16,7 +16,7 @@ function ProductCard(props) {
     return <Col style={props.style}>
         <Card title={props.product.name} hoverable onClick={() => {
             navigate(createProductPage(props.product.address));
-        }} className={props.className} extra={<img style={{ width: "4em" }} alt='' src={props.product.image} />}>
+        }} className={props.className} extra={<img style={{ width: "4em" }} src={props.product.image} />}>
             {props.product.description}
         </Card>
     </Col>
@@ -31,7 +31,7 @@ export function IndexBuyProducts(props) {
         if (providerData !== null) {
             listProducts(providerData, settings.OBSERVER_ADDRESS).then((productData) => {
                 setProductData(productData);
-            }).catch((error) => {});
+            }).catch((error) => { });
         }
 
         return () => { };
@@ -57,15 +57,24 @@ export function IndexBuyProducts(props) {
 
         {providerData === null ? <WalletConnector handleWalletConnection={handleWalletConnection} /> :
 
-            <Fragment>{!productData ? <Loading style={{ height: "10vh", width: "100wv" }} /> :
-                <Row style={{ display: "flex", justifyContent: "center" }}>
-                    <Col style={{ height: "80vh" }}>
-                        <Row gutter={[16, 16]} style={{ paddingTop: "2em", paddingLeft: "1em", paddingRight: "1em" }}>{
-                            productData.map((product, index) => <ProductCard key={index} product={product}
-                                className="productCard" style={{ cursor: "pointer" }} />)}
-                        </Row>
-                    </Col>
-                </Row>}
+            <Fragment>{
+                !productData ? <Loading style={{ height: "10vh", width: "100wv" }} /> :
+                    <Row style={{ display: "flex", justifyContent: "center" }}>
+                        <Col style={{ height: "80vh" }}>
+                            <Row gutter={[16, 16]} style={{
+                                paddingTop: "2em",
+                                paddingLeft: "1em",
+                                paddingRight: "1em"
+                            }}>{
+                                productData.map((product, index) =>
+                                    <ProductCard key={index} product={product}
+                                        className="productCard"
+                                        style={{ cursor: "pointer" }}
+                                    />
+                                )
+                            }</Row>
+                        </Col>
+                    </Row>}
             </Fragment>
         }
 

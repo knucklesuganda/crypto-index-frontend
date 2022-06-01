@@ -1,9 +1,14 @@
 import { ethers } from "ethers";
 import { useState } from 'react';
-import { convertToBigNumber, formatBigNumber } from "../../../web3/utils";
+import { convertToBigNumber, formatBigNumber, formatNumber } from "../../../web3/utils";
 import { useTranslation } from "react-i18next";
-import { sellIndex, buyIndex, retrieveIndexDebt, 
-    BalanceError, ProductSettlementError } from "../../../web3/contracts/IndexContract";
+import {
+    sellIndex,
+    buyIndex,
+    retrieveIndexDebt, 
+    BalanceError,
+    ProductSettlementError,
+ } from "../../../web3/contracts/IndexContract";
 import { Form, Col, Radio, Row, Button, Typography, Collapse, message, Avatar, Spin } from "antd";
 import { RiseOutlined, FallOutlined } from '@ant-design/icons';
 import { LoadingOutlined } from "@ant-design/icons";
@@ -154,9 +159,11 @@ export function ProductBuySection(props) {
                             tokenSymbol = productData.productToken.symbol;
                         }
 
-                        errorMessage = `${t('buy_product.buy_form.balance_error')}: ${formatBigNumber(tokenBalance)}
+                        errorMessage = `${t('buy_product.buy_form.balance_error')}: ${
+                            formatNumber(formatBigNumber(tokenBalance))}
                      ${tokenSymbol}`;
-                    } else {
+
+                    }else {
                         errorMessage = `${t("error")}: ${error.message}`;
                     }
 
@@ -165,12 +172,10 @@ export function ProductBuySection(props) {
                 });
 
             }}>
-                <TokenInput
+                <TokenInput useAddon
                     productPrice={productData.price}
                     productSymbol={productData.productToken.symbol}
-                    inputValue={amount}
-                    setInputValue={setAmount}
-                    useAddon
+                    setInputValue={setAmount} inputValue={amount}
                     prefixSymbol={productData.productToken.symbol} />
 
                 <Form.Item>
