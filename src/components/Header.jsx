@@ -3,7 +3,7 @@ import { INDEX_PAGE } from "../routes";
 import { Title } from "./Title";
 import { useTranslation } from "react-i18next";
 import { Col, Row, Typography } from "antd";
-import { TranslationOutlined } from '@ant-design/icons';
+import { TranslationOutlined, TwitterOutlined } from '@ant-design/icons';
 import { Fade } from "./animations";
 import { UserAgreement } from ".";
 
@@ -24,6 +24,9 @@ export function Header(props) {
             </Col>
 
             <Col style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+                <a target="_blank" href="https://twitter.com/ManagementVoid" style={{ color: "white!important" }}>
+                    <TwitterOutlined style={{ fontSize: "2em", marginRight: "0.5em" }} />
+                </a>
                 <UserAgreement />
 
                 <Fade isActive>
