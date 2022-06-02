@@ -1,6 +1,7 @@
 import { useState, useLayoutEffect } from "react";
 import { Row, Col, Menu } from "antd";
 import { IndexBiggestProblem } from "./IndexBiggestProblem";
+import { UserAgreement } from "../../components";
 import { IndexStart } from "./IndexStart";
 import { IndexBuyProducts } from "./IndexBuyProducts/IndexBuyProducts";
 import { useTranslation } from "react-i18next";
@@ -35,28 +36,29 @@ export default function IndexPage() {
                         <IndexBuyProducts id={buyProductsId} setNextPage={() => {
                             document.getElementById(startId).scrollIntoView({ behavior: "smooth" });
                             setCurrentPage(0);
-                        }}/>,
+                        }} />,
                     ].map((item, index) => <Col key={index} span={24} style={{ height: "100vh" }}>{item}</Col>)}
                 </Row>
             </Col>
 
             <Col span={2} id="menu" >
                 <Menu selectedKeys={[currentPage.toString()]} mode="inline" style={{
-                    background: "none", height: "100%", position: "fixed",
+                    background: "none", position: "fixed", zIndex: "2",
                 }} onSelect={({ _, key }) => { setCurrentPage(parseInt(key)); }}>
-                    <Menu.ItemGroup>
+                    <Menu.ItemGroup style={{ position: "relative" }}>
                         <Menu.Item key='0'>
                             <a href={`#${startId}`}>{t('index.menu.start')}</a>
                         </Menu.Item>
+
                         <Menu.Item key='1'>
                             <a href={`#${aboutUsId}`}>{t('index.menu.about_us')}</a>
                         </Menu.Item>
+
                         <Menu.Item key='2'>
                             <a href={`#${buyProductsId}`}>{t('index.menu.buy_products')}</a>
                         </Menu.Item>
                     </Menu.ItemGroup>
                 </Menu>
-
             </Col>
         </Row>
     );

@@ -2,7 +2,7 @@ import { Row, Col, Typography, Space, Divider } from "antd";
 import { useState, useEffect, useRef } from "react";
 import { Line } from "@ant-design/plots";
 import { BarChartOutlined, GlobalOutlined, SlidersOutlined } from '@ant-design/icons';
-import { NextPage } from "../../components/NextPage";
+import { NextPage, UserAgreement } from "../../components";
 import { useTranslation } from "react-i18next";
 
 
