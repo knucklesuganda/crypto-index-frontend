@@ -52,6 +52,7 @@
                     "exchanges": "exchanges"
                 }
             },
+            "liquidity_error": "Not enough liquidity, try buying less tokens or wait for some time",
             "balance_error": "You do not have enough tokens. Your balance",
             "settlement_error": "You cannot interact with the product while the funds are being settled",
             "success_message": "Your operation was successful"
@@ -71,6 +72,9 @@
 
             "product_fee": "Product fee",
             "product_fee_hint": "Fee that you pay for all the operations",
+
+            "liquidity": "Available liquidity",
+            "liquidity_hint": "Available liquidity on the exchange where we buy the underlying assets",
 
             "table": {
                 "name": "Token name",

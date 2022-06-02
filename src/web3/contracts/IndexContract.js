@@ -35,6 +35,7 @@ export async function getIndexInformation(providerData, indexAddress) {
         totalSellDebt: await product.getTotalDebt(false),
         totalBuyDebt: await product.getTotalDebt(true),
         fee: (100 / feeData[1].toNumber()) * feeData[0].toNumber(),
+        availableLiquidity: await product.getAvailableLiquidity(),
         buyToken: await getERC20Information(providerData, await product.buyTokenAddress()),
     };
 }

@@ -118,8 +118,13 @@ export function ProductBuySection(props) {
     return <Spin spinning={inProgress} indicator={<LoadingOutlined style={{ fontSize: "2em" }} />}>
         <Col style={{ display: "flex", justifyContent: "center" }}>
             <Form name="productInteractionForm" style={{ minWidth: "20vw" }} autoComplete="off" onFinish={(values) => {
+                const weiAmount = parseEther(values.amount.toString());
+
                 if (productData.isSettlement) {
                     message.error(t("buy_product.buy_form.settlement_error"));
+                    return;
+                }else if(productData.availableLiquidity.lt(weiAmount)){
+                    message.error(t("buy_product.buy_form.liquidity_error"));
                     return;
                 }
 
@@ -131,13 +136,11 @@ export function ProductBuySection(props) {
                         providerData,
                         productData,
                         approveAmount: productData.price.mul(convertToBigNumber(values.amount)).div(convertToBigNumber(1)),
-                        amount: parseEther(values.amount.toString()),
+                        amount: weiAmount,
                         notificationMessage: t('add_token_notification'),
                     });
                 } else {
-                    operationPromise = sellIndex({
-                        amount: parseEther(values.amount.toString()), providerData, productData,
-                    });
+                    operationPromise = sellIndex({ amount: weiAmount, providerData, productData });
                 }
 
                 setInProgress(true);
@@ -173,9 +176,11 @@ export function ProductBuySection(props) {
 
             }}>
                 <TokenInput useAddon
+                    maxValue={formatBigNumber(productData.availableLiquidity)}
                     productPrice={productData.price}
                     productSymbol={productData.productToken.symbol}
-                    setInputValue={setAmount} inputValue={amount}
+                    setInputValue={setAmount}
+                    inputValue={amount}
                     prefixSymbol={productData.productToken.symbol} />
 
                 <Form.Item>

@@ -20,7 +20,7 @@ export function AnalyticsSection(props) {
             setProductComponents(components);
         });
 
-        return () => {};
+        return () => { };
     }, [providerData, props.productAddress]);
 
     if (props.productData === null || productComponents === null) {
@@ -49,6 +49,11 @@ export function AnalyticsSection(props) {
                     {t('buy_product.analytics.product_fee')}: {props.productData.fee}%
                 </Typography.Text>,
 
+                <Typography.Text style={textStyle} title={t("buy_product.analytics.liquidity_hint")}>
+                    {t('buy_product.analytics.liquidity')}: {formatBigNumber(props.productData.availableLiquidity)} 
+                        {props.productData.productToken.symbol}
+                </Typography.Text>,
+
                 <Typography.Text title={t('buy_product.analytics.save_token_hint')}
                     style={{ ...textStyle, cursor: "pointer", color: '#1890ff' }}
                     onClick={() => {
@@ -67,7 +72,7 @@ export function AnalyticsSection(props) {
 
         <Row style={{ paddingTop: "1em", width: "100%", display: "flex", alignItems: "center" }} gutter={[100, 16]}>
             <Col span={12}>
-                <Pie legend={{ flipPage: false }} 
+                <Pie legend={{ flipPage: false }}
                     appendPadding={10}
                     angleField='value'
                     colorField='type'
