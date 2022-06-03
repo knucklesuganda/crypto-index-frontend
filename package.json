@@ -59,5 +59,8 @@
     "devDependencies": {
         "interpolate-html-plugin": "^4.0.0",
         "webpack": "^5.72.0"
+    },
+    "optionalDependencies": {
+        "fsevents": "2.3.2"
     }
 }
