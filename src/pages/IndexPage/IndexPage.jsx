@@ -3,7 +3,6 @@ import { Row, Col, Menu } from "antd";
 import { IndexBiggestProblem } from "./IndexBiggestProblem";
 import { IndexStart } from "./IndexStart";
 import { IndexBuyProducts } from "./IndexBuyProducts/IndexBuyProducts";
-import { UserAgreement } from "../../components";
 import { useTranslation } from "react-i18next";
 
 

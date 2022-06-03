@@ -10,7 +10,7 @@ export function useProvider() {
             setProviderData(providerData);
         }).catch((error) => { if(!isInitial){ throw error; } });
 
-    }, [providerData]);
+    });
 
     useEffect(() => {
         handleWalletConnection(true);

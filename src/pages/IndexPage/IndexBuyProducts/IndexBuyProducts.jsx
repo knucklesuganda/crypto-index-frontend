@@ -1,4 +1,4 @@
-import { Row, Col, Card, message } from "antd";
+import { Row, Col, Card } from "antd";
 import { useState, useEffect, Fragment } from "react";
 import { Title, Loading, WalletConnector } from "../../../components";
 import { listProducts } from "../../../web3/contracts/ObserverContract";
@@ -16,9 +16,9 @@ function ProductCard(props) {
     return <Col style={props.style}>
         <Card title={props.product.name} hoverable onClick={() => {
             navigate(createProductPage(props.product.address));
-        }} className={props.className} extra={<img style={{ width: "4em" }} src={props.product.image} />}>
-            {props.product.description}
-        </Card>
+        }} className={props.className} extra={
+            <img style={{ width: "4em" }} alt="Product image" src={props.product.image} />
+        }>{props.product.description}</Card>
     </Col>
 }
 
