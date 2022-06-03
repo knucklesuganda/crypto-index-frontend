@@ -1,9 +1,9 @@
 import { useState, useLayoutEffect } from "react";
 import { Row, Col, Menu } from "antd";
 import { IndexBiggestProblem } from "./IndexBiggestProblem";
-import { UserAgreement } from "../../components";
 import { IndexStart } from "./IndexStart";
 import { IndexBuyProducts } from "./IndexBuyProducts/IndexBuyProducts";
+import { UserAgreement } from "../../components";
 import { useTranslation } from "react-i18next";
 
 
@@ -43,9 +43,9 @@ export default function IndexPage() {
 
             <Col span={2} id="menu" >
                 <Menu selectedKeys={[currentPage.toString()]} mode="inline" style={{
-                    background: "none", position: "fixed", zIndex: "2",
+                    background: "none", position: "fixed"
                 }} onSelect={({ _, key }) => { setCurrentPage(parseInt(key)); }}>
-                    <Menu.ItemGroup style={{ position: "relative" }}>
+                    <Menu.ItemGroup>
                         <Menu.Item key='0'>
                             <a href={`#${startId}`}>{t('index.menu.start')}</a>
                         </Menu.Item>
