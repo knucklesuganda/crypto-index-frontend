@@ -12,6 +12,7 @@ const providerOptions = {
 };
 
 class NoProviderError extends Error { }
+export class NoInitialProviderError extends Error { }
 
 
 let signer = null, provider = null;
@@ -21,12 +22,12 @@ const web3Modal = new Web3Modal({
     providerOptions,
 
     theme: {
-        background: "#141414",
+        background: "#0a0a0a",
         main: "#ffffff",
         secondary: "#177ddc",
-        border: "#303030",
+        border: "#fff",
         hover: "#272323"
-    }
+    },
 });
 
 
@@ -41,7 +42,7 @@ export async function connectWallet(isInitial) {
         }else{
 
             if(isInitial){
-                throw new Error("No cached provider found for the initial connection");
+                return null;
             }
 
             web3ModalProvider = await web3Modal.connect();

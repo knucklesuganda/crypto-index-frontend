@@ -11,19 +11,17 @@ import "./App.css";
 
 
 function App() {
-    return (
-        <Suspense fallback={null}>
-            <BrowserRouter>
-                <Header id={'start'}>
-                    <Routes>
-                        <Route path={INDEX_PAGE} element={<IndexPage />} />
-                        <Route path={PRODUCT_PAGE} element={<ProductPage />} />
-                        <Route path="*" element={<NotFoundPage />} />
-                    </Routes>
-                </Header>
-            </BrowserRouter>
-        </Suspense>
-    );
+    return <Suspense fallback={null}>
+        <BrowserRouter>
+            <Header id={'start'}>
+                <Routes>
+                    <Route path={INDEX_PAGE} element={<IndexPage />} />
+                    <Route path={PRODUCT_PAGE} element={<ProductPage />} />
+                    <Route path="*" element={<NotFoundPage />} />
+                </Routes>
+            </Header>
+        </BrowserRouter>
+    </Suspense>;
 }
 
 export default App;

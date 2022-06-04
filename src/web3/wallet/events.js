@@ -2,29 +2,41 @@ import { message } from 'antd';
 import settings from '../../settings';
 
 
+let networkChangeRequest;
+
+
+function switchChain(ethereum){
+
+    ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: settings.CHAIN_ID }],
+    }).then(() => {
+        networkChangeRequest = false;
+    }).catch((error) => {
+        networkChangeRequest = false;
+        message.error(error.reason);
+    });
+
+}
+
+
 export async function setupEvents(provider) {
     const { provider: ethereum } = provider;
-    let networkChangeRequest = false;
 
     provider.on("error", (error) => {
 
-        if(error.event === "changed" && !networkChangeRequest){
+        if (error.event === "changed" && !networkChangeRequest) {
             networkChangeRequest = true;
-
-            ethereum.request({
-                method: 'wallet_switchEthereumChain',
-                params: [{ chainId: settings.CHAIN_ID }],
-            }).then(() => {
-                networkChangeRequest = false;
-            }).catch((error) => {
-                networkChangeRequest = false;
-                message.error(error.reason);
-            });
-
-        }else if(error.event !== "changed" && error.reason){
+            switchChain(ethereum);
+        } else if (error.event !== "changed" && error.reason) {
             message.error(error.reason);
         }
 
+    });
+
+    ethereum.on('chainChanged', () => {
+        switchChain(ethereum);
+        window.location.reload();
     });
 
     ethereum.on('accountsChanged', (accounts) => {
@@ -32,7 +44,7 @@ export async function setupEvents(provider) {
         window.location.reload();
     });
 
-    provider.on("pending", (tx) => {
+    ethereum.on("pending", (tx) => {
         message.info(`Transaction ${tx.hash} is pending`);
     });
 

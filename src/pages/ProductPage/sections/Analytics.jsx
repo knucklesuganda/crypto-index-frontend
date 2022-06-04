@@ -6,7 +6,7 @@ import { formatBigNumber } from "../../../web3/utils";
 import { SaveOutlined } from '@ant-design/icons';
 import { addTokenToWallet } from "../../../web3/wallet/functions";
 import { getIndexComponents } from "../../../web3/contracts/IndexContract";
-import { Col, Row, Typography, Table } from "antd";
+import { Col, Row, Typography, Table, message } from "antd";
 
 
 export function AnalyticsSection(props) {
@@ -16,7 +16,6 @@ export function AnalyticsSection(props) {
 
     useEffect(() => {
         getIndexComponents(providerData, props.productAddress).then(components => {
-            console.log(components);
             setProductComponents(components);
         });
 
