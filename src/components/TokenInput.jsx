@@ -1,5 +1,5 @@
 import { formatBigNumber, formatNumber } from "../web3/utils";
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { InputNumber, Form, Typography } from "antd";
 import { useTranslation } from 'react-i18next';
 

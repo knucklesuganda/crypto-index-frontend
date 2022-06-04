@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { connectWallet } from "../web3/wallet/providers";
 
 export function useProvider() {
@@ -12,7 +12,6 @@ export function useProvider() {
 
     };
 
-    useEffect(() => { handleWalletConnection(true); }, [handleWalletConnection]);
-
+    handleWalletConnection(true);
     return { providerData, handleWalletConnection };
 }
