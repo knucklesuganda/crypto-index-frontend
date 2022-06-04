@@ -1,4 +1,4 @@
-import { useState, useLayoutEffect } from "react";
+import { useState } from "react";
 import { Row, Col, Menu } from "antd";
 import { IndexBiggestProblem } from "./IndexBiggestProblem";
 import { IndexStart } from "./IndexStart";
@@ -13,27 +13,27 @@ export default function IndexPage() {
     const buyProductsId = "buy-products";
     const { t } = useTranslation();
 
-    useLayoutEffect(() => {
-        const originalStyle = window.getComputedStyle(document.body).overflow;
-        document.body.style.overflow = "hidden";
-        return () => (document.body.style.overflow = originalStyle);
-    }, []);
-
     return (
         <Row style={{ paddingRight: "1em", paddingTop: "0.5em" }}>
             <Col span={22} style={{ display: 'flex', direction: "column" }}>
                 <Row style={{ width: "100%" }}>
                     {[
                         <IndexStart id={startId} setNextPage={() => {
-                            document.getElementById(aboutUsId).scrollIntoView({ behavior: "smooth" });
+                            document.getElementById(aboutUsId).scrollIntoView({
+                                behavior: "smooth", block: 'nearest',
+                            });
                             setCurrentPage(1);
                         }} />,
                         <IndexBiggestProblem id={aboutUsId} isOpen={currentPage === 1} setNextPage={() => {
-                            document.getElementById(buyProductsId).scrollIntoView({ behavior: "smooth" });
+                            document.getElementById(buyProductsId).scrollIntoView({
+                                behavior: "smooth", block: 'nearest',
+                            });
                             setCurrentPage(2);
                         }} />,
                         <IndexBuyProducts id={buyProductsId} setNextPage={() => {
-                            document.getElementById(startId).scrollIntoView({ behavior: "smooth" });
+                            document.getElementById(startId).scrollIntoView({
+                                behavior: "smooth", block: 'nearest',
+                            });
                             setCurrentPage(0);
                         }} />,
                     ].map((item, index) => <Col key={index} span={24} style={{ height: "100vh" }}>{item}</Col>)}
