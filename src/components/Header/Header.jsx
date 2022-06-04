@@ -1,29 +1,26 @@
 import { Fragment } from "react";
-import { INDEX_PAGE } from "../routes";
-import { Title } from "./Title";
+import { INDEX_PAGE } from "../../routes";
+import { Title } from "../Title";
 import { useTranslation } from "react-i18next";
 import { Col, Row } from "antd";
 import { TranslationOutlined, TwitterOutlined } from '@ant-design/icons';
-import { Fade } from "./animations";
-import { UserAgreement } from ".";
+import { Fade } from "../animations";
+import { UserAgreement } from "..";
+import { Divider } from "antd";
+import "./style.css";
+import { MobileOnly } from "../MediaQuery";
 
 
 export function Header(props) {
     const { t, i18n } = useTranslation();
 
     return <Fragment>
-        <Row style={{
-            display: "flex", width: "100%", flexDirection: "row",
-            justifyContent: "space-between", alignItems: "flex-end",
-            paddingRight: "1em",
-        }}>
+        <Row id="header_row">
             <Col>
-                <Title id={props.id}>
-                    <a href={INDEX_PAGE} style={{ color: "white" }}>{t('title')}</a>
-                </Title>
+                <Title id='start'><a href={INDEX_PAGE} style={{ color: "white" }}>{t('title')}</a></Title>
             </Col>
 
-            <Col style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+            <Col id="header_links">
                 <a href="https://twitter.com/ManagementVoid" style={{ color: "white!important" }}>
                     <TwitterOutlined style={{ fontSize: "2em", marginRight: "0.5em" }} />
                 </a>
@@ -41,6 +38,8 @@ export function Header(props) {
                 </Fade>
             </Col>
         </Row>
+
+        <MobileOnly><Divider /></MobileOnly>
 
         {props.children}
     </Fragment>;

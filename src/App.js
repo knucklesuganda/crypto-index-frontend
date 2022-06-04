@@ -13,7 +13,7 @@ import "./App.css";
 function App() {
     return <Suspense fallback={null}>
         <BrowserRouter>
-            <Header id={'start'}>
+            <Header>
                 <Routes>
                     <Route path={INDEX_PAGE} element={<IndexPage />} />
                     <Route path={PRODUCT_PAGE} element={<ProductPage />} />

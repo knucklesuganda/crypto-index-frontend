@@ -7,6 +7,5 @@ const settings = {
     DEBUG: false,
     CHAIN_ID: '0x1',
 };
-console.log(settings.PUBLIC_RPC_URL)
 
 export default settings;

@@ -52,30 +52,27 @@ export function IndexBuyProducts(props) {
     }
 
 
-    return <Row>
+    return <Row style={{
+        justifyContent: "center",
+        placeContent: "center",
+        placeItems: "center",
+    }}>
         <Title id={props.id}>{t('index.buy.title')}</Title>
 
         {providerData === null ? <WalletConnector handleWalletConnection={handleWalletConnection} /> :
 
-            <Fragment>{
-                !productData ? <Loading style={{ height: "10vh", width: "100wv" }} /> :
-                    <Row style={{ display: "flex", justifyContent: "center" }}>
-                        <Col style={{ height: "80vh" }}>
-                            <Row gutter={[16, 16]} style={{
-                                paddingTop: "2em",
-                                paddingLeft: "1em",
-                                paddingRight: "1em"
-                            }}>{
-                                productData.map((product, index) =>
-                                    <ProductCard key={index} product={product}
-                                        className="productCard"
-                                        style={{ cursor: "pointer" }}
-                                    />
-                                )
-                            }</Row>
-                        </Col>
-                    </Row>}
-            </Fragment>
+            <Fragment>{!productData ? <Loading style={{ height: "10vh", width: "100wv" }} /> :
+                <Row style={{ display: "flex", justifyContent: "center" }}>
+                    <Col style={{ height: "80vh" }}>
+                        <Row gutter={[16, 16]} style={{ paddingTop: "2em", paddingLeft: "1em", paddingRight: "1em"}}>{
+                            productData.map((product, index) =>
+                                <ProductCard key={index} product={product} 
+                                    className="productCard" style={{ cursor: "pointer" }} />
+                            )
+                        }</Row>
+                    </Col>
+                </Row>
+            }</Fragment>
         }
 
     </Row>;

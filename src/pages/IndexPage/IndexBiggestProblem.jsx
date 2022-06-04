@@ -4,12 +4,21 @@ import { Title } from "../../components/Title";
 import { NextPage } from "../../components/NextPage";
 import { Fade } from "../../components/animations";
 import { useTranslation } from "react-i18next";
+import { useMobileQuery } from "../../components/MediaQuery";
+import useVisibility from "../../hooks/useVisibility";
 
 
 function TextElement(props) {
+    const isMobile = useMobileQuery();
+
     return <Fade isActive={props.currentText === props.index}>
-        <Typography.Title style={{ fontSize: "4em", textAlign: "center", wordBreak: "keep-all", 
-            whiteSpace: "normal", height: "40vh"}}>{props.children}</Typography.Title>
+        <Typography.Title style={{
+            fontSize: isMobile ? "3em" : "4em",
+            textAlign: "center",
+            wordBreak: "keep-all", 
+            whiteSpace: "normal",
+            height: "40vh",
+        }}>{props.children}</Typography.Title>
     </Fade>;
 }
 
@@ -20,11 +29,15 @@ export function IndexBiggestProblem(props) {
     const { t } = useTranslation();
     const currentTextInterval = useRef(null);
     const pageTexts = t('index.problems.texts');
+    const isMobile = useMobileQuery();
+
+    const textRef = useRef();
+    const isVisible = useVisibility(textRef);
 
     useEffect(() => {
 
         currentTextInterval.current = setInterval(() => {
-            if(props.isOpen){
+            if(isVisible){
                 setCurrentText(currentText + 1 > totalTexts ? currentText : currentText + 1);
             }
         }, 3000);
@@ -33,11 +46,17 @@ export function IndexBiggestProblem(props) {
     });
 
 
-    return <Row>
+    return <Row style={{ justifyContent: isMobile ? "center" : "inherit" }}>
         <Title id={props.id}>{t('index.problems.title')}</Title>
 
-        <Row style={{ height: "100vh", width: "100%", display: "flex", justifyContent: "center", paddingTop: "20vh" }}>
-            <Col>
+        <Row style={{
+            height: isMobile ? "50vh" : "100vh",
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            paddingTop: isMobile ? "2em" : "20vh"
+        }}>
+            <Col ref={textRef}>
                 <TextElement currentText={currentText} index={0}>{pageTexts[0]}</TextElement>
                 <TextElement currentText={currentText} index={1}>{pageTexts[1]}</TextElement>
                 <TextElement currentText={currentText} index={2}>{pageTexts[2]}</TextElement>
@@ -52,9 +71,7 @@ export function IndexBiggestProblem(props) {
                 </TextElement>
             </Col>
 
-            <Col span={24}>
-                <NextPage setNextPage={props.setNextPage} />
-            </Col>
+            <Col span={24}><NextPage setNextPage={props.setNextPage} /></Col>
         </Row>
     </Row>;
 }

@@ -4,6 +4,7 @@ import { Line } from "@ant-design/plots";
 import { BarChartOutlined, GlobalOutlined, SlidersOutlined } from '@ant-design/icons';
 import { NextPage } from "../../components";
 import { useTranslation } from "react-i18next";
+import { OnlyDesktop, useMobileQuery } from "../../components/MediaQuery";
 
 
 function PriceLines() {
@@ -79,6 +80,7 @@ export function IndexStart(props) {
     const allTitles = t('index.start.crypto_title.titles');
     const titleColors = ["#eb9c00", "#eb00bb", "#00e7eb", "#00eb10"];
     const iconStyle = { display: "flex", fontSize: "4em", justifyContent: "space-around" };
+    const isMobile = useMobileQuery();
 
     useEffect(() => {
         titleIntervalId.current = setInterval(() => {
@@ -101,15 +103,22 @@ export function IndexStart(props) {
     return (
         <Space wrap direction="vertical" style={{ width: "100%" }}>
 
-            <Row style={{ width: "100%" }}>
-                <Col span={16}>
-                    <PriceLines />
-                    <Typography.Text disabled style={{ paddingLeft: "0.5em" }}>
-                        {t('index.start.not_real_data')}
-                    </Typography.Text>
-                </Col>
+            <Row style={{ width: "100%", justifyContent: isMobile ? "center" : "inherit" }}>
+                <OnlyDesktop>
+                    <Col span={16}>
+                        <PriceLines />
+                        <Typography.Text disabled style={{ paddingLeft: "0.5em" }}>
+                            {t('index.start.not_real_data')}
+                        </Typography.Text>
+                    </Col>
+                </OnlyDesktop>
 
-                <Col span={7} style={{ display: "flex", paddingTop: "11em", justifyContent: "center" }}>
+                <Col span={7} style={{
+                    display: "flex",
+                    paddingTop: isMobile ? "0" : "11em",
+                    justifyContent: "center",
+                    textAlign: isMobile ? "center" : "inherit",
+                }}>
                     <Typography.Title level={1} style={{ margin: 0, padding: 0 }}>
                         {t('index.start.crypto_title.start')}{" "}
                         <div style={{ color: titleColors[titleIndex], transition: "100ms" }} >
@@ -126,17 +135,22 @@ export function IndexStart(props) {
                 justifyContent: "space-around",
                 alignContent: "center",
                 placeContent: "space-around",
-                marginTop: "5em",
+                marginTop: isMobile ? "1em" : "5em",
             }}>
                 {[
                     [<GlobalOutlined style={iconStyle} />, t('index.start.cards.global_solutions')],
                     [<BarChartOutlined style={iconStyle} />, t('index.start.cards.new_derivatives')],
                     [<SlidersOutlined style={iconStyle} />, t("index.start.cards.protect")],
                 ].map((data, index) =>
-                    <Col key={index}>
+                    <Col key={index} style={isMobile ? {
+                        maxWidth: "15em",
+                        border: "2px solid #0a0a0a",
+                        padding: "1em",
+                        marginBottom: "1em",
+                        textAlign: "center",
+                    } : null}>
                         {data[0]}
                         <Divider />
-
                         <Typography.Text style={{ fontSize: "1.1em" }}>{data[1]}</Typography.Text>
                     </Col>
                 )}

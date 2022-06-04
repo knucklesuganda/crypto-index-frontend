@@ -1,7 +1,7 @@
 import { Title } from "./Title";
 import { Loading } from "./Loading";
 import { NextPage } from "./NextPage";
-import { Header } from "./Header";
+import { Header } from "./Header/Header";
 import { addTokenNotification, AddToken } from "./AddToken";
 import { WalletConnector } from "./WalletConnector";
 import { UserAgreement } from "./UserAgreement";
