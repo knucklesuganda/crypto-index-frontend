@@ -41,7 +41,7 @@ export async function connectWallet(isInitial) {
             web3ModalProvider = await web3Modal.connectTo(sessionStorage.provider);
         }else{
 
-            if(isInitial){
+            if(isInitial === true){
                 return null;
             }
 
