@@ -413,10 +413,10 @@ UNLESS YOU TIMELY PROVIDE US WITH A COURT OPT-OUT NOTICE (AS DEFINED BELOW IN TH
 }
 
 
-export function UserAgreement(){
-    if(true || !localStorage.hasSigned){
+export function UserAgreement(props){
+    if(!localStorage.hasSigned){
         userAgreementModal();
     }
 
-    return <Typography.Text onClick={userAgreementModal}>User agreement</Typography.Text>;
+    return <Typography.Text style={props.style} onClick={userAgreementModal}>User agreement</Typography.Text>;
 }

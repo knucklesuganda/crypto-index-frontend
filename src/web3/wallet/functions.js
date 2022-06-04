@@ -9,6 +9,4 @@ export async function addTokenToWallet(provider, indexToken) {
             image: indexToken.image,
         },
     });
-
 }
-

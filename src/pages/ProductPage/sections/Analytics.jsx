@@ -65,7 +65,9 @@ export function AnalyticsSection(props) {
                                 decimals: props.productData.buyToken.decimals,
                                 image: props.productData.buyToken.image,
                             }
-                        );
+                        ).catch((error) => {
+                            message.error({ content: `${t('error')}: ${error}` });
+                        });
                     }}>{t('buy_product.analytics.buy_token')}: {props.productData.buyToken.symbol}</Typography.Text>
             ].map((text, index) => <Col key={index}>{text}</Col>)}
         </Col>
@@ -109,6 +111,8 @@ export function AnalyticsSection(props) {
                                             symbol: tokenInfo.token.symbol,
                                             decimals: tokenInfo.token.decimals,
                                             image: tokenInfo.token.image,
+                                        }).catch((error) => {
+                                            message.error({ content: `${t('error')}: ${error}` });
                                         });
                                     }} title={t('buy_product.analytics.save_token')} />
                                 </Row>,

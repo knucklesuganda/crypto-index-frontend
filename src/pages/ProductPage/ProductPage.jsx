@@ -5,7 +5,7 @@ import { Loading, WalletConnector } from "../../components";
 import { formatBigNumber } from "../../web3/utils";
 import { checkProductExists } from "../../web3/contracts/ObserverContract";
 import { addTokenToWallet } from "../../web3/wallet/functions";
-import { Col, Row, Divider, Typography } from "antd";
+import { Col, Row, Divider, Typography, message } from "antd";
 import { AnalyticsSection } from "./sections/Analytics";
 import { ProductBuySection } from "./sections/ProductBuy";
 import { ProductInfo } from "./sections/ProductInfo";
@@ -68,7 +68,9 @@ export default function ProductPage() {
                                 decimals: productData.productToken.decimals,
                                 image: productData.productToken.image,
                             }
-                        )
+                        ).catch((error) => {
+                            message.error({ content: `${t('error')}: ${error}` });
+                        });            
                     }}>{productData.name}</Typography.Title>
 
                     <Typography.Title level={4} style={{ margin: 0, fontWeight: 100 }}

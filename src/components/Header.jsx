@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import { INDEX_PAGE } from "../routes";
 import { Title } from "./Title";
 import { useTranslation } from "react-i18next";
-import { Col, Row, Typography } from "antd";
+import { Col, Row } from "antd";
 import { TranslationOutlined, TwitterOutlined } from '@ant-design/icons';
 import { Fade } from "./animations";
 import { UserAgreement } from ".";
@@ -28,16 +28,9 @@ export function Header(props) {
                     <TwitterOutlined style={{ fontSize: "2em", marginRight: "0.5em" }} />
                 </a>
 
-                <UserAgreement />
+                <UserAgreement style={{ marginRight: "1em" }} />
 
                 <Fade isActive>
-                    <Col style={{ marginRight: "1em" }}>{
-                        sessionStorage.getItem('account') === null ? null :
-                            <Typography.Text style={{cursor: "pointer", fontSize: "1.2em"}} title={sessionStorage.account}>
-                                {sessionStorage.account.slice(0, 20)}...
-                            </Typography.Text>
-                    }</Col>
-
                     <TranslationOutlined onClick={() => {
                         if (i18n.language === "en") {
                             i18n.changeLanguage("ru");

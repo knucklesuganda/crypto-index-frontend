@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { message } from "antd";
+import { useState, useEffect } from "react";
 import { connectWallet } from "../web3/wallet/providers";
 
 export function useProvider() {
@@ -8,10 +9,20 @@ export function useProvider() {
 
         return connectWallet(isInitial).then((providerData) => {
             setProviderData(providerData);
-        }).catch((error) => { if(!isInitial){ throw error; } });
+        }).catch((error) => {
+            if(!isInitial){
+                message.error(error);
+            }
+        });
 
     };
 
-    handleWalletConnection(true);
+    useEffect(() => {
+        if(!sessionStorage.isSent){
+            console.log(1);
+            sessionStorage.isSent = true;
+            handleWalletConnection(true);
+        }
+    });
     return { providerData, handleWalletConnection };
 }
