@@ -7,7 +7,7 @@ import settings from "../../settings";
 const providerOptions = {
     walletconnect: {
         package: window.WalletConnectProvider.default,
-        options: { rpc: { 1337: settings.PUBLIC_RPC_URL } },
+        options: { rpc: { 1: settings.PUBLIC_RPC_URL } },
     },
 };
 
