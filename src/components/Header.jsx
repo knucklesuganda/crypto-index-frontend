@@ -24,9 +24,8 @@ export function Header(props) {
             </Col>
 
             <Col style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
-                <a rel="norefferer" target="_blank" href="https://twitter.com/ManagementVoid"
-                    style={{ color: "white!important" }}>
-                        <TwitterOutlined style={{ fontSize: "2em", marginRight: "0.5em" }} />
+                <a href="https://twitter.com/ManagementVoid" style={{ color: "white!important" }}>
+                    <TwitterOutlined style={{ fontSize: "2em", marginRight: "0.5em" }} />
                 </a>
 
                 <UserAgreement />

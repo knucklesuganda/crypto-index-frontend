@@ -17,7 +17,7 @@ function ProductCard(props) {
         <Card title={props.product.name} hoverable onClick={() => {
             navigate(createProductPage(props.product.address));
         }} className={props.className} extra={
-            <img style={{ width: "4em" }} alt="Product image" src={props.product.image} />
+            <img style={{ width: "4em" }} alt="Product" src={props.product.image} />
         }>{props.product.description}</Card>
     </Col>
 }

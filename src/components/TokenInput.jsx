@@ -17,7 +17,7 @@ export function TokenInput(props) {
     const [status, setStatus] = useState("");
     const { t } = useTranslation();
 
-    const handleChange = useCallback((value) => {
+    const handleChange = (value) => {
         const newAmount = parseFloat(value);
 
         if (isNaN(newAmount)) {
@@ -29,7 +29,7 @@ export function TokenInput(props) {
         }
 
         setInputValue(value);
-    });
+    };
 
     return <Form.Item name="amount" rules={[{ required: true, message: t('buy_product.buy_form.amount.error') }]}>
         <InputNumber
