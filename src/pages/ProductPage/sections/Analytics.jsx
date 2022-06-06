@@ -48,7 +48,8 @@ export function AnalyticsSection(props) {
                 </AnalyticsText>,
 
                 <AnalyticsText title={t("buy_product.analytics.total_locked_value_hint")}>
-                    {t('buy_product.analytics.total_locked_value')}: {formatBigNumber(props.productData.totalLockedValue)}$
+                    {t('buy_product.analytics.total_locked_value')}: {' '}
+                    {formatBigNumber(props.productData.totalLockedValue)} {props.productData.buyToken.symbol}
                 </AnalyticsText>,
 
                 <AnalyticsText title={t("buy_product.analytics.product_fee_hint")}>
@@ -128,7 +129,7 @@ export function AnalyticsSection(props) {
                                             });
                                         }} title={t('buy_product.analytics.save_token')} />
                                     </Row>,
-                                    tokenPrice: `${formatBigNumber(tokenInfo.price)}$`,
+                                    tokenPrice: `${formatBigNumber(tokenInfo.price)} ${props.productData.buyToken.symbol}`,
                                     tokenQuantity: formatBigNumber(tokenInfo.productBalance),
                                 };
                             })

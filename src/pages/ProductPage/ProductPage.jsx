@@ -76,8 +76,9 @@ export default function ProductPage() {
                         });            
                     }}>{productData.name}</Typography.Title>
 
-                    <Typography.Title level={4} style={{ margin: 0, fontWeight: 100 }}
-                        title={t('buy_product.product_price')}> ({formatBigNumber(productData.price)}$)</Typography.Title>
+                    <Typography.Title level={4} style={{ margin: 0, fontWeight: 100 }} 
+                        title={t('buy_product.product_price')}>
+                            ({formatBigNumber(productData.price)} {productData.buyToken.symbol})</Typography.Title>
                 </Row>
 
                 <ProductBuySection providerData={providerData} productData={productData} />

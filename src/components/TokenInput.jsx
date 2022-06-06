@@ -12,7 +12,15 @@ function getTokenAdjustedAmount(amount, productPrice) {
 
 
 export function TokenInput(props) {
-    const { productPrice, prefixSymbol, maxValue, inputValue, setInputValue, useAddon } = props;
+    const {
+        productPrice,
+        prefixSymbol,
+        postfixSymbol,
+        maxValue,
+        inputValue,
+        setInputValue,
+        useAddon,
+    } = props;
     const [tokenUsdPrice, setTokenUsdPrice] = useState(0);
     const [status, setStatus] = useState("");
     const { t } = useTranslation();
@@ -45,7 +53,7 @@ export function TokenInput(props) {
             formatter={formatNumber}
             parser={value => value.replace(/\$\s?|(,*)/g, '')}
             addonAfter={
-                useAddon ? <Typography.Text>{tokenUsdPrice}$</Typography.Text> : null
+                useAddon ? <Typography.Text>{tokenUsdPrice} {postfixSymbol}</Typography.Text> : null
             } />
     </Form.Item>;
 }

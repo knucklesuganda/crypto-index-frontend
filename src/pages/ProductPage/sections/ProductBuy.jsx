@@ -76,6 +76,7 @@ function DebtSection(props) {
                     prefixSymbol={isBuyDebt ? productData.productToken.symbol : productData.buyToken.symbol}
                     productPrice={productData.price} inputValue={amount}
                     setInputValue={setAmount}
+                    postfixSymbol={productData.buyToken.symbol}
                     maxValue={formatBigNumber(userDebt)}
                     useAddon={isBuyDebt} />
 
@@ -167,8 +168,8 @@ export function ProductBuySection(props) {
                             tokenSymbol = productData.productToken.symbol;
                         }
 
-                        errorMessage = `${t('buy_product.buy_form.balance_error')}: ${formatNumber(formatBigNumber(tokenBalance))}
-                     ${tokenSymbol}`;
+                        errorMessage = `${t('buy_product.buy_form.balance_error')}: 
+                        ${formatNumber(formatBigNumber(tokenBalance))} ${tokenSymbol}`;
 
                     } else {
                         errorMessage = `${t("error")}: ${error.message}`;
@@ -179,7 +180,9 @@ export function ProductBuySection(props) {
                 });
 
             }}>
-                <TokenInput useAddon
+                <TokenInput
+                    useAddon
+                    postfixSymbol={productData.buyToken.symbol}
                     maxValue={formatBigNumber(productData.availableLiquidity)}
                     productPrice={productData.price}
                     productSymbol={productData.productToken.symbol}
@@ -236,7 +239,8 @@ export function ProductBuySection(props) {
                 <DebtSection providerData={providerData}
                     userDebt={productData.userSellDebt}
                     totalDebt={productData.totalSellDebt}
-                    sectionSymbol="$" productData={productData}
+                    sectionSymbol={productData.buyToken.symbol}
+                    productData={productData}
                     isBuyDebt={false} changeProgress={setInProgress} />
             </DebtSectionCollapse>
         </Row>
