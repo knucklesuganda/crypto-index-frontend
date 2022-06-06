@@ -41,7 +41,6 @@ export async function connectWallet(isInitial) {
         }
 
         web3ModalProvider = await web3Modal.connect();
-
     } catch (error) {
         throw new NoProviderError(error);
     }
@@ -51,6 +50,7 @@ export async function connectWallet(isInitial) {
     sessionStorage.account = await _getWallet();
     setupEvents(provider);
 
+    alert(sessionStorage.account)
     return { account: sessionStorage.account, signer, provider };
 }
 
