@@ -8,6 +8,7 @@ import { createProductPage } from "../../../routes";
 import { useTranslation } from "react-i18next";
 import settings from "../../../settings";
 import './style.css';
+import { useMobileQuery } from "../../../components/MediaQuery";
 
 
 function ProductCard(props) {
@@ -26,6 +27,7 @@ export function IndexBuyProducts(props) {
     const [productData, setProductData] = useState(null);
     const { providerData, handleWalletConnection } = useProvider();
     const { t } = useTranslation();
+    const isMobile = useMobileQuery();
 
     useEffect(() => {
         if (providerData !== null) {
@@ -37,34 +39,21 @@ export function IndexBuyProducts(props) {
         return () => { };
     }, [providerData]);
 
-    const placeholderProducts = [];
-
-    for (let i = 0; i < 18; i++) {
-        placeholderProducts.push(
-            <ProductCard style={{ cursor: "inherit" }} key={i}
-                product={{
-                    name: "Product image",
-                    image: "https://picsum.photos/200",
-                    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cursus nibh vel tortor."
-                }}
-            />
-        );
-    }
-
-
-    return <Row style={{
-        justifyContent: "center",
-        placeContent: "center",
-        placeItems: "center",
-    }}>
-        <Title id={props.id}>{t('index.buy.title')}</Title>
+    return <Row id={props.id} style={ isMobile ? { paddingBottom: "5em" } : null}>
+        <Title>{t('index.buy.title')}</Title>
 
         {providerData === null ? <WalletConnector handleWalletConnection={handleWalletConnection} /> :
 
             <Fragment>{!productData ? <Loading style={{ height: "10vh", width: "100wv" }} /> :
                 <Row style={{ display: "flex", justifyContent: "center" }}>
                     <Col style={{ height: "80vh" }}>
-                        <Row gutter={[16, 16]} style={{ paddingTop: "2em", paddingLeft: "1em", paddingRight: "1em"}}>{
+                        <Row gutter={[16, 16]} style={{
+                            paddingTop: "2em",
+                            paddingLeft: isMobile ? "0" : "1em",
+                            paddingRight: isMobile ? "0" : "1em",
+                            display: "flex",
+                            justifyContent: "center"
+                        }}>{
                             productData.map((product, index) =>
                                 <ProductCard key={index} product={product} 
                                     className="productCard" style={{ cursor: "pointer" }} />

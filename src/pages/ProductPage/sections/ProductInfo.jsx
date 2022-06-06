@@ -1,12 +1,14 @@
 import { Avatar, Row, Typography, Card, Col } from "antd";
 import { QuestionOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
+import { useMobileQuery } from "../../../components/MediaQuery";
 
 
 export function ProductInfo(props) {
     const { t } = useTranslation();
+    const isMobile = useMobileQuery();
 
-    return <Col>
+    return <Col style={{ marginTop: isMobile ? "2em" : "0" }}>
         <Typography.Title>{t('product_info.title')}</Typography.Title>
 
         <Row>

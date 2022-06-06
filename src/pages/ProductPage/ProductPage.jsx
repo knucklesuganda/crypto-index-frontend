@@ -11,6 +11,7 @@ import { ProductBuySection } from "./sections/ProductBuy";
 import { ProductInfo } from "./sections/ProductInfo";
 import { useTranslation } from "react-i18next";
 import settings from "../../settings";
+import { OnlyDesktop } from "../../components/MediaQuery";
 
 
 export default function ProductPage() {
@@ -40,7 +41,9 @@ export default function ProductPage() {
         paddingRight: "1em", paddingBottom: "4em", paddingLeft: "1em", width: "100wv"
     }}>{productData === null ? <Loading /> :
         <Fragment>
-            <Divider style={{ marginTop: "0.2em" }} />
+            <OnlyDesktop>
+                <Divider style={{ marginTop: "0.2em" }} />
+            </OnlyDesktop>
 
             <Row style={{
                 width: "100%", display: "flex",

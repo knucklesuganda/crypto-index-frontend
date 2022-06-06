@@ -1,4 +1,4 @@
-import Web3Modal, { getInjectedProvider } from "web3modal";
+import Web3Modal from "web3modal";
 import { ethers } from "ethers";
 import { setupEvents } from "./events";
 import settings from "../../settings";
@@ -18,14 +18,14 @@ export class NoInitialProviderError extends Error { }
 let signer = null, provider = null;
 const web3Modal = new Web3Modal({
 
-    cacheProvider: false,
+    cacheProvider: true,
     providerOptions,
 
     theme: {
         background: "#0a0a0a",
         main: "#ffffff",
         secondary: "#177ddc",
-        border: "#fff",
+        border: "#a0a0a0",
         hover: "#272323"
     },
 });
@@ -36,18 +36,11 @@ export async function connectWallet(isInitial) {
     let web3ModalProvider;
 
     try {
-
-        if(sessionStorage.provider){
-            web3ModalProvider = await web3Modal.connectTo(sessionStorage.provider);
-        }else{
-
-            if(isInitial === true){
-                return null;
-            }
-
-            web3ModalProvider = await web3Modal.connect();
-            sessionStorage.provider = getInjectedProvider()['id'];
+        if (isInitial === true) {
+            return null;
         }
+
+        web3ModalProvider = await web3Modal.connect();
 
     } catch (error) {
         throw new NoProviderError(error);
@@ -62,8 +55,8 @@ export async function connectWallet(isInitial) {
 }
 
 
-export function clearProvider(){
-    sessionStorage.removeItem('provider');
+export function clearProvider() {
+    web3Modal.clearCachedProvider();
 }
 
 

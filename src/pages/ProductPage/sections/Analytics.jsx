@@ -7,6 +7,7 @@ import { SaveOutlined } from '@ant-design/icons';
 import { addTokenToWallet } from "../../../web3/wallet/functions";
 import { getIndexComponents } from "../../../web3/contracts/IndexContract";
 import { Col, Row, Typography, Table, message } from "antd";
+import { OnlyDesktop } from "../../../components/MediaQuery";
 
 
 export function AnalyticsSection(props) {
@@ -71,6 +72,7 @@ export function AnalyticsSection(props) {
             ].map((text, index) => <Col key={index}>{text}</Col>)}
         </Col>
 
+        <OnlyDesktop>
         <Row style={{ paddingTop: "1em", width: "100%", display: "flex", alignItems: "center" }} gutter={[100, 16]}>
             <Col span={12}>
                 <Pie legend={{ flipPage: false }}
@@ -143,6 +145,7 @@ export function AnalyticsSection(props) {
                 />
             </Col>
         </Row>
+        </OnlyDesktop>
 
     </Col>;
 }

@@ -1,5 +1,6 @@
 import { Col, Typography } from "antd";
 import { Modal } from "antd";
+import { useMobileQuery } from "./MediaQuery";
 
 
 function TermsTitle(props){
@@ -20,10 +21,10 @@ function TermsText(props){
 }
 
 
-function userAgreementModal(){
+function userAgreementModal(isMobile){
     Modal.info({
         title: "Void Management website user agreement",
-        width: "60%",
+        width: isMobile ? "80%" : "60%",
         okText: "I hereby agree to the terms and conditions",
         onOk: () => { localStorage.hasSigned = true; },
         bodyStyle: {
@@ -414,9 +415,13 @@ UNLESS YOU TIMELY PROVIDE US WITH A COURT OPT-OUT NOTICE (AS DEFINED BELOW IN TH
 
 
 export function UserAgreement(props){
+    const isMobile = useMobileQuery();
+
     if(!localStorage.hasSigned){
-        userAgreementModal();
+        userAgreementModal(isMobile);
     }
 
-    return <Typography.Text style={props.style} onClick={userAgreementModal}>User agreement</Typography.Text>;
+    return <Typography.Text style={props.style} onClick={() => { userAgreementModal(isMobile); }}>
+        User agreement
+    </Typography.Text>;
 }

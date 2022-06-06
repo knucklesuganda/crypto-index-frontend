@@ -8,7 +8,7 @@ export function Title(props) {
     return <Col span={24} style={{
         paddingLeft: isMobile ? "0" : "1em",
         display: "flex",
-        justifyContent: "center",
+        justifyContent: isMobile ? "center" : "inherit",
         ...props.style,
     }} id={props.id}>
         <Typography.Text style={{ color: "white!important", fontSize: "2em" }}>{ props.children }</Typography.Text>
