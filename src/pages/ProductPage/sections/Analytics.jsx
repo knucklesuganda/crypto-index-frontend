@@ -19,7 +19,6 @@ function AnalyticsText(props){
 export function AnalyticsSection(props) {
     const providerData = props.providerData;
     const [productComponents, setProductComponents] = useState(null);
-    const textStyle = { fontSize: "1.2em" };
 
     useEffect(() => {
         getIndexComponents(providerData, props.productAddress).then(components => {
