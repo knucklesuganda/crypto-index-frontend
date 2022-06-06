@@ -50,7 +50,6 @@ export async function connectWallet(isInitial) {
     sessionStorage.account = await _getWallet();
     setupEvents(provider);
 
-    alert(sessionStorage.account)
     return { account: sessionStorage.account, signer, provider };
 }
 

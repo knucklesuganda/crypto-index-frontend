@@ -12,7 +12,8 @@ import { OnlyDesktop } from "../../../components/MediaQuery";
 
 
 function AnalyticsText(props){
-    return <Typography.Text style={{ fontSize: "1.2em" }} title={props.title}>{props.children}</Typography.Text>
+    return <Typography.Text style={{ fontSize: "1.2em", ...props.style }} title={props.title}>
+        {props.children}</Typography.Text>;
 }
 
 
@@ -33,17 +34,14 @@ export function AnalyticsSection(props) {
     }
 
     return <Col>
-        <Typography.Title>{t('buy_product.analytics.title')}</Typography.Title>
+        <Typography.Title style={{ display: "flex", placeContent: "center", marginTop: "1em" }}>
+            {t('buy_product.analytics.title')}
+        </Typography.Title>
 
         <Col style={{ border: "1px solid #303030", background: "#0a0a0a", padding: "1em" }}>
             {[
                 <AnalyticsText>
                     {t('buy_product.analytics.about_product')}: {props.productData.longDescription}
-                </AnalyticsText>,
-
-                <AnalyticsText title={t("buy_product.analytics.balance_hint")}>
-                    {t('buy_product.analytics.balance')}: {formatBigNumber(props.productData.productToken.balance)} {
-                        props.productData.productToken.symbol}
                 </AnalyticsText>,
 
                 <AnalyticsText title={t("buy_product.analytics.total_locked_value_hint")}>

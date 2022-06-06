@@ -9,7 +9,9 @@ export function ProductInfo(props) {
     const isMobile = useMobileQuery();
 
     return <Col style={{ marginTop: isMobile ? "2em" : "0" }}>
-        <Typography.Title>{t('product_info.title')}</Typography.Title>
+        <Typography.Title style={{ display: "flex", placeContent: "center", marginTop: "1em" }}>
+            {t('product_info.title')}
+        </Typography.Title>
 
         <Row>
             {props.data.map((item, index) => <Col key={index} span={12}>

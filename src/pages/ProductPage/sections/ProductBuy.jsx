@@ -15,6 +15,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { TokenInput } from "../../../components/TokenInput";
 import { addTokenNotification } from "../../../components";
 import { parseEther } from "ethers/lib/utils";
+import { OnlyDesktop } from "../../../components/MediaQuery";
 
 
 function DebtSection(props) {
@@ -245,5 +246,16 @@ export function ProductBuySection(props) {
             </DebtSectionCollapse>
         </Row>
 
+
+        <OnlyDesktop>
+            <Col style={{
+                position: "absolute", top: "0.5em", right: "70%", width: "30em",
+            }}>
+                <Typography.Text style={{ fontSize: "1.2em" }} title={t("buy_product.analytics.balance_hint")}>
+                    {t('buy_product.analytics.balance')}: {formatBigNumber(props.productData.productToken.balance)} {
+                        props.productData.productToken.symbol}
+                </Typography.Text>
+            </Col>
+        </OnlyDesktop>
     </Spin>;
 }
