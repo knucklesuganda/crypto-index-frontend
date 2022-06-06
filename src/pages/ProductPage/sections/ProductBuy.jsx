@@ -5,10 +5,10 @@ import { useTranslation } from "react-i18next";
 import {
     sellIndex,
     buyIndex,
-    retrieveIndexDebt, 
+    retrieveIndexDebt,
     BalanceError,
     ProductSettlementError,
- } from "../../../web3/contracts/IndexContract";
+} from "../../../web3/contracts/IndexContract";
 import { Form, Col, Radio, Row, Button, Typography, Collapse, message, Avatar, Spin } from "antd";
 import { RiseOutlined, FallOutlined } from '@ant-design/icons';
 import { LoadingOutlined } from "@ant-design/icons";
@@ -28,7 +28,7 @@ function DebtSection(props) {
     return <Col style={{ display: "flex", flexDirection: "column", alignContent: 'center' }}>
         <Typography.Text style={{ paddingBottom: "0.2em", fontSize: "1.2em" }}
             title={t('buy_product.total_available_debt_hint')}>
-                {t('buy_product.total_available_debt_text')}: {formatBigNumber(totalDebt, 6)} {sectionSymbol}
+            {t('buy_product.total_available_debt_text')}: {formatBigNumber(totalDebt, 6)} {sectionSymbol}
         </Typography.Text>
 
         <Typography.Text style={{ paddingBottom: "0.2em", fontSize: "1.2em" }}>
@@ -51,12 +51,14 @@ function DebtSection(props) {
                         isSettlement: productData.isSettlement,
                         isBuyDebt: isBuyDebt,
                     }).then(() => {
-                        addTokenNotification({
-                            providerData,
-                            token: productData.productToken,
-                            message: t('add_token_notification'),
-                            productName: productData.name,
-                        });
+                        if (isBuyDebt) {
+                            addTokenNotification({
+                                providerData,
+                                token: productData.productToken,
+                                message: t('add_token_notification'),
+                                productName: productData.name,
+                            });
+                        }
                         changeProgress(false);
                     }).catch(error => {
                         changeProgress(false);
@@ -90,7 +92,7 @@ function DebtSection(props) {
 function DebtSectionCollapse(props) {
     const { sectionTitle, sectionIcon, debt } = props;
 
-    if(debt.eq(0)) { return null; }
+    if (debt.eq(0)) { return null; }
 
     return <Col>
         <Collapse defaultActiveKey={['1']} bordered={false} style={{ width: "25em", marginLeft: "1em" }}>
@@ -123,8 +125,11 @@ export function ProductBuySection(props) {
                 if (productData.isSettlement) {
                     message.error(t("buy_product.buy_form.settlement_error"));
                     return;
-                }else if(productData.availableLiquidity.lt(weiAmount)){
+                } else if (productData.availableLiquidity.lt(weiAmount)) {
                     message.error(t("buy_product.buy_form.liquidity_error"));
+                    return;
+                } else if (productData.availableTokens.lt(weiAmount)) {
+                    message.error(t("buy_product.buy_form.no_tokens_error"));
                     return;
                 }
 
@@ -162,11 +167,10 @@ export function ProductBuySection(props) {
                             tokenSymbol = productData.productToken.symbol;
                         }
 
-                        errorMessage = `${t('buy_product.buy_form.balance_error')}: ${
-                            formatNumber(formatBigNumber(tokenBalance))}
+                        errorMessage = `${t('buy_product.buy_form.balance_error')}: ${formatNumber(formatBigNumber(tokenBalance))}
                      ${tokenSymbol}`;
 
-                    }else {
+                    } else {
                         errorMessage = `${t("error")}: ${error.message}`;
                     }
 
@@ -218,24 +222,22 @@ export function ProductBuySection(props) {
 
         <Row justify="space-around">
             <DebtSectionCollapse sectionIcon={<RiseOutlined />}
-                sectionTitle={t('buy_product.buy_debt')}
-                debt={productData.userBuyDebt}>
-                    <DebtSection providerData={providerData}
-                        userDebt={productData.userBuyDebt}
-                        totalDebt={productData.totalBuyDebt}
-                        sectionSymbol={productData.productToken.symbol}
-                        productData={productData} isBuyDebt={true}
+                sectionTitle={t('buy_product.buy_debt')} debt={productData.userBuyDebt}>
+                <DebtSection providerData={providerData}
+                    userDebt={productData.userBuyDebt}
+                    totalDebt={productData.totalBuyDebt}
+                    sectionSymbol={productData.productToken.symbol}
+                    productData={productData} isBuyDebt={true}
                     changeProgress={setInProgress} />
             </DebtSectionCollapse>
 
             <DebtSectionCollapse sectionIcon={<FallOutlined />}
-                sectionTitle={t('buy_product.sell_debt')}
-                debt={productData.userSellDebt}>
-                    <DebtSection providerData={providerData}
-                        userDebt={productData.userSellDebt}
-                        totalDebt={productData.totalSellDebt}
-                        sectionSymbol="$" productData={productData}
-                        isBuyDebt={false} changeProgress={setInProgress} />
+                sectionTitle={t('buy_product.sell_debt')} debt={productData.userSellDebt}>
+                <DebtSection providerData={providerData}
+                    userDebt={productData.userSellDebt}
+                    totalDebt={productData.totalSellDebt}
+                    sectionSymbol="$" productData={productData}
+                    isBuyDebt={false} changeProgress={setInProgress} />
             </DebtSectionCollapse>
         </Row>
 

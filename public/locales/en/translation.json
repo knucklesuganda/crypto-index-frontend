@@ -52,6 +52,7 @@
                     "exchanges": "exchanges"
                 }
             },
+            "no_tokens_error": "Not enough available tokens",
             "liquidity_error": "Not enough liquidity, try buying less tokens or wait for some time",
             "balance_error": "You do not have enough tokens. Your balance",
             "settlement_error": "You cannot interact with the product while the funds are being settled",
@@ -69,6 +70,8 @@
             "total_locked_value_hint": "Total value of the tokens locked in the product",
 
             "buy_token": "Buy Token",
+            "available_tokens": "Available tokens/Max tokens",
+            "available_tokens_hint": "Available tokens to buy",
 
             "product_fee": "Product fee",
             "product_fee_hint": "Fee that you pay for all the operations",

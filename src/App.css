@@ -30,11 +30,6 @@ html {
     background: #000000!important;
 }
 
-a:visited, a:hover, a:active, a{
-    color: white!important;
-}
-
-
 .web3modal-provider-wrapper{
     border-radius: 0;
 }

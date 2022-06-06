@@ -21,8 +21,8 @@ export function Header(props) {
             </Col>
 
             <Col id="header_links">
-                <a href="https://twitter.com/ManagementVoid" style={{ color: "white!important" }}>
-                    <TwitterOutlined style={{ fontSize: "2em", marginRight: "0.5em" }} />
+                <a href="https://twitter.com/ManagementVoid" style={{ color: "white" }}>
+                    <TwitterOutlined style={{ color: "white", fontSize: "2em", marginRight: "0.5em" }} />
                 </a>
 
                 <UserAgreement style={{ marginRight: "1em" }} />

@@ -8,10 +8,10 @@ export function WalletConnector(props) {
     const [isHidden, setIsHidden] = useState(false);
     const { t } = useTranslation();
 
-    const connectWallet = useCallback(() => {
+    const connectWallet = useCallback((isInitial) => {
 
         setIsHidden(true);
-        props.handleWalletConnection().catch((error) => {
+        props.handleWalletConnection(isInitial).catch((error) => {
             setIsHidden(false);
         });
 
@@ -31,21 +31,18 @@ export function WalletConnector(props) {
     }}>
         <Card style={{ background: "#0a0a0a", boxShadow: "5px 5px 25px 0px rgba(255, 255, 255, 0.2)" }}>
             <Col>
-                <Typography.Text style={{ fontSize: "1.2em" }}>
-                    {t("wallet_connector.must_connect")}
-                </Typography.Text>
+                <Typography.Text style={{ fontSize: "1.2em" }}>{t("wallet_connector.must_connect")}</Typography.Text>
             </Col>
 
             <Col>
-                <Button type="primary" style={{ width: "20em", marginTop: "1em" }} onClick={() => { connectWallet(); }}>
-                    {t("wallet_connector.connect_wallet")}
-                </Button>
+                <Button type="primary" style={{ width: "20em", marginTop: "1em" }}
+                    onClick={() => { connectWallet(false); }}>{t("wallet_connector.connect_wallet")}</Button>
             </Col>
 
             <Col>
                 <Button type="text" size="middle" style={{ marginTop: "0.5em" }} onClick={() => {
                     clearProvider();
-                    connectWallet();
+                    connectWallet(false);
                 }}>{t("wallet_connector.choose_another_provider")}</Button>
             </Col>
         </Card>
