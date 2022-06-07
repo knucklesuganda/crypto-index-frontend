@@ -41,8 +41,9 @@ export function WalletConnector(props) {
 
             <Col>
                 <Button type="text" size="middle" style={{ marginTop: "0.5em" }} onClick={() => {
-                    clearProvider();
-                    connectWallet(false);
+                    clearProvider().then(() => {
+                        connectWallet(false);
+                    });
                 }}>{t("wallet_connector.choose_another_provider")}</Button>
             </Col>
         </Card>

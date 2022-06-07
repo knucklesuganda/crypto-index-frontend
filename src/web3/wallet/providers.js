@@ -54,8 +54,9 @@ export async function connectWallet(isInitial) {
 }
 
 
-export function clearProvider() {
+export async function clearProvider() {
     web3Modal.clearCachedProvider();
+    sessionStorage.removeItem('account');
 }
 
 
