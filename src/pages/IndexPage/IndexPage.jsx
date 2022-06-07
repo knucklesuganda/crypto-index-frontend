@@ -1,4 +1,4 @@
-import { useState, useLayoutEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { Row, Col, Menu, Divider } from "antd";
 import { IndexBiggestProblem } from "./IndexBiggestProblem";
 import { IndexStart } from "./IndexStart";
@@ -17,16 +17,6 @@ export default function IndexPage() {
     const isDesktop = useDesktopQuery();
     const isTransition = useRef(false);
 
-    useLayoutEffect(() => {
-        if(isDesktop){
-            const originalStyle = window.getComputedStyle(document.body).overflow;
-            document.body.style.overflow = "hidden";
-            return () => (document.body.style.overflow = originalStyle);
-        }else{
-            return () => {};
-        }
-    }, [isDesktop]);
-
     const scrollIntoComponent = (componentId, page) => {
         document.getElementById(componentId).scrollIntoView({ behavior: "smooth" });
         setCurrentPage(page);
@@ -38,40 +28,6 @@ export default function IndexPage() {
             paddingRight: isDesktop ? "1em" : "0",
             justifyContent: isDesktop ? "inherit" : "center",
             paddingTop: "0.5em",
-        }} onWheel={(event) => {
-            if(isTransition.current || !isDesktop){
-                return;
-            }
-
-            let newPageId, newPageNum;
-
-            if (event.deltaY > 0) {
-
-                switch(currentPage){
-                    case 0:
-                        newPageId = aboutUsId;
-                        newPageNum = 1;
-                        break;
-                    default:
-                        newPageId = buyProductsId;
-                        newPageNum = 2;
-                        break;
-                }
-            }else if(event.deltaY < 0){
-                switch(currentPage){
-                    case 2:
-                        newPageId = aboutUsId;
-                        newPageNum = 1;
-                        break;
-                    default:
-                        newPageId = startId;
-                        newPageNum = 0;
-                        break;
-                }
-            }
-
-            isTransition.current = true;
-            scrollIntoComponent(newPageId, newPageNum);
         }}>
             <Col span={22} style={{ display: 'flex', direction: "column" }}>
                 <Row style={{ width: "100%" }}>
