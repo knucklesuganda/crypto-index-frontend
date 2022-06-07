@@ -18,7 +18,7 @@ export default function IndexPage() {
     const isTransition = useRef(false);
 
     const scrollIntoComponent = (componentId, page) => {
-        document.getElementById(componentId).scrollIntoView({ behavior: "smooth" });
+        document.getElementById(componentId).scrollIntoView({ behavior: "smooth",  block: 'nearest', });
         setCurrentPage(page);
         setTimeout(() => { isTransition.current = false; }, 500);
     };
