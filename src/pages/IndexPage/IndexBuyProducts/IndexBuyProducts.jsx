@@ -7,8 +7,8 @@ import { useNavigate } from "react-router";
 import { createProductPage } from "../../../routes";
 import { useTranslation } from "react-i18next";
 import settings from "../../../settings";
-import './style.css';
 import { useMobileQuery } from "../../../components/MediaQuery";
+import './style.css';
 
 
 function ProductCard(props) {

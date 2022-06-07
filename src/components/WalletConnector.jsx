@@ -1,21 +1,22 @@
 import { Row, Card, Typography, Button, Col } from "antd";
-import { useState, useCallback } from "react";
+import { useState, useCallback  } from "react";
 import { useTranslation } from "react-i18next";
 import { clearProvider } from "../web3/wallet/providers";
 
 
 export function WalletConnector(props) {
     const [isHidden, setIsHidden] = useState(false);
+    const {handleWalletConnection} = props;
     const { t } = useTranslation();
 
-    const connectWallet = useCallback((isInitial) => {
+    const connectWallet = useCallback(() => {
 
         setIsHidden(true);
-        props.handleWalletConnection(isInitial).catch((error) => {
+        handleWalletConnection().catch((error) => {
             setIsHidden(false);
         });
 
-    }, [props]);
+    }, [handleWalletConnection]);
 
     return <Row gutter={[25, 55]} style={{
         display: isHidden ? "none" : "flex",
@@ -35,14 +36,16 @@ export function WalletConnector(props) {
             </Col>
 
             <Col>
-                <Button type="primary" style={{ width: "20em", marginTop: "1em" }}
-                    onClick={() => { connectWallet(false); }}>{t("wallet_connector.connect_wallet")}</Button>
+                <Button type="primary" style={{ width: "20em", marginTop: "1em" }} onClick={() => {
+                    connectWallet();
+                }}>{t("wallet_connector.connect_wallet")}
+                </Button>
             </Col>
 
             <Col>
                 <Button type="text" size="middle" style={{ marginTop: "0.5em" }} onClick={() => {
                     clearProvider().then(() => {
-                        connectWallet(false);
+                        connectWallet();
                     });
                 }}>{t("wallet_connector.choose_another_provider")}</Button>
             </Col>

@@ -34,6 +34,10 @@ export async function setupEvents(provider) {
 
     });
 
+    ethereum.on("disconnect", () => {
+        window.location.reload();
+    })
+
     ethereum.on('chainChanged', () => {
         switchChain(ethereum);
         window.location.reload();

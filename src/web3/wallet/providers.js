@@ -8,7 +8,7 @@ const providerOptions = {
     walletconnect: {
         package: window.WalletConnectProvider.default,
         options: { rpc: { 1: settings.PUBLIC_RPC_URL } },
-    },
+    }
 };
 
 class NoProviderError extends Error { }
@@ -16,7 +16,7 @@ export class NoInitialProviderError extends Error { }
 
 
 let signer = null, provider = null;
-const web3Modal = new Web3Modal({
+let web3Modal = new Web3Modal({
 
     cacheProvider: true,
     providerOptions,
@@ -31,21 +31,18 @@ const web3Modal = new Web3Modal({
 });
 
 
-export async function connectWallet(isInitial) {
+export async function connectWallet() {
 
     let web3ModalProvider;
 
     try {
-        if (isInitial === true) {
-            return null;
-        }
-
         web3ModalProvider = await web3Modal.connect();
     } catch (error) {
         throw new NoProviderError(error);
     }
 
     provider = new ethers.providers.Web3Provider(web3ModalProvider);
+
     signer = provider.getSigner();
     sessionStorage.account = await _getWallet();
     setupEvents(provider);
@@ -55,7 +52,10 @@ export async function connectWallet(isInitial) {
 
 
 export async function clearProvider() {
+    signer = null;
+    provider = null;
     web3Modal.clearCachedProvider();
+    localStorage.removeItem('walletconnect');
     sessionStorage.removeItem('account');
 }
 
