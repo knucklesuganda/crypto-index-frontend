@@ -46,9 +46,12 @@ export default function ProductPage() {
             </OnlyDesktop>
 
             <Row style={{
-                width: "100%", display: "flex",
-                alignItems: "center", flexDirection: "column",
-                alignContent: "center", justifyContent: "center",
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                flexDirection: "column",
+                alignContent: "center",
+                justifyContent: "center",
             }}>
                 <Row style={{ display: "flex", alignItems: "baseline" }}>
                     <Typography.Title level={2} title={t('buy_product.product_name')}

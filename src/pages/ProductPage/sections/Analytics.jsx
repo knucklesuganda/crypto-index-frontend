@@ -7,7 +7,7 @@ import { SaveOutlined } from '@ant-design/icons';
 import { addTokenToWallet } from "../../../web3/wallet/functions";
 import { getIndexComponents } from "../../../web3/contracts/IndexContract";
 import { Col, Row, Typography, Table, message } from "antd";
-import { OnlyDesktop } from "../../../components/MediaQuery";
+import { OnlyDesktop, useMobileQuery } from "../../../components/MediaQuery";
 
 
 
@@ -20,6 +20,7 @@ function AnalyticsText(props){
 export function AnalyticsSection(props) {
     const providerData = props.providerData;
     const [productComponents, setProductComponents] = useState(null);
+    const isMobile = useMobileQuery();
 
     useEffect(() => {
         getIndexComponents(providerData, props.productAddress).then(components => {
@@ -34,7 +35,7 @@ export function AnalyticsSection(props) {
     }
 
     return <Col>
-        <Typography.Title style={{ display: "flex", placeContent: "center", marginTop: "1em" }}>
+        <Typography.Title style={isMobile ? { display: "flex", placeContent: "center", marginTop: "1em" } : {}}>
             {t('buy_product.analytics.title')}
         </Typography.Title>
 

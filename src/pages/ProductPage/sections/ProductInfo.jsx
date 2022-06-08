@@ -9,7 +9,7 @@ export function ProductInfo(props) {
     const isMobile = useMobileQuery();
 
     return <Col style={{ marginTop: isMobile ? "2em" : "0" }}>
-        <Typography.Title style={{ display: "flex", placeContent: "center", marginTop: "1em" }}>
+        <Typography.Title style={isMobile ? { display: "flex", placeContent: "center", marginTop: "1em" } : {}}>
             {t('product_info.title')}
         </Typography.Title>
 
