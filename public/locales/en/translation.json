@@ -52,6 +52,7 @@
                     "exchanges": "exchanges"
                 }
             },
+            "amount_error": "Not enough tokens, you need to buy more",
             "no_tokens_error": "Not enough available tokens",
             "liquidity_error": "Not enough liquidity, try buying less tokens or wait for some time",
             "balance_error": "You do not have enough tokens. Your balance",

@@ -9,7 +9,7 @@ import {
     BalanceError,
     ProductSettlementError,
 } from "../../../web3/contracts/IndexContract";
-import { Form, Col, Radio, Row, Button, Typography, Collapse, message, Avatar, Spin } from "antd";
+import { Form, Col, Radio, Row, Button, Typography, Collapse, message, Avatar, Spin, Modal } from "antd";
 import { RiseOutlined, FallOutlined } from '@ant-design/icons';
 import { LoadingOutlined } from "@ant-design/icons";
 import { TokenInput } from "../../../components/TokenInput";
@@ -77,6 +77,7 @@ function DebtSection(props) {
                     prefixSymbol={isBuyDebt ? productData.productToken.symbol : productData.buyToken.symbol}
                     productPrice={productData.price} inputValue={amount}
                     setInputValue={setAmount}
+                    minValue={0.01}
                     postfixSymbol={productData.buyToken.symbol}
                     maxValue={formatBigNumber(userDebt)}
                     useAddon={isBuyDebt} />
@@ -112,6 +113,36 @@ function DebtSectionCollapse(props) {
 }
 
 
+function createProductAlert(name){
+    if(!localStorage.acceptedAlert){
+        Modal.warning({
+            title: "READ BEFORE BUYING",
+            okText: "I hereby agree",
+            onOk: () => {
+                localStorage.acceptedAlert = true;
+            },
+            content: <Col>
+                <Typography.Text style={{ fontSize:"1.2em" }}>
+                    '{name}' is a product that is actively being developed.
+                </Typography.Text>
+                <br /><br />
+
+                <Typography.Text style={{ fontSize: "1.2em", fontWeight: "bold" }} type="danger">
+                    YOU WILL NOT RECEIVE YOUR FUNDS BACK ONCE YOU MAKE THE TRANSACTION.<br /><br />
+                    WE WILL NOT RUN THE SETTLEMENT PROCESS UNTIL WE HAVE ENOUGH FEES FOR ALL THE TRANSACTIONS
+                    ON ETHEREUM NETWORK, AND WE ARE NOT REQUIRED TO RUN IT.<br /><br />
+
+                    BY BUYING THIS PRODUCT, YOU AGREE THAT ALL THE RESPONSIBILITY FALLS ON YOU.<br /><br />
+                </Typography.Text>
+            </Col>
+        });
+        return true;
+    }
+
+    return false;
+}
+
+
 export function ProductBuySection(props) {
     const { providerData, productData } = props;
     const [inProgress, setInProgress] = useState(false);
@@ -122,6 +153,15 @@ export function ProductBuySection(props) {
     return <Spin spinning={inProgress} indicator={<LoadingOutlined style={{ fontSize: "2em" }} />}>
         <Col style={{ display: "flex", justifyContent: "center" }}>
             <Form name="productInteractionForm" style={{ minWidth: "20vw" }} autoComplete="off" onFinish={(values) => {
+                if(createProductAlert(productData.name)){
+                    return;
+                }
+
+                if(values.amount === 0 || values.amount < 0.01){
+                    message.error(t("buy_product.buy_form.amount_error"));
+                    return;
+                }
+
                 const weiAmount = parseEther(values.amount.toString());
 
                 if (productData.isSettlement) {
@@ -181,10 +221,10 @@ export function ProductBuySection(props) {
                 });
 
             }}>
-                <TokenInput
-                    useAddon
+                <TokenInput useAddon
                     postfixSymbol={productData.buyToken.symbol}
                     maxValue={formatBigNumber(productData.availableLiquidity)}
+                    minValue={0.01}
                     productPrice={productData.price}
                     productSymbol={productData.productToken.symbol}
                     setInputValue={setAmount}
@@ -216,10 +256,10 @@ export function ProductBuySection(props) {
                 <Form.Item>
                     <Button htmlType="submit" style={{ width: "100%" }}
                         title={productData.isSettlement ? t('buy_product.buy_form.settlement_error') : null}
-                        type={productData.isSettlement ? "danger" : "primary"}>{
-                            operationType === "buy" ?
-                                t('buy_product.buy_form.operation.buy') : t('buy_product.buy_form.operation.sell')
-                        }</Button>
+                        type={productData.isSettlement ? "danger" : "primary"}>
+                            { operationType === "buy" ?
+                            t('buy_product.buy_form.operation.buy') : t('buy_product.buy_form.operation.sell')}
+                    </Button>
                 </Form.Item>
             </Form>
         </Col>
