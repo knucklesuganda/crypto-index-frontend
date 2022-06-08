@@ -6,13 +6,14 @@ import { Col, Row } from "antd";
 import { TranslationOutlined, TwitterOutlined } from '@ant-design/icons';
 import { Fade } from "../animations";
 import { UserAgreement } from "..";
-import { Divider } from "antd";
+import { Divider, Typography } from "antd";
+import { MobileOnly, useDesktopQuery } from "../MediaQuery";
 import "./style.css";
-import { MobileOnly } from "../MediaQuery";
 
 
 export function Header(props) {
     const { t, i18n } = useTranslation();
+    const isDesktop = useDesktopQuery();
 
     return <Fragment>
         <Row id="header_row">
@@ -37,9 +38,29 @@ export function Header(props) {
                     }} style={{ fontSize: "2.2em" }} />
                 </Fade>
             </Col>
+
+            {sessionStorage.account ?
+                <div style={isDesktop ? {position: "absolute", right: 5, zIndex: 100, bottom: 10 } : null}>
+                    <Col style={{
+                        cursor: "pointer",
+                        marginTop: "0.4em",
+                        padding: "0.5em",
+                        background: "#0a0a0a",
+                        border: "1px solid #303030",
+                        borderRadius: "4px",
+                    }}
+                        onClick={() => { window.open("https://etherscan.io/address/" + sessionStorage.account) }}>
+                        <Typography.Text style={{ fontSize: "1.2em" }}>
+                            {sessionStorage.account.slice(0, 15)}...
+                        </Typography.Text>
+                    </Col>
+                </div>
+            : null}
         </Row>
 
-        <MobileOnly><Divider /></MobileOnly>
+        <MobileOnly>
+            <Divider />
+        </MobileOnly>
 
         {props.children}
     </Fragment>;

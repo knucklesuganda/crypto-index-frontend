@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { approveBuyTokens, getERC20Information, getTokenAllowance, getTokenBalance } from "./ERC20Contract";
-import contract from './sources/BaseIndex.json';
+import contract from './sources/Index.json';
 
 
 const IndexABI = contract.abi;
