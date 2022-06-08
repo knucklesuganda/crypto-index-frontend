@@ -11,6 +11,8 @@ import "./App.css";
 
 
 function App() {
+    document.title = "Void";
+
     return <Suspense fallback={null}>
         <BrowserRouter>
             <Header>
