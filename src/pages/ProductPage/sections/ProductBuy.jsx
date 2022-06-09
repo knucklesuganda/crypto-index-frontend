@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { convertToBigNumber, formatBigNumber, formatNumber } from "../../../web3/utils";
 import { useTranslation } from "react-i18next";
 import {
@@ -24,7 +24,7 @@ function DebtSection(props) {
         sectionSymbol, changeProgress, productData,
     } = props;
     const { t } = useTranslation();
-    const [amount, setAmount] = useState(0);
+    const inputRef = useRef(null);
 
     return <Col style={{ display: "flex", flexDirection: "column", alignContent: 'center' }}>
         <Typography.Text style={{ paddingBottom: "0.2em", fontSize: "1.2em" }}
@@ -32,9 +32,11 @@ function DebtSection(props) {
             {t('buy_product.total_available_debt_text')}: {formatBigNumber(totalDebt, 6)} {sectionSymbol}
         </Typography.Text>
 
-        <Typography.Text style={{ paddingBottom: "0.2em", fontSize: "1.2em" }}>
-            {t('buy_product.user_debt_text')}: {formatBigNumber(userDebt, 6)} {sectionSymbol}
-        </Typography.Text>
+        <Col style={{ fontSize: "1.2em", paddingBottom: "0.2em" }}>
+            <Typography.Text>
+                {t('buy_product.user_debt_text')}: {formatBigNumber(userDebt, 6)} {sectionSymbol}
+            </Typography.Text>
+        </Col>
 
         <Col style={{ marginTop: "0.4em", marginBottom: "0.4em" }}>
             <Form onFinish={(values) => {
@@ -75,12 +77,10 @@ function DebtSection(props) {
             }}>
                 <TokenInput
                     prefixSymbol={isBuyDebt ? productData.productToken.symbol : productData.buyToken.symbol}
-                    productPrice={productData.price} inputValue={amount}
-                    setInputValue={setAmount}
-                    minValue={0.01}
+                    productPrice={productData.price}
                     postfixSymbol={productData.buyToken.symbol}
                     maxValue={formatBigNumber(userDebt)}
-                    useAddon={isBuyDebt} />
+                    useAddon={isBuyDebt} inputRef={inputRef} />
 
                 <Button htmlType="submit" type="primary" danger={
                     productData.isSettlement || totalDebt.eq(0)
@@ -113,8 +113,8 @@ function DebtSectionCollapse(props) {
 }
 
 
-function createProductAlert(name){
-    if(!localStorage.acceptedAlert){
+function createProductAlert(name) {
+    if (!localStorage.acceptedAlert) {
         Modal.warning({
             title: "READ BEFORE BUYING",
             okText: "I hereby agree",
@@ -122,7 +122,7 @@ function createProductAlert(name){
                 localStorage.acceptedAlert = true;
             },
             content: <Col>
-                <Typography.Text style={{ fontSize:"1.2em" }}>
+                <Typography.Text style={{ fontSize: "1.2em" }}>
                     '{name}' is a product that is actively being developed.
                 </Typography.Text>
                 <br /><br />
@@ -147,17 +147,16 @@ export function ProductBuySection(props) {
     const { providerData, productData } = props;
     const [inProgress, setInProgress] = useState(false);
     const [operationType, setOperationType] = useState('buy');
-    const [amount, setAmount] = useState(0);
     const { t } = useTranslation();
 
     return <Spin spinning={inProgress} indicator={<LoadingOutlined style={{ fontSize: "2em" }} />}>
         <Col style={{ display: "flex", justifyContent: "center" }}>
             <Form name="productInteractionForm" style={{ minWidth: "20vw" }} autoComplete="off" onFinish={(values) => {
-                if(createProductAlert(productData.name)){
+                if (createProductAlert(productData.name)) {
                     return;
                 }
 
-                if(values.amount === 0 || values.amount < 0.01){
+                if (values.amount === 0 || values.amount < 0.01) {
                     message.error(t("buy_product.buy_form.amount_error"));
                     return;
                 }
@@ -221,15 +220,15 @@ export function ProductBuySection(props) {
                 });
 
             }}>
-                <TokenInput useAddon
+                <TokenInput
+                    useAddon
                     postfixSymbol={productData.buyToken.symbol}
                     maxValue={formatBigNumber(productData.availableLiquidity)}
                     minValue={0.01}
                     productPrice={productData.price}
                     productSymbol={productData.productToken.symbol}
-                    setInputValue={setAmount}
-                    inputValue={amount}
-                    prefixSymbol={productData.productToken.symbol} />
+                    prefixSymbol={productData.productToken.symbol}
+                />
 
                 <Form.Item>
                     <Radio.Group defaultValue="buy" style={{ display: "flex" }}
@@ -257,7 +256,7 @@ export function ProductBuySection(props) {
                     <Button htmlType="submit" style={{ width: "100%" }}
                         title={productData.isSettlement ? t('buy_product.buy_form.settlement_error') : null}
                         type={productData.isSettlement ? "danger" : "primary"}>
-                            { operationType === "buy" ?
+                        {operationType === "buy" ?
                             t('buy_product.buy_form.operation.buy') : t('buy_product.buy_form.operation.sell')}
                     </Button>
                 </Form.Item>

@@ -17,9 +17,8 @@ export function TokenInput(props) {
         prefixSymbol,
         postfixSymbol,
         maxValue,
-        inputValue,
-        setInputValue,
         useAddon,
+        inputRef,
         minValue,
     } = props;
     const [tokenUsdPrice, setTokenUsdPrice] = useState(0);
@@ -36,18 +35,16 @@ export function TokenInput(props) {
             setTokenUsdPrice(getTokenAdjustedAmount(newAmount, formatBigNumber(productPrice)));
             setStatus("");
         }
-
-        setInputValue(value);
     };
 
     return <Form.Item name="amount" rules={[{ required: true, message: t('buy_product.buy_form.amount.error') }]}>
         <InputNumber
-            onChange={handleChange}
+            ref={inputRef}
+            onInput={handleChange}
             min={minValue}
             max={maxValue}
             prefix={prefixSymbol}
             size="large"
-            value={inputValue}
             status={status}
             controls={false}
             style={{ width: "100%" }}
