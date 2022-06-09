@@ -11,7 +11,7 @@ import useVisibility from "../../hooks/useVisibility";
 export default function IndexPage() {
     const [currentPage, setCurrentPage] = useState(0);
     const startId = 'start';
-    const aboutUsId = "about-us";
+    const biggestProblemsId = "about-us";
     const buyProductsId = "buy-products";
 
     const { t } = useTranslation();
@@ -45,7 +45,10 @@ export default function IndexPage() {
         });
     };
 
-    useEffect(() => { handleMenu(); return () => {}; });
+    useEffect(() => {
+        handleMenu();
+        return () => {};
+    });
 
     return (
         <Row style={{
@@ -57,10 +60,10 @@ export default function IndexPage() {
                 <Row style={{ width: "100%" }}>
                     {[
                         <IndexStart id={startId} setNextPage={() => {
-                            scrollIntoComponent(aboutUsId, 1);
+                            scrollIntoComponent(biggestProblemsId, 1);
                         }} />,
 
-                        <IndexBiggestProblem id={aboutUsId} isOpen={currentPage === 1} setNextPage={() => {
+                        <IndexBiggestProblem id={biggestProblemsId} isOpen={currentPage === 1} setNextPage={() => {
                             scrollIntoComponent(buyProductsId, 2);
                         }} />,
 
@@ -86,7 +89,7 @@ export default function IndexPage() {
                             </Menu.Item>
 
                             <Menu.Item key='1'>
-                                <a href={`#${aboutUsId}`}>{t('index.menu.about_us')}</a>
+                                <a href={`#${biggestProblemsId}`}>{t('index.menu.about_us')}</a>
                             </Menu.Item>
 
                             <Menu.Item key='2'>

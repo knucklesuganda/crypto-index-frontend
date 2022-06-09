@@ -5,7 +5,7 @@ import { useMobileQuery } from "./MediaQuery";
 
 function TermsTitle(props){
     return <div>
-        { props.space ? <br/> : null }
+        <br />
         <Typography.Text style={{ fontSize: "1.6em" }}>{props.children}</Typography.Text>
     </div>;
 }
@@ -13,10 +13,9 @@ function TermsTitle(props){
 function TermsText(props){
     return <div>
         { props.space ? <br/> : null }
-        <Typography.Text style={{
-            fontWeight: props.bold ? "bold" : "normal",
-            fontSize: "0.9em",
-        }}>{props.children}</Typography.Text>
+        <Typography.Text style={{ fontWeight: props.bold ? "bold" : "normal", fontSize: "0.9em" }}>
+            {props.children}
+        </Typography.Text>
     </div>;
 }
 
@@ -38,7 +37,7 @@ function userAgreementModal(isMobile){
                 Void.management is brought to you to provide information 
                 and resources about the fundamentals of the decentralized non-custodial protocols called the 
                 Void Management Protocols (“Void Management” or “Protocol”).
-                Void.management is not one of the available access points to the Void Management Protocols.
+                Void.management is not the only available access points to the Void Management Protocols.
             </TermsText>
 
 
@@ -366,7 +365,7 @@ function userAgreementModal(isMobile){
             <TermsText>
             TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT SHALL WE BE LIABLE TO YOU FOR ANY LOSS, DAMAGE, OR INJURY OF ANY KIND INCLUDING ANY DIRECT, INDIRECT, SPECIAL, INCIDENTAL, EXEMPLARY, CONSEQUENTIAL, OR PUNITIVE LOSSES OR DAMAGES, OR DAMAGES FOR SYSTEM FAILURE OR MALFUNCTION OR LOSS OF PROFITS, DATA, USE, BUSINESS OR GOOD-WILL OR OTHER INTANGIBLE LOSSES, ARISING OUT OF OR IN CONNECTION WITH: (A) THE SERVICES OR YOUR INABILITY TO USE OR ACCESS THE SERVICES; (B) MISUSE OF THE SERVICES (INCLUDING WITHOUT LIMITATION, UNAUTHORIZED ACCESS OF THE SERVICES); (C) ANY USER CONDUCT ON THE SERVICES; OR (D) TERMINATION, SUSPENSION OR RESTRICTION OF ACCESS TO ANY THE SERVICES.
 IN ADDITION TO THE FOREGOING, WE SHALL NOT BE LIABLE FOR ANY DAMAGES CAUSED IN WHOLE OR IN PART BY: (A) USER ERROR, SUCH AS FORGOTTEN PASSWORDS OR INCORRECTLY CONSTRUCTED SMART CONTRACTS OR OTHER TRANSACTIONS; (B) SERVER FAILURE OR DATA LOSS; (C) THE MALFUNCTION, UNEXPECTED FUNCTION OR UNINTENDED FUNCTION OF THE BLOCKCHAIN, ANY COMPUTER OR CRYPTOASSET NETWORK (INCLUDING ANY WALLET PROVIDER), INCLUDING WITHOUT LIMITATION LOSSES ASSOCIATED WITH NETWORK FORKS, REPLAY ATTACKS, DOUBLE-SPEND ATTACKS, SYBIL ATTACKS, 51% ATTACKS, GOVERNANCE DISPUTES, MINING DIFFICULTY, CHANGES IN CRYPTOGRAPHY OR CONSENSUS RULES, HACKING, OR CYBERSECURITY BREACHES; (D) ANY CHANGE IN VALUE OF ANY CRYPTOASSET; (E) ANY CHANGE IN LAW, REGULATION, OR POLICY; (VI) EVENTS OF FORCE MAJEURE; OR (F) ANY THIRD PARTY.
-THIS LIMITATION OF LIABILITY IS INTENDED TO APPLY WITHOUT REGARD TO WHETHER OTHER PROVISIONS OF THESE TERMS HAVE BEEN BREACHED OR HAVE PROVEN INEFFECTIVE. THE LIMITATIONS SET FORTH IN THIS SECTION SHALL APPLY REGARDLESS OF THE FORM OF ACTION, WHETHER THE ASSERTED LIABILITY OR DAMAGES ARE BASED ON CONTRACT, INDEMNIFICATION, TORT, STRICT LIABILITY, STATUTE, OR ANY OTHER LEGAL OR EQUITABLE THEORY, AND WHETHER OR NOT WE HAVE BEEN INFORMED OF THE POSSIBILITY OF ANY SUCH DAMAGE.
+THIS LIMITATION OF LIABILITY IS INTENDED TO APPLY WITHOUT REGARD TO WHETHER OTHER PROVISIONS OF THESE TERMS HAVE BEEN BREACHED OR HAVE PROVEN INEFFECTIVE. THE LIMITATIONS SET FORTH IN THIS SECTION SHALL APPLY REGARDLESS OF THE FORM OF ACTION, WHETHER THE ASSERTED LIABILITY OR DAMAGES ARE BASED ON CONTRACT, INDEMNIFICATION, TORT, STRICT LIABILITY, STATUTE, OR ANY OTHER LEGAL THEORY, AND WHETHER OR NOT WE HAVE BEEN INFORMED OF THE POSSIBILITY OF ANY SUCH DAMAGE.
 IN NO EVENT WILL OUR CUMULATIVE LIABILITY TO YOU OR ANY OTHER USER, FROM ALL CAUSES OF ACTION AND ALL THEORIES OF LIABILITY EXCEED ONE HUNDRED U.S. DOLLARS (U.S. $100.00).
 UNDER NO CIRCUMSTANCES SHALL WE BE REQUIRED TO DELIVER TO YOU ANY VIRTUAL CURRENCY AS DAMAGES, MAKE SPECIFIC PERFORMANCE, OR ANY OTHER REMEDY. IF YOU WOULD BASE YOUR CALCULATIONS OF DAMAGES IN ANY WAY ON THE VALUE OF VIRTUAL CURRENCY, YOU AND WE AGREE THAT THE CALCULATION SHALL BE BASED ON THE LOWEST VALUE OF THE VIRTUAL CURRENCY DURING THE PERIOD BETWEEN THE ACCRUAL OF THE CLAIM AND THE AWARD OF DAMAGES.
             </TermsText>
@@ -378,20 +377,45 @@ UNDER NO CIRCUMSTANCES SHALL WE BE REQUIRED TO DELIVER TO YOU ANY VIRTUAL CURREN
             <TermsTitle space>Indemnification</TermsTitle>
             <TermsText>You agree to indemnify, defend, and hold us harmless from any claim or demand, including reasonable attorneys’ fees, made by any third party due to or arising out of: (a) your breach or alleged breach of the Agreement (including, without limitation, these Terms); (b) anything you contribute to the Services; (c) your misuse of the Services, or any smart contract and/or script related thereto; (d) your violation of any laws, rules, regulations, codes, statutes, ordinances, or orders of any governmental or quasi-governmental authorities; (e) your violation of the rights of any third party, including any intellectual property right, publicity, confidentiality, property, or privacy right; (f) your use of a third-party product, service, and/or website; or (g) any misrepresentation made by you. We reserve the right to assume, at your expense, the exclusive defense and control of any matter subject to indemnification by you. You agree to cooperate with our defense of any claim. You will not in any event settle any claim without our prior written consent.</TermsText>
 
-            <TermsTitle space>Court Resolution Agreement and Waiver of Rights, Including Class Actions.</TermsTitle>
-            <TermsText>PLEASE READ THIS SECTION CAREFULLY: IT MAY SIGNIFICANTLY AFFECT YOUR LEGAL RIGHTS, INCLUDING YOUR RIGHT TO FILE A LAWSUIT IN COURT. IT CONTAINS PROCEDURES FOR MANDATORY BINDING STATE COURT RESOLUTION AND A CLASS ACTION WAIVER.
-Agreement to Attempt to Resolve Disputes Through Good Faith Negotiations
-Prior to commencing any legal proceeding against us of any kind, including a Kazakhstan state court resolution as set forth below, you and we agree that we will attempt to resolve any dispute, claim, or controversy between us arising out of or relating to the agreement or the Services (each, a “Dispute” and, collectively, “Disputes”) by engaging in good faith negotiations. Such good faith negotiations require, at a minimum, that the aggrieved party provide a written notice to the other party specifying the nature and details of the Dispute. The party receiving such notice shall have thirty (30) days to respond to the notice. Within sixty (60) days after the aggrieved party sent the initial notice, the parties shall meet and confer in good faith by videoconference, or by telephone, to try to resolve the Dispute. If the parties are unable to resolve the Dispute within ninety (90) days after the aggrieved party sent the initial notice, the parties may agree to mediate their Dispute, or either party may submit the Dispute for the final resolution to the state courts of Kazakhstan</TermsText>
+            <TermsTitle space>Dispute Resolution.</TermsTitle>
+            <TermsText>PLEASE READ THIS SECTION CAREFULLY: IT MAY SIGNIFICANTLY AFFECT YOUR LEGAL RIGHTS, INCLUDING YOUR RIGHT TO FILE A LAWSUIT IN COURT.</TermsText>
 
-            <TermsText bold>Agreement to Court Resolution</TermsText>
-            <TermsText>You and we agree that any Dispute that cannot be resolved through the procedures set forth above will be resolved through court resolution in accordance with the state court of the Kazakhstan Republic. The place of the resolution shall be the Kazakhstan Republic. The judge(s) shall have experience adjudicating matters involving Internet technology, software applications, financial transactions and, ideally, blockchain technology. The judge's award of damages must be consistent with the terms of the “Limitation of Liability” subsection of these Terms as to the types and amounts of damages for which a party may be held liable. The prevailing party will be entitled to an award of their reasonable attorney’s fees and costs. Except as may be required by law, neither a party nor its representatives may disclose the existence, content, or results of any court resolution hereunder without the prior written consent of (all/both) parties.
-UNLESS YOU TIMELY PROVIDE US WITH A COURT OPT-OUT NOTICE (AS DEFINED BELOW IN THE SUBSECTION TITLED “YOUR CHOICES”), YOU ACKNOWLEDGE AND AGREE THAT YOU AND WE ARE EACH WAIVING THE RIGHT TO A TRIAL BY JURY OR TO PARTICIPATE AS A PLAINTIFF OR CLASS MEMBER IN ANY PURPORTED CLASS ACTION OR REPRESENTATIVE PROCEEDING. FURTHER, UNLESS BOTH YOU AND WE OTHERWISE AGREE IN WRITING, THE COURT MAY NOT CONSOLIDATE MORE THAN ONE PERSON’S CLAIMS AND MAY NOT OTHERWISE PRESIDE OVER ANY FORM OF ANY CLASS OR REPRESENTATIVE PROCEEDING.</TermsText>
+            <TermsText bold>Compulsory Out-of-court negotiations</TermsText>
+
+<TermsText>Prior to commencing any legal proceeding against us of any kind, including the Republic 
+of Kazakhstan state court resolution as set forth below, you and we agree that we will 
+attempt to resolve any dispute, claim, or controversy between us arising out of or relating to the 
+agreement or the Services (each, a “Dispute” and, collectively, “Disputes”) by engaging in good faith negotiations.
+Such good faith negotiations require, at a minimum, that the aggrieved party provide a written notice to the other
+party specifying the nature and details of the Dispute. The party receiving such notice shall have thirty (30)
+days to respond to the notice. Within sixty (60) days after the aggrieved party sent the initial notice, 
+the parties shall meet and confer in good faith by videoconference, or by telephone, to try to resolve the Dispute.
+ If the parties are unable to resolve the Dispute within ninety (90) days after the aggrieved party sent the initial
+ notice, the parties may agree to mediate their Dispute, or either party may submit the Dispute for the final
+ resolution to the state courts of the republic of Kazakhstan
+ </TermsText>
+
+            <TermsText bold>Court Resolution</TermsText>
+            <TermsText>
+                You and we agree that any Dispute that cannot be resolved through the procedures set forth above will be resolved
+                through court resolution in the state courts of the Republic of Kazakhstan in accordance with the 
+                laws of Kazakhstan. 
+                The prevailing party will be entitled to an award of their reasonable attorney’s fees and costs. 
+                Except as may be required by law, neither a party nor its representatives may disclose the existence, 
+                content, or results of any court resolution hereunder without the prior written consent of (all/both) parties.
+            </TermsText>
 
             <TermsTitle space>Changes</TermsTitle>
             <TermsText>By rejecting any changes to these Terms, you agree that you will arbitrate any Dispute between you and us in accordance with the provisions of this section as of the date you first accepted these Terms (or accepted any subsequent changes to these Terms).</TermsText>
 
-            <TermsTitle space>Waiver of Injunctive or Other Equitable Relief.</TermsTitle>
-            <TermsText>TO THE MAXIMUM EXTENT PERMITTED BY LAW, YOU AGREE THAT YOU WILL NOT BE PERMITTED TO OBTAIN AN INJUNCTION OR OTHER EQUITABLE RELIEF OF ANY KIND, SUCH AS ANY COURT OR OTHER ACTION THAT MAY INTERFERE WITH OR PREVENT THE DEVELOPMENT OR EXPLOITATION OF THE SERVICES, OR ANY OTHER WEBSITE, APPLICATION, CONTENT, SUBMISSION, PRODUCT, SERVICE, OR INTELLECTUAL PROPERTY OWNED, LICENSED, USED OR CONTROLLED BY US</TermsText>
+            <TermsTitle space>Waiver of Injunctive.</TermsTitle>
+            <TermsText>
+                TO THE MAXIMUM EXTENT PERMITTED BY LAW, YOU AGREE THAT YOU WILL NOT BE PERMITTED TO
+                OBTAIN AN INJUNCTION OF ANY KIND, SUCH AS ANY COURT OR OTHER ACTION THAT MAY INTERFERE WITH
+                OR PREVENT THE DEVELOPMENT OR EXPLOITATION OF THE SERVICES, OR ANY OTHER WEBSITE, APPLICATION,
+                CONTENT, SUBMISSION, PRODUCT, SERVICE, OR INTELLECTUAL PROPERTY OWNED, LICENSED, USED OR
+                CONTROLLED BY US
+            </TermsText>
 
             <TermsTitle space>Termination; Cancellation</TermsTitle>
             <TermsText>
@@ -406,7 +430,7 @@ UNLESS YOU TIMELY PROVIDE US WITH A COURT OPT-OUT NOTICE (AS DEFINED BELOW IN TH
                 (b) you are using the Services for unlawful purposes; or
                 (c) it is not commercially viable to continue providing you with our Services.
                 All of these are in addition to any other rights and remedies that may be available to us,
-                whether in equity or at law, all of which we expressly reserve. WE RESERVE THE RIGHT TO MODIFY
+                all of which we expressly reserve. WE RESERVE THE RIGHT TO MODIFY
                 THE SERVICES AT ANY TIME, BUT WE HAVE NO OBLIGATION TO UPDATE THE SERVICES. YOU AGREE THAT IT IS
                 YOUR RESPONSIBILITY TO MONITOR CHANGES TO THE SERVICES THAT MAY AFFECT YOU. YOU AGREE THAT WE MAY
                 REMOVE THE SERVICES AND/OR ANY CONTENT THEREON FOR INDEFINITE PERIODS OF TIME OR CANCEL THE SERVICES
@@ -416,13 +440,22 @@ UNLESS YOU TIMELY PROVIDE US WITH A COURT OPT-OUT NOTICE (AS DEFINED BELOW IN TH
             <TermsText>If any provision of the Agreement (including, without limitation, these Terms) is determined to be unlawful, void, or unenforceable, such provision shall nonetheless be enforceable to the fullest extent permitted by applicable law, and the unenforceable portion shall be deemed to be severed from the Agreement. Such determination shall not affect the validity and enforceability of any other remaining provisions.</TermsText>
 
             <TermsTitle space>Assignment</TermsTitle>
-            <TermsText>The Agreement (including, without limitation, these Terms) may be assigned without your prior consent to us, or to our successors in the interest of any business associated with the Services provided by us. You may not assign or transfer any rights or obligations under the Agreement without our prior written consent.</TermsText>
+            <TermsText>
+                The Agreement (including, without limitation, these Terms) may be assigned, without your prior consent, 
+                to any third party 
+                to our discression or in the interest of any business associated with the Services provided 
+                by us. You may not assign or transfer any rights or obligations under the 
+                Agreement without our prior written consent.
+            </TermsText>
 
             <TermsTitle>Entire Agreement</TermsTitle>
-            <TermsText>The Agreement (including, without limitation, these Terms) and any policies or operating rules posted by us on the Services constitute the entire agreement and understanding between you and us and govern your use of the Services, superseding any prior or contemporaneous agreements, communications, and proposals, whether oral or written, between you and us (including, but not limited to, any prior versions of these Terms). Any failure by us to exercise or enforce any right or provision of the Agreement (including, without limitation, these Terms) shall not constitute a waiver of such right or provision.</TermsText>
+            <TermsText>The Agreement (including, without limitation, these Terms) and any policies or operating rules posted by us on the Services constitute the entire agreement and understanding between you and us and govern your use of the Services, superseding any prior or contemporaneous agreements, communications, and proposals, whether oral or written, between you and us (including, but not limited to, any prior versions of these Terms). Any failure by us to exercise or enforce any right or provision of the Agreement (including, without limitation, these Terms) shall not constitute such provision.</TermsText>
 
             <TermsTitle>Governing Law</TermsTitle>
-            <TermsText>These Terms and any separate agreements whereby we provide you Services shall be governed by and construed in accordance with the laws of the Kazakhstan Republic.</TermsText>
+            <TermsText>
+                These Terms and any separate agreements whereby we provide you Services shall be governed by
+                and construed in accordance with the laws of the Republic of Kazakhstan.
+            </TermsText>
 
         </Col>
     });

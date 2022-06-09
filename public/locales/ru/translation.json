@@ -63,56 +63,51 @@
             "save_token_hint": "Сохранить токен в кошельке",
             "title": "Аналитика",
             "about_product": "О продукте",
-
             "balance": "Ваш баланс",
             "balance_hint": "Количество токенов данного продукта в вашем кошельке",
-
             "total_locked_value": "Общая заблокированная стоимость",
             "total_locked_value_hint": "Общая сумма токенов в контракте данного продукта",
-
             "buy_token": "Купить токен",
             "available_tokens": "Доступные токены/Максимальные токены",
             "available_tokens_hint": "Сколько всего вы можете купить токенов",
-
             "product_fee": "Денежный сбор",
             "product_fee_hint": "Денежный сбор за любую операцию",
-
             "liquidity": "Доступная ликвидность",
             "liquidity_hint": "Доступная ликвидность на бирже где мы покупаем токены",
-
             "table": {
                 "name": "Название токена",
                 "quantity": "Количество",
                 "price": "Цена"
             }
         },
-
         "questions": [
             {
-                "question": "Как это работает?",
-                "answer": "Индексы позволяют вам диверсифицировать ваши вложения. Вместо покупки одного токена, вы покупаете много токенов сразу. Цена индекса является средней ценой между всеми его состовляющими токенами"
+                "question": "How does it work?",
+                "answer": "Indices allow you to buy many tokens at once without any problems with management or the price of the assets. You just buy and sell tokens here, and each one of them has underlying assets that define the price"
             },
             {
-                "question": "Как купить/продать?",
-                "answer": "Вы можете купить и продать данный индекс и получить токены. Это можно сделать на этом сайте, либо попробовать DEX(децентрализованные биржи). Если вы покупаете и продаете токены здесь, то вам нужно подождать пока мы закончим settlement"
+                "question": "How to buy/sell?",
+                "answer": "You need to have buy token for the product(DAI, USDT, USDC) that can be found in the analytics section. We use it to track the price of the index and complete all operations. Once you have it, write the amount and buy your tokens. Then, you will need to wait for an indefinite period of settlement. During that period, we will buy all tokens and distribute the debt. Once there is enough debt, you can retrieve it in a separate operation and get your tokens!"
             },
             {
-                "question": "Что такое долг?",
-                "answer": "Мы не можем продать и купить ваши токены в одной транзакции(Блокчейн не позволяет это сделать). Вместо этого, мы используем settlement(процесс автоматических транзакций каждый день в 12:00, который покупает и продает токены автоматически). При первой покупке или продаже вы будете иметь долг, который показывает сколько токенов вы должны получить в итоге. После settlement вы можете снять все свои токены в отдельном окне долга"
+                "question": "What is debt and settlement?",
+                "answer": "We don't manage underlying tokens right away(blockchain capabilities do not allow that). But, instead, we add debt to the system that indicates that you need to receive some money in the future. If there are enough fees collected, the settlement process will begin. Then, you can get the amount of tokens that we could buy(it can be higher or lower that the amount you requested). But, be careful with the settlement process. IT WILL NOT START UNTIL THERE ARE ENOUGH FEES, AND ALL THE OPERATIONS ARE IRREVERSIBLE. THAT MEANS THAT YOU CAN WAIT FOR A VERY LONG PERIOD TO RECEIVE YOUR TOKENS"
             },
             {
-                "question": "Почему такие большие сборы?",
-                "answer": "Сборы за операции нужны для покупки токенов во время settlement, а также для развития проекта. Мы пытаемся держать их как можно маленькими, но сам блокчейн может очень сильно их поднимать(от нас это не зависит)"
+                "question": "Why are fees so high?",
+                "answer": "Fees is the only way for us to buy all the underlying assets. When you buy our indices, the majority of your dollars goes to the underlying assets(BTC, ETH and so on). But, to operate the system, we need to run additional settlement transactions, and that is the main place for your fees. Also, we use them to support the project development."
             },
-
             {
-                "question": "Неизвестная ошибка",
-                "answer": "Могут быть ошибки которые неизвестны нам. Проект находится в разработке, а вы используете его на свой страх и риск. Если вы нашли какую-то ошибку, пожалуйста, свяжитесь с нами" 
+                "question": "When can I receive my debt?",
+                "answer": "You may wait for an undefined amount of time to receive your debt. We only run the settlement if there are enough fees collected."
             },
-
             {
-                "question": "Есть ли какие-то гарантии?",
-                "answer": "Мы не имеем гарантий. Вся ответственность лежит на вас"
+                "question": "Unknown error",
+                "answer": "There may be some errors that we do not control. For example, the exchange where we buy our underlying assets may experience some problems. You can wait for a little bit, but if the problem does not go away, contact us at info@void.management"
+            },
+            {
+                "question": "Are there any guarantees?",
+                "answer": "We don't have any guarantees. ALL RESPONSIBILITY FALLS ON YOU. THE PROJECT IS ACTIVELY BEING DEVELOPED"
             }
         ],
         "product_name": "Название продукта",

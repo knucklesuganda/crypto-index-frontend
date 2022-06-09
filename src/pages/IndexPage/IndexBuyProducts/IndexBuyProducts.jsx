@@ -7,14 +7,14 @@ import { useNavigate } from "react-router";
 import { createProductPage } from "../../../routes";
 import { useTranslation } from "react-i18next";
 import settings from "../../../settings";
-import { useMobileQuery } from "../../../components/MediaQuery";
+import { MobileOnly, useMobileQuery } from "../../../components/MediaQuery";
 import './style.css';
 
 
 function ProductCard(props) {
     const navigate = useNavigate();
 
-    return <Col style={props.style}>
+    return <Col style={{ cursor: "pointer" }}>
         <Card title={props.product.name} hoverable onClick={() => {
             navigate(createProductPage(props.product.address));
         }} className={props.className} extra={
@@ -39,30 +39,31 @@ export function IndexBuyProducts(props) {
         return () => { };
     }, [providerData]);
 
-    return <Row id={props.id} style={ isMobile ? { paddingBottom: "5em" } : null}>
+    return <Row id={props.id} style={ isMobile ? { justifyContent: "center" } : null}>
         <Title>{t('index.buy.title')}</Title>
 
         {providerData === null ? <WalletConnector handleWalletConnection={handleWalletConnection} /> :
 
             <Fragment>{!productData ? <Loading style={{ height: "10vh", width: "100wv" }} /> :
-                <Row style={{ display: "flex", justifyContent: "center" }}>
-                    <Col style={{ height: "80vh" }}>
+                <Row style={{ display: "flex", justifyContent: isMobile ? "center" : "inherit" }}>
+                    <Col style={ isMobile ? { marginBottom: "5em" } : { height: "80vh" }}>
                         <Row gutter={[16, 16]} style={{
                             paddingTop: "2em",
+                            display: "flex",
                             paddingLeft: isMobile ? "0" : "1em",
                             paddingRight: isMobile ? "0" : "1em",
-                            display: "flex",
-                            justifyContent: "center"
+                            justifyContent: isMobile ? "center" : "inherit"
                         }}>{
                             productData.map((product, index) =>
-                                <ProductCard key={index} product={product} 
-                                    className="productCard" style={{ cursor: "pointer" }} />
-                            )
+                                <ProductCard key={index} product={product} className="productCard"/>)
                         }</Row>
                     </Col>
                 </Row>
             }</Fragment>
         }
 
+        <MobileOnly>
+            <div style={{ paddingBottom: "5em" }}></div>
+        </MobileOnly>
     </Row>;
 }

@@ -88,35 +88,35 @@
         },
         "questions": [
             {
-                "question": "How does it work?",
-                "answer": "Indices allow you to diversify your investments without any problems with management or the price of the assets.You just buy the tokens here or on the exchanges, and each token has underlying assets that define it's price"
+                "question": "Как это работает?",
+                "answer": "Индексы позволяют вам купить несколько токенов сразу. За это вы получаете индекс токен, который показывает что вы владете частью токенов этого индекса. Цена самого токена - среднее между всеми составляющими индекса"
             },
             {
-                "question": "How to sell?",
-                "answer": "If your index is unlocked, you can sell your tokens here, but we advise doing that with exchanges, as the fees will be lower and the settlement will be faster."
+                "question": "Как купить/продать?",
+                "answer": "Для начала вам понадобится токен для покупки индекса(USDT, DAI, USDC, ETH), который вы можете найти в разделе аналитики. После, вы должны купить нужное количество индекса через панель купить. Мы получим ваши токены и добавим для вас долг - показатель того что вы купили X токенов. Когда денежный сбор(fee) от всех транзакций будет достаточно большой мы начнем процесс 'settlement', где купим все нужные токены для вас. В конце settlement вы можете забрать свой долг из специальной вкладки(ваш долг может быть меньше доступных средств, мы не влияем на это)"
             },
             {
-                "question": "What is debt?",
-                "answer": "We don't sell your tokens right away(Blockchain does not allow that). But, instead, we add debt to the system that indicates that you need to receive some money in the future. You can get it the next day with a special panel on that website"
+                "question": "Что такое долг и settlement?",
+                "answer": "Мы не можем купить нужные токены вместе с вашей транзакцией(блокчейн не позволяет это сделать). Именно поэтому, при покупке токенов мы добавляем вам долг, который указывает на количество купленных токенов. Когда количество fee становится достаточным для выполнения settlement транзакций, мы начинаем процесс settlement и покупаем/продаем все нужные токены. После, вы можете получить свой долг из специальной вкладки. ВЫ МОЖЕТЕ НЕ ПОЛУЧИТЬ ВЕСЬ СВОЙ ДОЛГ ИЗ-ЗА "
             },
             {
                 "question": "Why are fees so high?",
-                "answer": "Fees is the only way for us to make money. When you buy our indices, the majority of your dollars goes to the underlying assets(BTC, ETH...). But, in order to operate the system, we need to run additional settlement transactions off-chain, and that is the main place for your fees. Also, we use them to support the project development"
+                "answer": "Fees is the only way for us to buy all the underlying assets. When you buy our indices, the majority of your dollars goes to the underlying assets(BTC, ETH and so on). But, to operate the system, we need to run additional settlement transactions, and that is the main place for your fees. Also, we use them to support the project development."
             },
 
             {
-                "question": "What does 'locked' means?",
-                "answer": "Locked products are not available for selling. They still work as the normal instruments, but the users cannot sell the tokens on that website, which will make them use exchanges and increase the popularity of the project and tokens"
+                "question": "When can I receive my debt?",
+                "answer": "You may wait for an undefined amount of time to receive your debt. We only run the settlement if there are enough fees collected."
             },
 
             {
                 "question": "Unknown error",
-                "answer": "There may be some errors that we do not control. For example, the exchange where we buy our underlying assets may experience some problems. You can wait for a little bit, but if the problem does not go away, contact us" 
+                "answer": "There may be some errors that we do not control. For example, the exchange where we buy our underlying assets may experience some problems. You can wait for a little bit, but if the problem does not go away, contact us at info@void.management" 
             },
 
             {
                 "question": "Are there any guarantees?",
-                "answer": "We don't have any guarantees. All responsibility falls on you"
+                "answer": "We don't have any guarantees. ALL RESPONSIBILITY FALLS ON YOU. THE PROJECT IS ACTIVELY BEING DEVELOPED"
             }
         ],
         "product_name": "Product name",

@@ -129,10 +129,14 @@ function createProductAlert(name) {
 
                 <Typography.Text style={{ fontSize: "1.2em", fontWeight: "bold" }} type="danger">
                     YOU WILL NOT RECEIVE YOUR FUNDS BACK ONCE YOU MAKE THE TRANSACTION.<br /><br />
-                    WE WILL NOT RUN THE SETTLEMENT PROCESS UNTIL WE HAVE ENOUGH FEES FOR ALL THE TRANSACTIONS
-                    ON ETHEREUM NETWORK, AND WE ARE NOT REQUIRED TO RUN IT.<br /><br />
+                    WE WILL NOT RUN THE SETTLEMENT PROCESS UNTIL WE HAVE ENOUGH FEES FOR ALL THE TRANSACTIONS 
+                    ON ETHEREUM NETWORK, AND SETTLEMENT PROCESS WILL BE STOPPED ONCE NEW VERSION OF THE PROTOCOL 
+                    IS RELEASED(YOU WILL BE NOTIFIED OF SUCH CHANGES BEFOREHAND).
+                    <br /><br />
 
-                    BY BUYING THIS PRODUCT, YOU AGREE THAT ALL THE RESPONSIBILITY FALLS ON YOU.<br /><br />
+                    BY BUYING THIS PRODUCT, 
+                    YOU AGREE THAT YOU ACCEPT AND BARE FULL RESPONSIBILITY AND TAKE ALL 
+                    RISKS FOR YOUR ACTIONS AND DECISIONS.<br /><br />
                 </Typography.Text>
             </Col>
         });
