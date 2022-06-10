@@ -12,8 +12,6 @@ import "./style.css";
 
 
 function UserAccount() {
-    const isDesktop = useDesktopQuery();
-
     if (!sessionStorage.account) {
         return <span />;
     }
@@ -35,7 +33,6 @@ function UserAccount() {
 
 export function Header(props) {
     const { t, i18n } = useTranslation();
-    const isDesktop = useDesktopQuery();
 
     return <Fragment>
         <Row id="header_row">
