@@ -7,7 +7,7 @@ import { TranslationOutlined, TwitterOutlined } from '@ant-design/icons';
 import { Fade } from "../animations";
 import { UserAgreement } from "..";
 import { Divider, Typography } from "antd";
-import { MobileOnly, OnlyDesktop, useDesktopQuery } from "../MediaQuery";
+import { MobileOnly, OnlyDesktop } from "../MediaQuery";
 import "./style.css";
 
 
