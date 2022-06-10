@@ -40,6 +40,10 @@ function DebtSection(props) {
 
         <Col style={{ marginTop: "0.4em", marginBottom: "0.4em" }}>
             <Form onFinish={(values) => {
+                if(values.amount === 0){
+                    return;
+                }
+
                 const realAmount = ethers.BigNumber.from(ethers.utils.parseEther(values.amount.toString()));
 
                 if (realAmount.gt(totalDebt)) {
@@ -98,7 +102,7 @@ function DebtSectionCollapse(props) {
     if (debt.eq(0)) { return null; }
 
     return <Col>
-        <Collapse defaultActiveKey={['1']} bordered={false} style={{ width: "25em", marginLeft: "1em" }}>
+        <Collapse defaultActiveKey={['1']} bordered={false} style={{ width: "30em", marginLeft: "1em" }}>
             <Collapse.Panel key="1" header={
                 <Row>
                     <Typography.Text style={{
@@ -160,7 +164,7 @@ export function ProductBuySection(props) {
                     return;
                 }
 
-                if (values.amount === 0 || values.amount < 0.01) {
+                if (values.amount === 0 || values.amount < 0.00001) {
                     message.error(t("buy_product.buy_form.amount_error"));
                     return;
                 }
@@ -228,7 +232,7 @@ export function ProductBuySection(props) {
                     useAddon
                     postfixSymbol={productData.buyToken.symbol}
                     maxValue={formatBigNumber(productData.availableLiquidity)}
-                    minValue={0.01}
+                    minValue={0.00001}
                     productPrice={productData.price}
                     productSymbol={productData.productToken.symbol}
                     prefixSymbol={productData.productToken.symbol}
