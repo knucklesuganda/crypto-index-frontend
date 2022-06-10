@@ -82,32 +82,35 @@
         },
         "questions": [
             {
-                "question": "How does it work?",
-                "answer": "Indices allow you to buy many tokens at once without any problems with management or the price of the assets. You just buy and sell tokens here, and each one of them has underlying assets that define the price"
+                "question": "Как это работает?",
+                "answer": "Индексы позволяют вам купить несколько токенов сразу. За это вы получаете индекс токен, который показывает что вы владете частью токенов этого индекса. Цена самого токена - среднее между всеми составляющими индекса"
             },
             {
-                "question": "How to buy/sell?",
-                "answer": "You need to have buy token for the product(DAI, USDT, USDC) that can be found in the analytics section. We use it to track the price of the index and complete all operations. Once you have it, write the amount and buy your tokens. Then, you will need to wait for an indefinite period of settlement. During that period, we will buy all tokens and distribute the debt. Once there is enough debt, you can retrieve it in a separate operation and get your tokens!"
+                "question": "Как купить/продать?",
+                "answer": "Для начала вам понадобится токен для покупки индекса(USDT, DAI, USDC, ETH), который вы можете найти в разделе аналитики. После, вы должны купить нужное количество индекса через панель купить. Мы получим ваши токены и добавим для вас долг - показатель того что вы купили X токенов. Когда денежный сбор(fee) от всех транзакций будет достаточно большой мы начнем процесс 'settlement', где купим все нужные токены для вас. В конце settlement вы можете забрать свой долг из специальной вкладки(ваш долг может быть меньше доступных средств, мы не влияем на это)"
             },
             {
-                "question": "What is debt and settlement?",
-                "answer": "We don't manage underlying tokens right away(blockchain capabilities do not allow that). But, instead, we add debt to the system that indicates that you need to receive some money in the future. If there are enough fees collected, the settlement process will begin. Then, you can get the amount of tokens that we could buy(it can be higher or lower that the amount you requested). But, be careful with the settlement process. IT WILL NOT START UNTIL THERE ARE ENOUGH FEES, AND ALL THE OPERATIONS ARE IRREVERSIBLE. THAT MEANS THAT YOU CAN WAIT FOR A VERY LONG PERIOD TO RECEIVE YOUR TOKENS"
+                "question": "Что такое долг и settlement?",
+                "answer": "Мы не можем купить нужные токены вместе с вашей транзакцией(блокчейн не позволяет это сделать). Именно поэтому, при покупке токенов мы добавляем вам долг, который указывает на количество купленных токенов. Когда количество fee становится достаточным для выполнения settlement транзакций, мы начинаем процесс settlement и покупаем/продаем все нужные токены. После, вы можете получить свой долг из специальной вкладки. ВЫ МОЖЕТЕ НЕ ПОЛУЧИТЬ ВЕСЬ СВОЙ ДОЛГ ИЗ-ЗА ДВИЖЕНИЯ ЦЕНЫ, ЛИБО НЕ ПОЛУЧИТЬ ДОЛГ ЕСЛИ БАЛАНС ДЛЯ FEE SETTLEMENT ТРАНЗАКЦИЙ НЕ БУДЕТ ДОСТАТОЧНЫМ"
             },
             {
-                "question": "Why are fees so high?",
-                "answer": "Fees is the only way for us to buy all the underlying assets. When you buy our indices, the majority of your dollars goes to the underlying assets(BTC, ETH and so on). But, to operate the system, we need to run additional settlement transactions, and that is the main place for your fees. Also, we use them to support the project development."
+                "question": "Почему такие большие fee?",
+                "answer": "Fee(сбор) - это единственный способ для оплаты транзакций settlement. Они могут меняться в зависимости от цены газа в блокчейне. Также, они нужны для развития проекта"
             },
+
             {
-                "question": "When can I receive my debt?",
-                "answer": "You may wait for an undefined amount of time to receive your debt. We only run the settlement if there are enough fees collected."
+                "question": "Когда я могу получить свой долг?",
+                "answer": "Вы можете ждать неопределенное время для получения вашего долга. Дело в том, что мы запускаем settlement только если нам хватает денег для оплаты транзакций settlement. Поэтому, вы можете получить свой долг только тогда, когда нам будет хватать денег для оплаты транзакций"
             },
+
             {
-                "question": "Unknown error",
-                "answer": "There may be some errors that we do not control. For example, the exchange where we buy our underlying assets may experience some problems. You can wait for a little bit, but if the problem does not go away, contact us at info@void.management"
+                "question": "Неизвестная ошибка",
+                "answer": "Могут происходить ошибки которые мы не контролируем. Например, проблемы в блокчейне или в других контрактах. Мы не несем за это ответственность, но если вы нашли ошибку, пожалуйста, напишите нам на info@void.management" 
             },
+
             {
-                "question": "Are there any guarantees?",
-                "answer": "We don't have any guarantees. ALL RESPONSIBILITY FALLS ON YOU. THE PROJECT IS ACTIVELY BEING DEVELOPED"
+                "question": "Есть ли какие-то гарантии?",
+                "answer": "Мы не даем никаких гарантий. Вся ответственность лежит на вас. Проект находится в активной разработке"
             }
         ],
         "product_name": "Название продукта",
