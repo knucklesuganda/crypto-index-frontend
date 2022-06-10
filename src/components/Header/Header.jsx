@@ -7,8 +7,30 @@ import { TranslationOutlined, TwitterOutlined } from '@ant-design/icons';
 import { Fade } from "../animations";
 import { UserAgreement } from "..";
 import { Divider, Typography } from "antd";
-import { MobileOnly, useDesktopQuery } from "../MediaQuery";
+import { MobileOnly, OnlyDesktop, useDesktopQuery } from "../MediaQuery";
 import "./style.css";
+
+
+function UserAccount() {
+    const isDesktop = useDesktopQuery();
+
+    if (!sessionStorage.account) {
+        return <span />;
+    }
+
+    return <Col style={{
+        cursor: "pointer",
+        padding: "0.5em",
+        background: "#0a0a0a",
+        border: "1px solid #303030",
+        borderRadius: "4px",
+    }}
+        onClick={() => { window.open("https://etherscan.io/address/" + sessionStorage.account) }}>
+        <Typography.Text style={{ fontSize: "1.2em" }}>
+            {sessionStorage.account.slice(0, 15)}...
+        </Typography.Text>
+    </Col>;
+}
 
 
 export function Header(props) {
@@ -22,6 +44,10 @@ export function Header(props) {
             </Col>
 
             <Col id="header_links">
+                <OnlyDesktop>
+                    <div style={{ marginRight: "1em" }}><UserAccount /></div>
+                </OnlyDesktop>
+
                 <a href="https://twitter.com/ManagementVoid" style={{ color: "white" }}>
                     <TwitterOutlined style={{ color: "white", fontSize: "2em", marginRight: "0.5em" }} />
                 </a>
@@ -39,28 +65,14 @@ export function Header(props) {
                 </Fade>
             </Col>
 
-            {sessionStorage.account ?
-                <div style={isDesktop ? {position: "absolute", right: 5, zIndex: 100, bottom: 10 } : null}>
-                    <Col style={{
-                        cursor: "pointer",
-                        marginTop: "0.4em",
-                        padding: "0.5em",
-                        background: "#0a0a0a",
-                        border: "1px solid #303030",
-                        borderRadius: "4px",
-                    }}
-                        onClick={() => { window.open("https://etherscan.io/address/" + sessionStorage.account) }}>
-                        <Typography.Text style={{ fontSize: "1.2em" }}>
-                            {sessionStorage.account.slice(0, 15)}...
-                        </Typography.Text>
-                    </Col>
+            <MobileOnly>
+                <div style={{ marginTop: "0.4em" }}>
+                    <UserAccount />
                 </div>
-            : null}
+            </MobileOnly>
         </Row>
 
-        <MobileOnly>
-            <Divider />
-        </MobileOnly>
+        <MobileOnly><Divider /></MobileOnly>
 
         {props.children}
     </Fragment>;

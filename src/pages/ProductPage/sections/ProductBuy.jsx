@@ -166,6 +166,9 @@ export function ProductBuySection(props) {
                 }
 
                 const weiAmount = parseEther(values.amount.toString());
+                let isBuyOperation = operationType === "buy";
+                console.log(isBuyOperation)
+                let operationPromise;
 
                 if (productData.isSettlement) {
                     message.error(t("buy_product.buy_form.settlement_error"));
@@ -173,13 +176,10 @@ export function ProductBuySection(props) {
                 } else if (productData.availableLiquidity.lt(weiAmount)) {
                     message.error(t("buy_product.buy_form.liquidity_error"));
                     return;
-                } else if (productData.availableTokens.lt(weiAmount)) {
+                } else if (isBuyOperation && productData.availableTokens.lt(weiAmount)) {
                     message.error(t("buy_product.buy_form.no_tokens_error"));
                     return;
                 }
-
-                let isBuyOperation = operationType === "buy";
-                let operationPromise;
 
                 if (isBuyOperation) {
                     operationPromise = buyIndex({

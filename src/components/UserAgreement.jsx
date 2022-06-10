@@ -408,7 +408,7 @@ the parties shall meet and confer in good faith by videoconference, or by teleph
             <TermsTitle space>Changes</TermsTitle>
             <TermsText>By rejecting any changes to these Terms, you agree that you will arbitrate any Dispute between you and us in accordance with the provisions of this section as of the date you first accepted these Terms (or accepted any subsequent changes to these Terms).</TermsText>
 
-            <TermsTitle space>Waiver of Injunctive.</TermsTitle>
+            <TermsTitle space>Waiver of Injunctive Relief.</TermsTitle>
             <TermsText>
                 TO THE MAXIMUM EXTENT PERMITTED BY LAW, YOU AGREE THAT YOU WILL NOT BE PERMITTED TO
                 OBTAIN AN INJUNCTION OF ANY KIND, SUCH AS ANY COURT OR OTHER ACTION THAT MAY INTERFERE WITH
@@ -429,12 +429,13 @@ the parties shall meet and confer in good faith by videoconference, or by teleph
                 (a) your use of the Services exposes us to risk or liability;
                 (b) you are using the Services for unlawful purposes; or
                 (c) it is not commercially viable to continue providing you with our Services.
-                All of these are in addition to any other rights and remedies that may be available to us,
+                All of these are in addition to any other rights and remedies that may be available to us under the applicable law,
                 all of which we expressly reserve. WE RESERVE THE RIGHT TO MODIFY
                 THE SERVICES AT ANY TIME, BUT WE HAVE NO OBLIGATION TO UPDATE THE SERVICES. YOU AGREE THAT IT IS
                 YOUR RESPONSIBILITY TO MONITOR CHANGES TO THE SERVICES THAT MAY AFFECT YOU. YOU AGREE THAT WE MAY
                 REMOVE THE SERVICES AND/OR ANY CONTENT THEREON FOR INDEFINITE PERIODS OF TIME OR CANCEL THE SERVICES
-                AT ANY TIME, WITHOUT NOTICE TO YOU.</TermsText>
+                AT ANY TIME, WITHOUT NOTICE TO YOU.
+            </TermsText>
 
             <TermsTitle space>Severability</TermsTitle>
             <TermsText>If any provision of the Agreement (including, without limitation, these Terms) is determined to be unlawful, void, or unenforceable, such provision shall nonetheless be enforceable to the fullest extent permitted by applicable law, and the unenforceable portion shall be deemed to be severed from the Agreement. Such determination shall not affect the validity and enforceability of any other remaining provisions.</TermsText>
@@ -442,8 +443,7 @@ the parties shall meet and confer in good faith by videoconference, or by teleph
             <TermsTitle space>Assignment</TermsTitle>
             <TermsText>
                 The Agreement (including, without limitation, these Terms) may be assigned, without your prior consent, 
-                to any third party 
-                to our discression or in the interest of any business associated with the Services provided 
+                to any third party at our discression or in the interest of any business associated with the Services provided 
                 by us. You may not assign or transfer any rights or obligations under the 
                 Agreement without our prior written consent.
             </TermsText>

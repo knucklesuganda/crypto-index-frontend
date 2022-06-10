@@ -60,8 +60,7 @@ export function AnalyticsSection(props) {
                 </AnalyticsText>,
 
                 <AnalyticsText title={t("buy_product.analytics.liquidity_hint")}>
-                    {t('buy_product.analytics.liquidity')}: {formatBigNumber(props.productData.availableLiquidity)} 
-                        {props.productData.productToken.symbol}
+                    {t('buy_product.analytics.liquidity')}: {formatBigNumber(props.productData.availableLiquidity)} {props.productData.productToken.symbol}
                 </AnalyticsText>,
 
                 <Typography.Text title={t('buy_product.analytics.save_token_hint')}
