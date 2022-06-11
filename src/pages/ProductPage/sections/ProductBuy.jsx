@@ -171,13 +171,15 @@ export function ProductBuySection(props) {
 
                 const weiAmount = parseEther(values.amount.toString());
                 let isBuyOperation = operationType === "buy";
-                console.log(isBuyOperation)
                 let operationPromise;
 
                 if (productData.isSettlement) {
                     message.error(t("buy_product.buy_form.settlement_error"));
                     return;
-                } else if (productData.availableLiquidity.lt(weiAmount)) {
+                } else if (
+                    productData.availableLiquidity.lt(weiAmount) 
+                    || productData.totalManagedTokens.gte(productData.availableLiquidity)
+                ) {
                     message.error(t("buy_product.buy_form.liquidity_error"));
                     return;
                 } else if (isBuyOperation && productData.availableTokens.lt(weiAmount)) {

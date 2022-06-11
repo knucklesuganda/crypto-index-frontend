@@ -43,6 +43,11 @@ export async function getERC20Information(providerData, tokenAddress, tokenImage
 
 }
 
+export async function getTotalSupply(providerData, tokenAddress){
+    const token = createERC20(providerData, tokenAddress);
+    return await token.totalSupply();
+}
+
 export async function getTokenBalance(providerData, tokenAddress, productAddress){
     const token = createERC20(providerData, tokenAddress);
     return await token.balanceOf(productAddress);

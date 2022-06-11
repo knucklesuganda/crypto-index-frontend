@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
-import { approveBuyTokens, getERC20Information, getTokenAllowance, getTokenBalance } from "./ERC20Contract";
+import { approveBuyTokens, getERC20Information, 
+    getTokenAllowance, getTokenBalance, getTotalSupply } from "./ERC20Contract";
 import contract from './sources/Index.json';
 
 
@@ -19,6 +20,7 @@ export async function getIndexInformation(providerData, indexAddress) {
     const product = createIndex(providerData, indexAddress);
     const productImage = await product.image();
     const feeData = await product.getFee();
+    const indexToken = await product.indexToken();
 
     return {
         address: indexAddress,
@@ -27,7 +29,7 @@ export async function getIndexInformation(providerData, indexAddress) {
         description: await product.shortDescription(),
         longDescription: await product.longDescription(),
         price: await product.getPrice(),
-        productToken: await getERC20Information(providerData, await product.indexToken(), productImage),
+        productToken: await getERC20Information(providerData, indexToken, productImage),
         isSettlement: await product.isSettlementActive(),
         totalLockedValue: await product.getTotalLockedValue(),
         userSellDebt: await product.getUserDebt(providerData.account, false),
@@ -36,9 +38,10 @@ export async function getIndexInformation(providerData, indexAddress) {
         totalBuyDebt: await product.getTotalDebt(true),
         fee: (100 / feeData[1].toNumber()) * feeData[0].toNumber(),
         availableLiquidity: await product.getAvailableLiquidity(),
-        maxTokens: await product.maxTokens(),
+        maxTokens: await getTotalSupply(providerData, indexToken),
         availableTokens: await product.availableTokens(),
         buyToken: await getERC20Information(providerData, await product.buyTokenAddress()),
+        totalManagedTokens: (await product.tokensToBuy()).add(await product.tokensToSell()),
     };
 }
 
