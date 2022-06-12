@@ -162,9 +162,7 @@ export function ProductBuySection(props) {
             <Form name="productInteractionForm" style={{ minWidth: "20vw" }} autoComplete="off" onFinish={(values) => {
                 if (createProductAlert(productData.name)) {
                     return;
-                }
-
-                if (values.amount === 0 || values.amount < 0.00001) {
+                }else if (values.amount === 0 || values.amount < 0.00001) {
                     message.error(t("buy_product.buy_form.amount_error"));
                     return;
                 }
