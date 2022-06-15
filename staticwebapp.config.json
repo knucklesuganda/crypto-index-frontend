@@ -1,17 +1,11 @@
 {
-    "routes": [
-        {
-            "route": "/"
-
-        },
-
-        {
-            "route": "/product/index/0xDBCFC1Ec8aF08aB1943aD6dEf907BD0f0b7C4fE0"
-        }
-    ],
+    "routes": [],
     "responseOverrides": {
         "404": {
             "rewrite": "/not_found"
         }
+    },
+    "navigationFallback": {
+        "rewrite": "/index.html"
     }
 }
