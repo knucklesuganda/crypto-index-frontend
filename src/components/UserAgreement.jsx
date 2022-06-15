@@ -1,5 +1,6 @@
 import { Col, Typography } from "antd";
 import { Modal } from "antd";
+import { useTranslation } from "react-i18next";
 import { useMobileQuery } from "./MediaQuery";
 
 
@@ -464,12 +465,13 @@ the parties shall meet and confer in good faith by videoconference, or by teleph
 
 export function UserAgreement(props){
     const isMobile = useMobileQuery();
+    const { t } = useTranslation();
 
     if(!localStorage.hasSigned){
         userAgreementModal(isMobile);
     }
 
     return <Typography.Text style={props.style} onClick={() => { userAgreementModal(isMobile); }}>
-        User agreement
+        {t("user_agreement")}
     </Typography.Text>;
 }

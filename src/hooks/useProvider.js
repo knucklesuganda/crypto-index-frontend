@@ -1,18 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { connectWallet } from "../web3/wallet/providers";
 
 export function useProvider() {
     const [providerData, setProviderData] = useState(null);
 
-    const handleWalletConnection = (provider) => {
+    const handleWalletConnection = (initial) => {
 
-        return connectWallet(provider).then((providerData) => {
+        return connectWallet(initial).then((providerData) => {
             if(providerData !== null){
                 setProviderData(providerData);
             }
         });
 
     };
+
+    useEffect(() => {
+        handleWalletConnection(true).catch((err) => {
+            console.log(err);
+        });
+        return () => {};
+    }, []);
 
     return { providerData, handleWalletConnection };
 }

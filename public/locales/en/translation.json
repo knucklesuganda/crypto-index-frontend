@@ -39,6 +39,9 @@
         }
     },
     "buy_product": {
+        "token_buy": "Buy",
+        "token_buy_here": "here",
+
         "buy_form": {
             "amount": {
                 "placeholder": "Amount",
@@ -61,6 +64,8 @@
         },
         "analytics": {
             "save_token_hint": "Save token to the wallet",
+            "save_token": "Save token",
+
             "title": "Analytics",
             "about_product": "About",
 
@@ -141,6 +146,8 @@
     "error": "Error",
     "observer_error": "Products were not found by the observer(try switching your network)",
     "add_token_notification": "Add token to the wallet",
+    "logout": "Logout",
+    "user_agreement": "Соглашение",
     "wallet_connector": {
         "no_provider_error": "No wallet provider was found",
         "must_connect": "You must connect your wallet in order to buy products",

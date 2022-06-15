@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Title } from "../Title";
 import { Col, Row } from "antd";
 import { UserAgreement } from "..";
@@ -6,28 +6,38 @@ import { Fade } from "../animations";
 import { INDEX_PAGE } from "../../routes";
 import { Divider, Typography } from "antd";
 import { useTranslation } from "react-i18next";
-import { MobileOnly, OnlyDesktop, useMobileQuery } from "../MediaQuery";
+import { MobileOnly, OnlyDesktop } from "../MediaQuery";
 import { TranslationOutlined, TwitterOutlined } from '@ant-design/icons';
+import { clearProvider } from "../../web3/wallet/providers";
 import "./style.css";
 
 
 function UserAccount() {
-    const isMobile = useMobileQuery();
+    let [isLoggedIn, setIsLoggedIn] = useState(false);
+    const { t } = useTranslation();
 
-    if (!sessionStorage.account) {
+    useEffect(() => {
+        setIsLoggedIn(Boolean(sessionStorage.account));
+        return () => {};
+    }, [setIsLoggedIn]);
+
+    if(!isLoggedIn){
         return <span />;
     }
+
+    const text = `${t("logout")} ${sessionStorage.account.slice(0, 15)}...`;
 
     return <Col style={{
         cursor: "pointer",
         padding: "0.5em",
-        background: isMobile ? "#0a0a0a" : null,
-        border: isMobile ? "1px solid #303030" : null,
+        background: "#0a0a0a",
+        border: "1px solid #303030",
         borderRadius: "4px",
     }} onClick={() => {
-        window.open("https://etherscan.io/address/" + sessionStorage.account);
+        clearProvider();
+        window.location.reload();
     }}>
-        <Typography.Text style={{ fontSize: "1.2em" }}>{sessionStorage.account.slice(0, 15)}...</Typography.Text>
+        <Typography.Text style={{ fontSize: "1.2em" }}>{text}</Typography.Text>
     </Col>;
 }
 
@@ -68,7 +78,9 @@ export function Header(props) {
             </Col>
 
             <MobileOnly>
-                <div style={{ marginTop: "0.4em" }}><UserAccount /></div>
+                <div style={{ marginTop: "0.4em" }}>
+                    <UserAccount />
+                </div>
             </MobileOnly>
         </Row>
 

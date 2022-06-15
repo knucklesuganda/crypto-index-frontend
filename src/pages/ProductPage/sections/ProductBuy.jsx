@@ -158,7 +158,7 @@ export function ProductBuySection(props) {
     const { t } = useTranslation();
 
     return <Spin spinning={inProgress} indicator={<LoadingOutlined style={{ fontSize: "2em" }} />}>
-        <Col style={{ display: "flex", justifyContent: "center" }}>
+        <Col style={{ display: "flex", justifyContent: "center", zIndex: 100 }}>
             <Form name="productInteractionForm" style={{ minWidth: "20vw" }} autoComplete="off" onFinish={(values) => {
                 if (createProductAlert(productData.name)) {
                     return;
@@ -238,7 +238,7 @@ export function ProductBuySection(props) {
                     prefixSymbol={productData.productToken.symbol}
                 />
 
-                <Form.Item>
+                <Form.Item style={{ marginBottom: "0.4em" }}>
                     <Radio.Group defaultValue="buy" style={{ display: "flex" }}
                         onChange={(event) => { setOperationType(event.target.value) }}>
 
@@ -257,7 +257,13 @@ export function ProductBuySection(props) {
                             <Typography.Text style={{ cursor: "pointer" }} underline target="_blank" onClick={() => {
                                 window.open("https://etherscan.io/directory/Exchanges/DEX");
                             }}>{t('buy_product.buy_form.operation.sell_advise.exchanges')}</Typography.Text>
-                        </Typography.Text> : null}
+                        </Typography.Text> : 
+
+                        <Typography.Link style={{ fontSize: "1.1em", textDecoration: "underline" }}
+                            type="success" href="https://app.uniswap.org/#/swap?chain=mainnet" target="_blank">
+
+                            {t("buy_product.token_buy")} {productData.buyToken.symbol} {t("buy_product.token_buy_here")}
+                        </Typography.Link>}
                 </Form.Item>
 
                 <Form.Item>
@@ -293,10 +299,15 @@ export function ProductBuySection(props) {
             </DebtSectionCollapse>
         </Row>
 
-
         <OnlyDesktop>
             <Col style={{
-                position: "absolute", top: "0.5em", right: "70%", width: "30em",
+                position: "absolute",
+                zIndex: 1,
+                top: "0.5em",
+                right: "70%",
+                width: "30em",
+                border: "1px solid #0a0a0a",
+                padding: "0.2em",
             }}>
                 <Typography.Text style={{ fontSize: "1.2em" }} title={t("buy_product.analytics.balance_hint")}>
                     {t('buy_product.analytics.balance')}: {formatBigNumber(props.productData.productToken.balance)} {

@@ -39,7 +39,7 @@ export function IndexBuyProducts(props) {
         return () => { };
     }, [providerData]);
 
-    return <Row id={props.id} style={ isMobile ? { justifyContent: "center" } : null}>
+    return <Row id={props.id} style={ isMobile ? { justifyContent: "center", height: "80vh" } : null}>
         <Title>{t('index.buy.title')}</Title>
 
         {providerData === null ? <WalletConnector handleWalletConnection={handleWalletConnection} /> :

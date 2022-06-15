@@ -39,6 +39,9 @@
         }
     },
     "buy_product": {
+        "token_buy": "Купите",
+        "token_buy_here": "здесь",
+
         "buy_form": {
             "amount": {
                 "placeholder": "Количество",
@@ -61,6 +64,7 @@
         },
         "analytics": {
             "save_token_hint": "Сохранить токен в кошельке",
+            "save_token": "Сохранить токен",
             "title": "Аналитика",
             "about_product": "О продукте",
             "balance": "Ваш баланс",
@@ -137,6 +141,8 @@
     "error": "Ошибка",
     "observer_error": "Продукты не были найдены наблюдателем(попытайтесь переключить сеть)",
     "add_token_notification": "Добавьте токен в кошелек",
+    "logout": "Выйти",
+    "user_agreement": "User agreement",
     "wallet_connector": {
         "no_provider_error": "Не найден провайдер(Проверьте заявку на подключение в кошельке)",
         "must_connect": "Вы должны подключиться к кошельку чтобы получить доступ к продукту",

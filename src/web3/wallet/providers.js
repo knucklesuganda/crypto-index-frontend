@@ -19,6 +19,7 @@ let signer = null, provider = null;
 let web3Modal = new Web3Modal({
 
     cacheProvider: true,
+    network: "mainnet",
     providerOptions,
 
     theme: {
@@ -31,19 +32,27 @@ let web3Modal = new Web3Modal({
 });
 
 
-export async function connectWallet() {
+export async function connectWallet(initial) {
 
     let web3ModalProvider;
 
     try {
+        console.log(initial === true, typeof web3Modal.cachedProvider === "string")
+
+        if(initial === true && typeof web3Modal.cachedProvider === "string"){
+            web3ModalProvider = await web3Modal.connectTo(web3Modal.cachedProvider);
+        }else if(initial === true){
+            throw new NoProviderError();
+        }
+
         web3ModalProvider = await web3Modal.connect();
     } catch (error) {
         throw new NoProviderError(error);
     }
 
     provider = new ethers.providers.Web3Provider(web3ModalProvider);
-
     signer = provider.getSigner();
+
     sessionStorage.account = await _getWallet();
     setupEvents(provider);
 
