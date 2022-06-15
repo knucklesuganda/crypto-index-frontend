@@ -1,12 +1,17 @@
 {
     "routes": [
-        { "route": "/" },
-        { "route": "/product/index/*" }
+        {
+            "route": "/"
+
+        },
+
+        {
+            "route": "/product/index/0xDBCFC1Ec8aF08aB1943aD6dEf907BD0f0b7C4fE0"
+        }
     ],
     "responseOverrides": {
         "404": {
-            "statusCode": 404,
-            "redirect": "/not_found"
+            "rewrite": "/not_found"
         }
     }
 }
