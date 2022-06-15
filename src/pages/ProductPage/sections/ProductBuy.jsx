@@ -16,6 +16,7 @@ import { TokenInput } from "../../../components/TokenInput";
 import { addTokenNotification } from "../../../components";
 import { parseEther } from "ethers/lib/utils";
 import { OnlyDesktop } from "../../../components/MediaQuery";
+import settings from "../../../settings";
 
 
 function DebtSection(props) {
@@ -260,7 +261,7 @@ export function ProductBuySection(props) {
                         </Typography.Text> : 
 
                         <Typography.Link style={{ fontSize: "1.1em", textDecoration: "underline" }}
-                            type="success" href="https://app.uniswap.org/#/swap?chain=mainnet" target="_blank">
+                            type="success" href={settings.BUY_DAI_LINK} target="_blank">
 
                             {t("buy_product.token_buy")} {productData.buyToken.symbol} {t("buy_product.token_buy_here")}
                         </Typography.Link>}

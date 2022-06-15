@@ -147,7 +147,7 @@
     "observer_error": "Products were not found by the observer(try switching your network)",
     "add_token_notification": "Add token to the wallet",
     "logout": "Logout",
-    "user_agreement": "Соглашение",
+    "user_agreement": "User agreement",
     "wallet_connector": {
         "no_provider_error": "No wallet provider was found",
         "must_connect": "You must connect your wallet in order to buy products",

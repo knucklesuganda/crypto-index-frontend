@@ -37,7 +37,6 @@ export async function connectWallet(initial) {
     let web3ModalProvider;
 
     try {
-        console.log(initial === true, typeof web3Modal.cachedProvider === "string")
 
         if(initial === true && typeof web3Modal.cachedProvider === "string"){
             web3ModalProvider = await web3Modal.connectTo(web3Modal.cachedProvider);
