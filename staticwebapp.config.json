@@ -1,0 +1,12 @@
+{
+    "routes": [
+        { "route": "/" },
+        { "route": "/product/index/*" }
+    ],
+    "responseOverrides": {
+        "404": {
+            "statusCode": 404,
+            "redirect": "/not_found"
+        }
+    }
+}

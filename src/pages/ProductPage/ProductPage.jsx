@@ -10,8 +10,8 @@ import { AnalyticsSection } from "./sections/Analytics";
 import { ProductBuySection } from "./sections/ProductBuy";
 import { ProductInfo } from "./sections/ProductInfo";
 import { useTranslation } from "react-i18next";
-import settings from "../../settings";
 import { OnlyDesktop } from "../../components/MediaQuery";
+import settings from "../../settings";
 
 
 export default function ProductPage() {
