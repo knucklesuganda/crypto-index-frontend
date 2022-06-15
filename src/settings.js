@@ -1,8 +1,8 @@
 
 const settings = {
-    OBSERVER_ADDRESS: '0x4238FF39e6c68DBA49F354a4f4C0d0E2EB9278A9',
+    OBSERVER_ADDRESS: '0x00d7ae7a188c88f365a9F2eEEb6a4028660eda42',
     STATE_UPDATE_INTERVAL: parseInt(10000),
-    PUBLIC_RPC_URL: 'https://nodes.mewapi.io/rpc/eth',
+    PUBLIC_RPC_URL: 'https://eth-mainnet.alchemyapi.io/v2/KQmEoXn9kKfPL4AAljiW1XV39HRHff_K',
     DEBUG: false,
     CHAIN_ID: '0x1',
 };

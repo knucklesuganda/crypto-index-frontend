@@ -1,17 +1,19 @@
 import { Fragment } from "react";
-import { INDEX_PAGE } from "../../routes";
 import { Title } from "../Title";
-import { useTranslation } from "react-i18next";
 import { Col, Row } from "antd";
-import { TranslationOutlined, TwitterOutlined } from '@ant-design/icons';
-import { Fade } from "../animations";
 import { UserAgreement } from "..";
+import { Fade } from "../animations";
+import { INDEX_PAGE } from "../../routes";
 import { Divider, Typography } from "antd";
-import { MobileOnly, OnlyDesktop } from "../MediaQuery";
+import { useTranslation } from "react-i18next";
+import { MobileOnly, OnlyDesktop, useMobileQuery } from "../MediaQuery";
+import { TranslationOutlined, TwitterOutlined } from '@ant-design/icons';
 import "./style.css";
 
 
 function UserAccount() {
+    const isMobile = useMobileQuery();
+
     if (!sessionStorage.account) {
         return <span />;
     }
@@ -19,14 +21,13 @@ function UserAccount() {
     return <Col style={{
         cursor: "pointer",
         padding: "0.5em",
-        background: "#0a0a0a",
-        border: "1px solid #303030",
+        background: isMobile ? "#0a0a0a" : null,
+        border: isMobile ? "1px solid #303030" : null,
         borderRadius: "4px",
-    }}
-        onClick={() => { window.open("https://etherscan.io/address/" + sessionStorage.account) }}>
-        <Typography.Text style={{ fontSize: "1.2em" }}>
-            {sessionStorage.account.slice(0, 15)}...
-        </Typography.Text>
+    }} onClick={() => {
+        window.open("https://etherscan.io/address/" + sessionStorage.account);
+    }}>
+        <Typography.Text style={{ fontSize: "1.2em" }}>{sessionStorage.account.slice(0, 15)}...</Typography.Text>
     </Col>;
 }
 
@@ -37,12 +38,16 @@ export function Header(props) {
     return <Fragment>
         <Row id="header_row">
             <Col>
-                <Title id='start'><a href={INDEX_PAGE} style={{ color: "white" }}>{t('title')}</a></Title>
+                <Title id='start'>
+                    <a href={INDEX_PAGE} style={{ color: "white" }}>{t('title')}</a>
+                </Title>
             </Col>
 
             <Col id="header_links">
                 <OnlyDesktop>
-                    <div style={{ marginRight: "1em" }}><UserAccount /></div>
+                    <div style={{ marginRight: "1em" }}>
+                        <UserAccount />
+                    </div>
                 </OnlyDesktop>
 
                 <a href="https://twitter.com/ManagementVoid" style={{ color: "white" }}>
@@ -63,9 +68,7 @@ export function Header(props) {
             </Col>
 
             <MobileOnly>
-                <div style={{ marginTop: "0.4em" }}>
-                    <UserAccount />
-                </div>
+                <div style={{ marginTop: "0.4em" }}><UserAccount /></div>
             </MobileOnly>
         </Row>
 
