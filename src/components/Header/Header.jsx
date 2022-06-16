@@ -7,8 +7,9 @@ import { INDEX_PAGE } from "../../routes";
 import { Divider, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 import { MobileOnly, OnlyDesktop } from "../MediaQuery";
-import { TranslationOutlined, TwitterOutlined } from '@ant-design/icons';
+import { TranslationOutlined, YoutubeOutlined, TwitterOutlined } from '@ant-design/icons';
 import { clearProvider } from "../../web3/wallet/providers";
+import { DiscordLogo } from "./DiscordLogo";
 import "./style.css";
 
 
@@ -18,10 +19,10 @@ function UserAccount() {
 
     useEffect(() => {
         setIsLoggedIn(Boolean(sessionStorage.account));
-        return () => {};
+        return () => { };
     }, [setIsLoggedIn]);
 
-    if(!isLoggedIn){
+    if (!isLoggedIn) {
         return <span />;
     }
 
@@ -60,9 +61,19 @@ export function Header(props) {
                     </div>
                 </OnlyDesktop>
 
-                <a href="https://twitter.com/ManagementVoid" style={{ color: "white" }}>
-                    <TwitterOutlined style={{ color: "white", fontSize: "2em", marginRight: "0.5em" }} />
-                </a>
+                <div style={{ marginRight: "1em" }}>
+                    <a href="https://twitter.com/ManagementVoid" style={{ color: "white", marginRight: "1em" }}>
+                        <TwitterOutlined style={{ color: "white", fontSize: "2em" }} />
+                    </a>
+
+                    <a href="https://discord.gg/yFBacu7TFu" style={{ color: "white", marginRight: "1em" }}>
+                        <DiscordLogo />
+                    </a>
+
+                    <a href="https://www.youtube.com/channel/UC40nmrHSeBgJuIx8BNeLWKA">
+                        <YoutubeOutlined style={{ color: "white", fontSize: "2em" }} />
+                    </a>
+                </div>
 
                 <UserAgreement style={{ marginRight: "1em" }} />
 

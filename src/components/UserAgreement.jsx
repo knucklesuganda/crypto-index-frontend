@@ -27,6 +27,13 @@ function userAgreementModal(isMobile){
         width: isMobile ? "80%" : "60%",
         okText: "I hereby agree to the terms and conditions",
         onOk: () => { localStorage.hasSigned = true; },
+        okButtonProps: {
+            style: isMobile ? {
+                width: "10em",
+                whiteSpace: "break-spaces",
+                height: 'fit-content',
+            } : {}
+        },
         bodyStyle: {
             background: "#0a0a0a",
             border: "1px solid #1f1f1f",
