@@ -2,7 +2,6 @@ import { Fragment, useEffect, useState } from "react";
 import { Title } from "../Title";
 import { Col, Row } from "antd";
 import { UserAgreement } from "..";
-import { Fade } from "../animations";
 import { INDEX_PAGE } from "../../routes";
 import { Divider, Typography } from "antd";
 import { useTranslation } from "react-i18next";
@@ -77,15 +76,13 @@ export function Header(props) {
 
                 <UserAgreement style={{ marginRight: "1em" }} />
 
-                <Fade isActive>
-                    <TranslationOutlined onClick={() => {
-                        if (i18n.language === "en") {
-                            i18n.changeLanguage("ru");
-                        } else {
-                            i18n.changeLanguage("en");
-                        }
-                    }} style={{ fontSize: "2.2em" }} />
-                </Fade>
+                <TranslationOutlined onClick={() => {
+                    if (i18n.language === "en") {
+                        i18n.changeLanguage("ru");
+                    } else {
+                        i18n.changeLanguage("en");
+                    }
+                }} style={{ fontSize: "2.2em" }} />
             </Col>
 
             <MobileOnly>

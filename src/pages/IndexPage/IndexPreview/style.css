@@ -1,0 +1,10 @@
+
+.cryptoLogo{
+    transition: 200ms;
+    display: flex;
+    justify-content: center;
+}
+
+#otherCryptoRow > .cryptoLogo:hover{
+    filter: grayscale(1);
+}

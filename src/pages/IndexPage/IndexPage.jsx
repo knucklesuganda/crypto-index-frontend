@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Row, Col, Menu, Divider } from "antd";
-import { IndexBiggestProblem } from "./IndexBiggestProblem";
+import { IndexPreview } from "./IndexPreview/IndexPreview";
 import { IndexStart } from "./IndexStart";
 import { IndexBuyProducts } from "./IndexBuyProducts/IndexBuyProducts";
 import { useTranslation } from "react-i18next";
@@ -11,7 +11,7 @@ import useVisibility from "../../hooks/useVisibility";
 export default function IndexPage() {
     const [currentPage, setCurrentPage] = useState(0);
     const startId = 'start';
-    const biggestProblemsId = "about-us";
+    const previewId = "preview";
     const buyProductsId = "buy-products";
 
     const { t } = useTranslation();
@@ -19,15 +19,15 @@ export default function IndexPage() {
     const isTransition = useRef(false);
 
     const indexStartRef = useRef(null);
-    const biggestProblemsRef = useRef(null);
+    const previewsRef = useRef(null);
     const buyProductsRef = useRef(null);
 
     const isIndexStartVisible = useVisibility(indexStartRef);
-    const isBiggestProblemsVisible = useVisibility(biggestProblemsRef);
+    const isPreviewsVisible = useVisibility(previewsRef);
     const isBuyProductsVisible = useVisibility(buyProductsRef);    
 
-    const sectionRefs = [indexStartRef, biggestProblemsRef, buyProductsRef];
-    const visibilities = [isIndexStartVisible, isBiggestProblemsVisible, isBuyProductsVisible];
+    const sectionRefs = [indexStartRef, previewsRef, buyProductsRef];
+    const visibilities = [isIndexStartVisible, isPreviewsVisible, isBuyProductsVisible];
 
     const scrollIntoComponent = (componentId, page) => {
         document.getElementById(componentId).scrollIntoView({ behavior: "smooth",  block: 'nearest', });
@@ -60,10 +60,10 @@ export default function IndexPage() {
                 <Row style={{ width: "100%" }}>
                     {[
                         <IndexStart id={startId} setNextPage={() => {
-                            scrollIntoComponent(biggestProblemsId, 1);
+                            scrollIntoComponent(previewId, 1);
                         }} />,
 
-                        <IndexBiggestProblem id={biggestProblemsId} isOpen={currentPage === 1} setNextPage={() => {
+                        <IndexPreview id={previewId} isOpen={currentPage === 1} setNextPage={() => {
                             scrollIntoComponent(buyProductsId, 2);
                         }} />,
 
@@ -89,7 +89,7 @@ export default function IndexPage() {
                             </Menu.Item>
 
                             <Menu.Item key='1'>
-                                <a href={`#${biggestProblemsId}`}>{t('index.menu.about_us')}</a>
+                                <a href={`#${previewId}`}>{t('index.menu.preview')}</a>
                             </Menu.Item>
 
                             <Menu.Item key='2'>

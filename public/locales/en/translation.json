@@ -3,7 +3,7 @@
     "index": {
         "menu": {
             "start": "Start",
-            "about_us": "Abous Us",
+            "preview": "Crypto Index",
             "buy_products": "Buy Products"
         },
         "start": {
@@ -24,15 +24,23 @@
                 "protect": "Protect yourself with anti-volatility products"
             }
         },
-        "problems": {
-            "title": "Biggest problem",
-            "texts": [
-                "We are a team of developers and financiers that asked a question...",
-                "What is the biggest crypto problem?",
-                "We think - Volatility",
-                "And we created something to solve it..."
-            ],
-            "replay": "Replay"
+        "preview": {
+            "title": "Tokens VS Crypto Index",
+            "medium": "Read our Medium article on Crypto Index",
+
+            "tokens": {
+                "title": "Tokens",
+                "fees": "Large fees",
+                "management": "Bad management",
+                "transactions": "Many transactions"
+            },
+
+            "index": {
+                "title": "Index",
+                "fees": "Easy management",
+                "management": "Low fees",
+                "transactions": "Single transaction"
+            }
         },
         "buy": {
             "title": "Buy products"
