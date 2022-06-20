@@ -15,10 +15,10 @@ export async function listProducts(providerData, observerAddress) {
     const observer = createObserver(providerData, observerAddress);
     const productsList = [];
 
-    for(let product of await observer.getProducts()){
+    for (let product of await observer.getProducts()) {
         let productInfo;
 
-        if(product.productType === 'index'){
+        if (product.productType === 'index' || product.productType === 'eth_index') {
             productInfo = await getIndexInformation(providerData, product.productAddress);
         }
 
@@ -29,6 +29,18 @@ export async function listProducts(providerData, observerAddress) {
 }
 
 
-export async function checkProductExists(providerData, observerAddress, productAddress){
+export async function getProductType(providerData, observerAddress, productAddress) {
+    const observer = createObserver(providerData, observerAddress);
+    const products = await observer.getProducts();
+
+    for(let product of products) {
+        if (product.productAddress === productAddress) {
+            return product.productType;
+        }
+    }
+}
+
+
+export async function checkProductExists(providerData, observerAddress, productAddress) {
     return await createObserver(providerData, observerAddress).checkProductExists(productAddress);
 }
