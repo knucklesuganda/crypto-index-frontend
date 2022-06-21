@@ -291,7 +291,8 @@ export function ProductBuySection(props) {
                             type="success" href={settings.BUY_DAI_LINK} target="_blank">
 
                             {t("buy_product.token_buy")} {productData.buyToken.symbol} {t("buy_product.token_buy_here")}
-                        </Typography.Link>}
+                        </Typography.Link>
+                    }
                 </Form.Item>
 
                 <Form.Item>
@@ -336,7 +337,6 @@ export function ProductBuySection(props) {
                 top: "0.5em",
                 right: "70%",
                 width: "30em",
-                border: "1px solid #0a0a0a",
                 padding: "0.2em",
             }}>
                 <Typography.Text style={{ fontSize: "1.2em" }} title={t("buy_product.analytics.balance_hint")}>

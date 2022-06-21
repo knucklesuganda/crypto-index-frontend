@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { getIndexInformation } from "./IndexContract";
+import { getIndexShortInfo } from "./IndexContract";
 import contract from './sources/Observer.json';
 
 const ObserverABI = contract.abi;
@@ -19,7 +19,7 @@ export async function listProducts(providerData, observerAddress) {
         let productInfo;
 
         if (product.productType === 'index' || product.productType === 'eth_index') {
-            productInfo = await getIndexInformation(providerData, product.productAddress);
+            productInfo = await getIndexShortInfo(providerData, product.productAddress);
         }
 
         productsList.push(productInfo);

@@ -18,7 +18,7 @@ export default function ProductPage() {
     const { productAddress } = useParams();
     const { providerData, handleWalletConnection } = useProvider();
     const [productType, setProductType] = useState(null);
-    const productData = useProductData(productAddress, providerData);
+    const productData = useProductData(productAddress, providerData, productType);
     const navigate = useNavigate();
     const { t } = useTranslation();
 
@@ -28,11 +28,13 @@ export default function ProductPage() {
         }
 
         checkProductExists(providerData, settings.OBSERVER_ADDRESS, productAddress).then((doesExist) => {
-            if(!doesExist){ navigate('/not_found/'); }
-        });
-
-        getProductType(providerData, settings.OBSERVER_ADDRESS, productAddress).then((foundProductType) => {
-            setProductType(foundProductType);
+            if(doesExist){
+                getProductType(providerData, settings.OBSERVER_ADDRESS, productAddress).then((foundProductType) => {
+                    setProductType(foundProductType);
+                });
+            }else{
+                navigate('/not_found/');
+            }
         });
 
         return () => {};

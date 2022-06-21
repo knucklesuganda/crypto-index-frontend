@@ -16,6 +16,17 @@ export function createIndex(providerData, indexAddress) {
 }
 
 
+export async function getIndexShortInfo(providerData, indexAddress) {
+    const product = createIndex(providerData, indexAddress);
+    return {
+        address: indexAddress,
+        image: await product.image(),
+        name: await product.name(),
+        description: await product.shortDescription(),
+    };
+}
+
+
 export async function getIndexInformation(providerData, indexAddress) {
     const product = createIndex(providerData, indexAddress);
     const productImage = await product.image();
