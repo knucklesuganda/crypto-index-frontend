@@ -93,7 +93,9 @@ export default function IndexPage() {
                             </Menu.Item>
 
                             <Menu.Item key='2'>
-                                <a href={`#${buyProductsId}`}>{t('index.menu.buy_products')}</a>
+                                <a href={`#${buyProductsId}`} style={{ color: "lime", fontWeight: "bold" }}>
+                                    {t('index.menu.buy_products')}
+                                </a>
                             </Menu.Item>
                         </Menu.ItemGroup>
                     </Menu>

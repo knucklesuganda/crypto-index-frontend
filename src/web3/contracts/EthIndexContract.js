@@ -1,29 +1,30 @@
 import { ethers } from "ethers";
-import { approveBuyTokens, getERC20Information, 
-    getTokenAllowance, getTokenBalance, getTotalSupply } from "./ERC20Contract";
-import contract from './sources/Index.json';
-
+import { BalanceError, ProductSettlementError } from "./IndexContract";
+import {
+    approveBuyTokens, getERC20Information, getTokenAllowance, getTokenBalance, getTotalSupply,
+} from "./ERC20Contract";
+import contract from './sources/ETHIndex.json';
 
 const IndexABI = contract.abi;
-
-
-export class BalanceError extends Error { }
-export class ProductSettlementError extends Error { }
 
 
 export function createIndex(providerData, indexAddress) {
     return new ethers.Contract(indexAddress, IndexABI, providerData.signer);
 }
 
+export async function buyIndex(data) {
+    const { providerData, productData, amount, approveAmount } = data;
+    const ethBalance = await providerData.provider.getBalance(providerData.account);
 
-export async function getIndexShortInfo(providerData, indexAddress) {
-    const product = createIndex(providerData, indexAddress);
-    return {
-        address: indexAddress,
-        image: await product.image(),
-        name: await product.name(),
-        description: await product.shortDescription(),
-    };
+    if (ethBalance.lt(approveAmount)) {
+        throw new BalanceError();
+    }
+
+    const index = await createIndex(providerData, productData.address);
+    const buyTransaction = await index.buyETH(amount, { from: providerData.account, value: approveAmount });
+
+    await buyTransaction.wait();
+    return buyTransaction.hash;
 }
 
 
@@ -32,6 +33,8 @@ export async function getIndexInformation(providerData, indexAddress) {
     const productImage = await product.image();
     const feeData = await product.getFee();
     const indexToken = await product.indexToken();
+
+    const buyToken = await getERC20Information(providerData, await product.buyTokenAddress());
 
     return {
         address: indexAddress,
@@ -51,33 +54,16 @@ export async function getIndexInformation(providerData, indexAddress) {
         availableLiquidity: await product.getAvailableLiquidity(),
         maxTokens: await getTotalSupply(providerData, indexToken),
         availableTokens: await product.availableTokens(),
-        buyToken: await getERC20Information(providerData, await product.buyTokenAddress()),
+        buyToken: {
+            name: "Ether",
+            symbol: "ETH",
+            address: buyToken.address,
+            decimals: await buyToken.decimals(),
+            image: buyToken.tokenImage,
+            balance: await providerData.provider.getBalance(providerData.account),
+        },
         totalManagedTokens: (await product.tokensToBuy()).add(await product.tokensToSell()),
     };
-}
-
-export async function buyIndex(data) {
-    const { providerData, productData, amount, approveAmount } = data;
-
-    if (productData.buyToken.balance.lt(approveAmount)) {
-        throw new BalanceError();
-    }
-
-    const tokenAllowance = await getTokenAllowance(
-        providerData, productData.buyToken.address, providerData.account, productData.address,
-    );
-
-    if (!tokenAllowance.gte(approveAmount)) {
-        const approveTransaction = await approveBuyTokens(providerData, productData.address,
-            productData.buyToken.address, approveAmount);
-        await approveTransaction.wait();
-    }
-
-    const index = await createIndex(providerData, productData.address);
-    const buyTransaction = await index.buy(amount, { from: providerData.account });
-
-    await buyTransaction.wait();
-    return buyTransaction.hash;
 }
 
 export async function sellIndex(data) {
@@ -130,10 +116,10 @@ export async function getIndexComponents(providerData, productAddress) {
 }
 
 export async function retrieveIndexDebt(data) {
-    const {isSettlement, providerData, productAddress, amount, isBuyDebt } = data;
+    const { isSettlement, providerData, productAddress, amount, isBuyDebt } = data;
     const index = createIndex(providerData, productAddress);
 
-    if(isSettlement){
+    if (isSettlement) {
         throw new ProductSettlementError();
     } else {
 

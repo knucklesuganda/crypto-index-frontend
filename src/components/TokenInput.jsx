@@ -6,21 +6,13 @@ import { useTranslation } from 'react-i18next';
 
 function getTokenAdjustedAmount(amount, productPrice) {
     const totalPrice = productPrice * amount;
-    const roundedPrice = formatNumber(Math.floor((totalPrice + Number.EPSILON) * 100) / 100);
+    const roundedPrice = formatNumber(Math.floor((totalPrice + Number.EPSILON) * 100000) / 100000);
     return roundedPrice;
 }
 
 
 export function TokenInput(props) {
-    const {
-        productPrice,
-        prefixSymbol,
-        postfixSymbol,
-        maxValue,
-        useAddon,
-        inputRef,
-        minValue,
-    } = props;
+    const { productPrice, prefixSymbol, postfixSymbol, maxValue, useAddon, inputRef, minValue } = props;
     const [tokenUsdPrice, setTokenUsdPrice] = useState(0);
     const [status, setStatus] = useState("");
     const { t } = useTranslation();

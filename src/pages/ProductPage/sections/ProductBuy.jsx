@@ -3,12 +3,19 @@ import { useState, useRef } from 'react';
 import { convertToBigNumber, formatBigNumber, formatNumber } from "../../../web3/utils";
 import { useTranslation } from "react-i18next";
 import {
-    sellIndex,
-    buyIndex,
-    retrieveIndexDebt,
+    sellIndex as sellIndex_,
+    buyIndex as buyIndex_,
+    retrieveIndexDebt as retrieveIndexDebt_,
     BalanceError,
     ProductSettlementError,
 } from "../../../web3/contracts/IndexContract";
+
+import {
+    buyIndex as buyETHIndex,
+    sellIndex as sellETHIndex,
+    retrieveIndexDebt as retrieveETHIndexDebt,
+} from "../../../web3/contracts/EthIndexContract";
+
 import { Form, Col, Radio, Row, Button, Typography, Collapse, message, Avatar, Spin, Modal } from "antd";
 import { RiseOutlined, FallOutlined } from '@ant-design/icons';
 import { LoadingOutlined } from "@ant-design/icons";
@@ -23,9 +30,18 @@ function DebtSection(props) {
     const {
         providerData, userDebt, isBuyDebt, totalDebt,
         sectionSymbol, changeProgress, productData,
+        productType,
     } = props;
     const { t } = useTranslation();
     const inputRef = useRef(null);
+
+    let retrieveIndexDebt;
+
+    if (productType === "index") {
+        retrieveIndexDebt = retrieveIndexDebt_;
+    } else if (productType === "eth_index") {
+        retrieveIndexDebt = retrieveETHIndexDebt;
+    }
 
     return <Col style={{ display: "flex", flexDirection: "column", alignContent: 'center' }}>
         <Typography.Text style={{ paddingBottom: "0.2em", fontSize: "1.2em" }}
@@ -41,7 +57,7 @@ function DebtSection(props) {
 
         <Col style={{ marginTop: "0.4em", marginBottom: "0.4em" }}>
             <Form onFinish={(values) => {
-                if(values.amount === 0){
+                if (values.amount === 0) {
                     return;
                 }
 
@@ -134,13 +150,13 @@ function createProductAlert(name) {
 
                 <Typography.Text style={{ fontSize: "1.2em", fontWeight: "bold" }} type="danger">
                     YOU WILL NOT RECEIVE YOUR FUNDS BACK ONCE YOU MAKE THE TRANSACTION.<br /><br />
-                    WE WILL NOT RUN THE SETTLEMENT PROCESS UNTIL WE HAVE ENOUGH FEES FOR ALL THE TRANSACTIONS 
-                    ON ETHEREUM NETWORK, AND SETTLEMENT PROCESS WILL BE STOPPED ONCE NEW VERSION OF THE PROTOCOL 
+                    WE WILL NOT RUN THE SETTLEMENT PROCESS UNTIL WE HAVE ENOUGH FEES FOR ALL THE TRANSACTIONS
+                    ON ETHEREUM NETWORK, AND SETTLEMENT PROCESS WILL BE STOPPED ONCE NEW VERSION OF THE PROTOCOL
                     IS RELEASED(YOU WILL BE NOTIFIED OF SUCH CHANGES BEFOREHAND).
                     <br /><br />
 
-                    BY BUYING THIS PRODUCT, 
-                    YOU AGREE THAT YOU ACCEPT AND BARE FULL RESPONSIBILITY AND TAKE ALL 
+                    BY BUYING THIS PRODUCT,
+                    YOU AGREE THAT YOU ACCEPT AND BARE FULL RESPONSIBILITY AND TAKE ALL
                     RISKS FOR YOUR ACTIONS AND DECISIONS.<br /><br />
                 </Typography.Text>
             </Col>
@@ -153,17 +169,28 @@ function createProductAlert(name) {
 
 
 export function ProductBuySection(props) {
-    const { providerData, productData } = props;
+    const { providerData, productData, productType } = props;
     const [inProgress, setInProgress] = useState(false);
     const [operationType, setOperationType] = useState('buy');
     const { t } = useTranslation();
+
+    let buyIndex;
+    let sellIndex;
+
+    if (productType === "index") {
+        buyIndex = buyIndex_;
+        sellIndex = sellIndex_;
+    } else if (productType === "eth_index") {
+        buyIndex = buyETHIndex;
+        sellIndex = sellETHIndex;
+    }
 
     return <Spin spinning={inProgress} indicator={<LoadingOutlined style={{ fontSize: "2em" }} />}>
         <Col style={{ display: "flex", justifyContent: "center", zIndex: 100 }}>
             <Form name="productInteractionForm" style={{ minWidth: "20vw" }} autoComplete="off" onFinish={(values) => {
                 if (createProductAlert(productData.name)) {
                     return;
-                }else if (values.amount === 0 || values.amount < 0.00001) {
+                } else if (values.amount === 0 || values.amount < 0.00001) {
                     message.error(t("buy_product.buy_form.amount_error"));
                     return;
                 }
@@ -176,7 +203,7 @@ export function ProductBuySection(props) {
                     message.error(t("buy_product.buy_form.settlement_error"));
                     return;
                 } else if (
-                    productData.availableLiquidity.lt(weiAmount) 
+                    productData.availableLiquidity.lt(weiAmount)
                     || productData.totalManagedTokens.gte(productData.availableLiquidity)
                 ) {
                     message.error(t("buy_product.buy_form.liquidity_error"));
@@ -192,13 +219,13 @@ export function ProductBuySection(props) {
                         productData,
                         approveAmount: productData.price.mul(convertToBigNumber(values.amount)).div(convertToBigNumber(1)),
                         amount: weiAmount,
-                        notificationMessage: t('add_token_notification'),
                     });
                 } else {
                     operationPromise = sellIndex({ amount: weiAmount, providerData, productData });
                 }
 
                 setInProgress(true);
+
                 operationPromise.then((transactionHash) => {
                     message.info(`${t('buy_product.buy_form.success_message')}: ${transactionHash}`);
                     setInProgress(false);
@@ -258,13 +285,14 @@ export function ProductBuySection(props) {
                             <Typography.Text style={{ cursor: "pointer" }} underline target="_blank" onClick={() => {
                                 window.open("https://etherscan.io/directory/Exchanges/DEX");
                             }}>{t('buy_product.buy_form.operation.sell_advise.exchanges')}</Typography.Text>
-                        </Typography.Text> : 
+                        </Typography.Text> :
 
                         <Typography.Link style={{ fontSize: "1.1em", textDecoration: "underline" }}
                             type="success" href={settings.BUY_DAI_LINK} target="_blank">
 
                             {t("buy_product.token_buy")} {productData.buyToken.symbol} {t("buy_product.token_buy_here")}
-                        </Typography.Link>}
+                        </Typography.Link>
+                    }
                 </Form.Item>
 
                 <Form.Item>
@@ -286,7 +314,8 @@ export function ProductBuySection(props) {
                     totalDebt={productData.totalBuyDebt}
                     sectionSymbol={productData.productToken.symbol}
                     productData={productData} isBuyDebt={true}
-                    changeProgress={setInProgress} />
+                    changeProgress={setInProgress}
+                    productType={productType} />
             </DebtSectionCollapse>
 
             <DebtSectionCollapse sectionIcon={<FallOutlined />}
@@ -296,7 +325,8 @@ export function ProductBuySection(props) {
                     totalDebt={productData.totalSellDebt}
                     sectionSymbol={productData.buyToken.symbol}
                     productData={productData}
-                    isBuyDebt={false} changeProgress={setInProgress} />
+                    isBuyDebt={false} changeProgress={setInProgress}
+                    productType={productType} />
             </DebtSectionCollapse>
         </Row>
 
@@ -307,7 +337,6 @@ export function ProductBuySection(props) {
                 top: "0.5em",
                 right: "70%",
                 width: "30em",
-                border: "1px solid #0a0a0a",
                 padding: "0.2em",
             }}>
                 <Typography.Text style={{ fontSize: "1.2em" }} title={t("buy_product.analytics.balance_hint")}>

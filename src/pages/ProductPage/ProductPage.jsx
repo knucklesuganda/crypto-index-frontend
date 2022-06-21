@@ -1,9 +1,9 @@
 import { useNavigate, useParams } from "react-router";
-import { Fragment, useEffect } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { useProvider, useProductData } from "../../hooks";
 import { Loading, WalletConnector } from "../../components";
 import { formatBigNumber } from "../../web3/utils";
-import { checkProductExists } from "../../web3/contracts/ObserverContract";
+import { checkProductExists, getProductType } from "../../web3/contracts/ObserverContract";
 import { addTokenToWallet } from "../../web3/wallet/functions";
 import { Col, Row, Divider, Typography, message } from "antd";
 import { AnalyticsSection } from "./sections/Analytics";
@@ -17,7 +17,8 @@ import settings from "../../settings";
 export default function ProductPage() {
     const { productAddress } = useParams();
     const { providerData, handleWalletConnection } = useProvider();
-    const productData = useProductData(productAddress, providerData);
+    const [productType, setProductType] = useState(null);
+    const productData = useProductData(productAddress, providerData, productType);
     const navigate = useNavigate();
     const { t } = useTranslation();
 
@@ -27,7 +28,13 @@ export default function ProductPage() {
         }
 
         checkProductExists(providerData, settings.OBSERVER_ADDRESS, productAddress).then((doesExist) => {
-            if(!doesExist){ navigate('/not_found/'); }
+            if(doesExist){
+                getProductType(providerData, settings.OBSERVER_ADDRESS, productAddress).then((foundProductType) => {
+                    setProductType(foundProductType);
+                });
+            }else{
+                navigate('/not_found/');
+            }
         });
 
         return () => {};
@@ -84,11 +91,17 @@ export default function ProductPage() {
                             ({formatBigNumber(productData.price)} {productData.buyToken.symbol})</Typography.Title>
                 </Row>
 
-                <ProductBuySection providerData={providerData} productData={productData} />
+                <ProductBuySection
+                    providerData={providerData}
+                    productData={productData}
+                    productType={productType} />
             </Row>
 
             <Col span={24}>
-                <AnalyticsSection providerData={providerData} productAddress={productAddress} productData={productData} />
+                <AnalyticsSection providerData={providerData}
+                    productAddress={productAddress}
+                    productData={productData}
+                    productType={productType} />
             </Col>
 
             <Col span={24}>

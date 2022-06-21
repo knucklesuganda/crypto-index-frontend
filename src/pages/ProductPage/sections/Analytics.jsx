@@ -5,7 +5,8 @@ import { Loading } from "../../../components";
 import { formatBigNumber } from "../../../web3/utils";
 import { SaveOutlined } from '@ant-design/icons';
 import { addTokenToWallet } from "../../../web3/wallet/functions";
-import { getIndexComponents } from "../../../web3/contracts/IndexContract";
+import { getIndexComponents as getIndexComponents_ } from "../../../web3/contracts/IndexContract";
+import { getIndexComponents as getETHIndexComponents } from "../../../web3/contracts/EthIndexContract";
 import { Col, Row, Typography, Table, message } from "antd";
 import { OnlyDesktop, useMobileQuery } from "../../../components/MediaQuery";
 
@@ -18,9 +19,17 @@ function AnalyticsText(props){
 
 
 export function AnalyticsSection(props) {
-    const providerData = props.providerData;
+    const { providerData, productData, productType } = props;
     const [productComponents, setProductComponents] = useState(null);
     const isMobile = useMobileQuery();
+
+    let getIndexComponents;
+
+    if(productType === "index"){
+        getIndexComponents = getIndexComponents_;
+    }else if(productType === "eth_index"){
+        getIndexComponents = getETHIndexComponents;
+    }
 
     useEffect(() => {
         getIndexComponents(providerData, props.productAddress).then(components => {
