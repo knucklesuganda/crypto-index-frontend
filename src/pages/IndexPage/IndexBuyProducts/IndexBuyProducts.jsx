@@ -33,9 +33,9 @@ function ProductCard(props) {
         cursor: "pointer",
     }}
     onMouseEnter={() => { setIsHover(true); }}
-    onMouseLeave={() => { setIsHover(false); }}>
-
-        <Col onClick={() => { navigate(createProductPage(product.address)); }}
+    onMouseLeave={() => { setIsHover(false); }}
+    onClick={() => { navigate(createProductPage(product.address)); }}>
+        <Col
             style={{
                 backgroundImage: `url(${backgroundImage})`,
                 backgroundSize: "cover",
