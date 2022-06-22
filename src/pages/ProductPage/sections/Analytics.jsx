@@ -19,7 +19,7 @@ function AnalyticsText(props){
 
 
 export function AnalyticsSection(props) {
-    const { providerData, productData, productType } = props;
+    const { providerData, productType } = props;
     const [productComponents, setProductComponents] = useState(null);
     const isMobile = useMobileQuery();
 
@@ -37,7 +37,7 @@ export function AnalyticsSection(props) {
         });
 
         return () => { };
-    }, [providerData, props.productAddress]);
+    }, [providerData, props.productAddress, getIndexComponents]);
 
     if (props.productData === null || productComponents === null) {
         return <Loading />;
