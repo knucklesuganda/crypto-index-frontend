@@ -1,4 +1,4 @@
-import { Row, Col, Image, Typography } from "antd";
+import { Row, Col } from "antd";
 import { useState, useEffect, Fragment } from "react";
 import { Title, Loading, WalletConnector } from "../../../components";
 import { listProducts } from "../../../web3/contracts/ObserverContract";
@@ -20,7 +20,7 @@ function ProductCard(props) {
 
     if (product.address === '0xDBCFC1Ec8aF08aB1943aD6dEf907BD0f0b7C4fE0') {
         backgroundImage = '/images/indexBg.png';
-    }else if(product.address === '0xdA9Ec0D6349008AE64249623D3A968a8d17D0209'){
+    }else if(product.address === '0x7212569605978ce4cc26489611df873706fbc2a1'){
         backgroundImage = '/images/ethIndexBg.png';
     }
 
