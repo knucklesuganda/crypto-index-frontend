@@ -1,4 +1,4 @@
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 import { Pie } from '@ant-design/plots';
 import { useState, useEffect } from 'react';
 import { Loading } from "../../../components";
@@ -22,6 +22,7 @@ export function AnalyticsSection(props) {
     const { providerData, productType } = props;
     const [productComponents, setProductComponents] = useState(null);
     const isMobile = useMobileQuery();
+    const { t } = useTranslation();
 
     let getIndexComponents;
 
@@ -36,7 +37,7 @@ export function AnalyticsSection(props) {
             setProductComponents(components);
         });
 
-        return () => { };
+        return () => {};
     }, [providerData, props.productAddress, getIndexComponents]);
 
     if (props.productData === null || productComponents === null) {
