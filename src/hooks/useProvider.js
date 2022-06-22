@@ -15,7 +15,7 @@ export function useProvider() {
     };
 
     useEffect(() => {
-        handleWalletConnection(true).catch((err) => {});
+        handleWalletConnection(true).catch(_ => {});
         return () => {};
     }, []);
 

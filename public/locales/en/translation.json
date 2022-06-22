@@ -1,5 +1,6 @@
 {
     "title": "Void Management",
+    "accept_wallet": "Accept connection request in your wallet",
     "index": {
         "menu": {
             "start": "Start",

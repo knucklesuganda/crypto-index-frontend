@@ -82,7 +82,7 @@ export default function ProductPage() {
                                 image: productData.productToken.image,
                             }
                         ).catch((error) => {
-                            message.error({ content: `${t('error')}: ${error}` });
+                            message.error({ content: `${t('error')}: ${error.message}` });
                         });            
                     }}>{productData.name}</Typography.Title>
 

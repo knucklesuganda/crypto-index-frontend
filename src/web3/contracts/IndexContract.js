@@ -1,6 +1,8 @@
 import { ethers } from "ethers";
-import { approveBuyTokens, getERC20Information, 
-    getTokenAllowance, getTokenBalance, getTotalSupply } from "./ERC20Contract";
+import {
+    approveBuyTokens, getERC20Information,
+    getTokenAllowance, getTokenBalance, getTotalSupply
+} from "./ERC20Contract";
 import contract from './sources/Index.json';
 
 
@@ -9,6 +11,7 @@ const IndexABI = contract.abi;
 
 export class BalanceError extends Error { }
 export class ProductSettlementError extends Error { }
+export class LiquidityError extends Error {}
 
 
 export function createIndex(providerData, indexAddress) {
@@ -74,10 +77,19 @@ export async function buyIndex(data) {
     }
 
     const index = await createIndex(providerData, productData.address);
-    const buyTransaction = await index.buy(amount, { from: providerData.account });
+    let buyGas = 1000000;
 
-    await buyTransaction.wait();
-    return buyTransaction.hash;
+    try{
+        buyGas = await index.estimateGas.buy(amount, { from: providerData.account });
+    }catch(error){}
+
+    try {
+        let buyTransaction = await index.buy(amount, { from: providerData.account, gasLimit: buyGas });
+        await buyTransaction.wait();
+        return buyTransaction.hash;
+    } catch (error) {
+        throw new LiquidityError("Unknown error");
+    }
 }
 
 export async function sellIndex(data) {
@@ -130,10 +142,10 @@ export async function getIndexComponents(providerData, productAddress) {
 }
 
 export async function retrieveIndexDebt(data) {
-    const {isSettlement, providerData, productAddress, amount, isBuyDebt } = data;
+    const { isSettlement, providerData, productAddress, amount, isBuyDebt } = data;
     const index = createIndex(providerData, productAddress);
 
-    if(isSettlement){
+    if (isSettlement) {
         throw new ProductSettlementError();
     } else {
 
