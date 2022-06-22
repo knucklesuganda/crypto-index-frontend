@@ -30,7 +30,7 @@ export function useProductData(productAddress, providerData, productType) {
         }
 
         return () => { clearInterval(updateInterval.current); };
-    }, [providerData, productAddress]);
+    }, [providerData, productAddress, productType]);
 
     return productData;
 }
