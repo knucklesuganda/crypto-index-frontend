@@ -13,12 +13,15 @@ import "./style.css";
 
 
 function UserAccount() {
-    let [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const { t } = useTranslation();
 
     useEffect(() => {
-        setIsLoggedIn(Boolean(sessionStorage.account));
-        return () => { };
+        window.addEventListener('account_connected', (_) => {
+            setIsLoggedIn(true);
+        }, false);
+
+        return () => { window.removeEventListener("account_connected"); };
     }, [setIsLoggedIn]);
 
     if (!isLoggedIn) {

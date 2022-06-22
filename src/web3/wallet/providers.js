@@ -12,7 +12,8 @@ const providerOptions = {
 };
 
 class NoProviderError extends Error { }
-export class NoInitialProviderError extends Error { }
+export class NoInitialProviderError extends NoProviderError { }
+export class NotConnectedError extends Error {}
 
 
 let signer = null, provider = null;
@@ -38,9 +39,16 @@ export async function connectWallet(initial) {
 
     try {
 
-        if(initial === true && typeof web3Modal.cachedProvider === "string"){
+        if (initial === true && typeof web3Modal.cachedProvider === "string") {
+
+            try{
             web3ModalProvider = await web3Modal.connectTo(web3Modal.cachedProvider);
-        }else if(initial === true){
+            }catch(error){
+                throw new NotConnectedError(error.message);
+            }
+
+
+        } else if (initial === true) {
             throw new NoProviderError();
         }
 
@@ -53,6 +61,7 @@ export async function connectWallet(initial) {
     signer = provider.getSigner();
 
     sessionStorage.account = await _getWallet();
+    window.dispatchEvent(new Event("account_connected"));
     setupEvents(provider);
 
     return { account: sessionStorage.account, signer, provider };

@@ -11,7 +11,6 @@ import { Col, Row, Typography, Table, message } from "antd";
 import { OnlyDesktop, useMobileQuery } from "../../../components/MediaQuery";
 
 
-
 function AnalyticsText(props){
     return <Typography.Text style={{ fontSize: "1.2em", ...props.style }} title={props.title}>
         {props.children}</Typography.Text>;
@@ -24,7 +23,7 @@ export function AnalyticsSection(props) {
     const isMobile = useMobileQuery();
     const { t } = useTranslation();
 
-    let getIndexComponents;
+    let getIndexComponents = getIndexComponents_;
 
     if(productType === "index"){
         getIndexComponents = getIndexComponents_;
@@ -85,7 +84,7 @@ export function AnalyticsSection(props) {
                                 image: props.productData.buyToken.image,
                             }
                         ).catch((error) => {
-                            message.error({ content: `${t('error')}: ${error}` });
+                            message.error({ content: `${t('error')}: ${error.message}` });
                         });
                     }}>{t('buy_product.analytics.buy_token')}: {props.productData.buyToken.symbol}</Typography.Text>
             ].map((text, index) => <Col key={index}>{text}</Col>)}
@@ -132,7 +131,7 @@ export function AnalyticsSection(props) {
                                                 decimals: tokenInfo.token.decimals,
                                                 image: tokenInfo.token.image,
                                             }).catch((error) => {
-                                                message.error({ content: `${t('error')}: ${error}` });
+                                                message.error({ content: `${t('error')}: ${error.message}` });
                                             });
                                         }} title={t('buy_product.analytics.save_token')} />
                                     </Row>,

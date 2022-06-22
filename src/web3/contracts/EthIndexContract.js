@@ -14,14 +14,23 @@ export function createIndex(providerData, indexAddress) {
 
 export async function buyIndex(data) {
     const { providerData, productData, amount, approveAmount } = data;
-    const ethBalance = await providerData.provider.getBalance(providerData.account);
 
-    if (ethBalance.lt(approveAmount)) {
+    if (productData.buyToken.balance.lt(approveAmount)) {
         throw new BalanceError();
     }
-
+    
     const index = await createIndex(providerData, productData.address);
-    const buyTransaction = await index.buyETH(amount, { from: providerData.account, value: approveAmount });
+    let buyGas = 554694;
+
+    try{
+        buyGas = await index.estimateGas.buyETH(amount, { from: providerData.account, value: approveAmount });
+    }catch(error){}
+    
+    const buyTransaction = await index.buyETH(amount, {
+        from: providerData.account,
+        value: approveAmount,
+        gasLimit: buyGas,
+    });
 
     await buyTransaction.wait();
     return buyTransaction.hash;
@@ -35,6 +44,7 @@ export async function getIndexInformation(providerData, indexAddress) {
     const indexToken = await product.indexToken();
 
     const buyToken = await getERC20Information(providerData, await product.buyTokenAddress());
+    const productPrice = await product.getPrice();
 
     return {
         address: indexAddress,
@@ -42,7 +52,7 @@ export async function getIndexInformation(providerData, indexAddress) {
         name: await product.name(),
         description: await product.shortDescription(),
         longDescription: await product.longDescription(),
-        price: await product.getPrice(),
+        price: productPrice,
         productToken: await getERC20Information(providerData, indexToken, productImage),
         isSettlement: await product.isSettlementActive(),
         totalLockedValue: await product.getTotalLockedValue(),

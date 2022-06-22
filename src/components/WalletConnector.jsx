@@ -1,4 +1,4 @@
-import { Row, Card, Typography, Button, Col } from "antd";
+import { Row, Card, Typography, Button, Col, message } from "antd";
 import { useState, useCallback  } from "react";
 import { useTranslation } from "react-i18next";
 import { clearProvider } from "../web3/wallet/providers";
@@ -14,9 +14,10 @@ export function WalletConnector(props) {
         setIsHidden(true);
         handleWalletConnection().catch((error) => {
             setIsHidden(false);
+            message.info(t("accept_wallet"));
         });
 
-    }, [handleWalletConnection]);
+    }, [handleWalletConnection, t]);
 
     return <Row gutter={[25, 55]} style={{
         display: isHidden ? "none" : "flex",

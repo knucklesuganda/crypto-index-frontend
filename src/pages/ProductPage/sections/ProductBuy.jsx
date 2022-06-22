@@ -22,7 +22,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { TokenInput } from "../../../components/TokenInput";
 import { addTokenNotification } from "../../../components";
 import { parseEther } from "ethers/lib/utils";
-import { OnlyDesktop } from "../../../components/MediaQuery";
+import { OnlyDesktop, useMobileQuery } from "../../../components/MediaQuery";
 import settings from "../../../settings";
 
 
@@ -115,11 +115,15 @@ function DebtSection(props) {
 
 function DebtSectionCollapse(props) {
     const { sectionTitle, sectionIcon, debt } = props;
+    const isMobile = useMobileQuery();
 
     if (debt.eq(0)) { return null; }
 
     return <Col>
-        <Collapse defaultActiveKey={['1']} bordered={false} style={{ width: "30em", marginLeft: "1em" }}>
+        <Collapse defaultActiveKey={['1']} bordered={false} style={{
+            width: isMobile ? "25em" : "30em",
+            marginLeft: "1em",
+        }}>
             <Collapse.Panel key="1" header={
                 <Row>
                     <Typography.Text style={{
@@ -203,8 +207,8 @@ export function ProductBuySection(props) {
                     message.error(t("buy_product.buy_form.settlement_error"));
                     return;
                 } else if (
-                    productData.availableLiquidity.lt(weiAmount)
-                    || productData.totalManagedTokens.gte(productData.availableLiquidity)
+                    productData.availableLiquidity.lt(weiAmount) ||
+                    productData.totalManagedTokens.gte(productData.availableLiquidity)
                 ) {
                     message.error(t("buy_product.buy_form.liquidity_error"));
                     return;

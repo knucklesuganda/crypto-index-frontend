@@ -20,7 +20,7 @@ export function AddToken(props) {
                     image: props.token.image,
                 }
             ).catch((error) => {
-                message.error({ content: `${t('error')}: ${error}` });
+                message.error({ content: `${t('error')}: ${error.message}` });
             });
 
             notification.close(notificationId);

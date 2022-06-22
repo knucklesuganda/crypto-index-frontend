@@ -14,7 +14,7 @@ function switchChain(ethereum){
         networkChangeRequest = false;
     }).catch((error) => {
         networkChangeRequest = false;
-        message.error(error.reason);
+        message.error(error.message ? error.message : "User did not change the chain");
     });
 
 }
@@ -29,7 +29,7 @@ export async function setupEvents(provider) {
             networkChangeRequest = true;
             switchChain(ethereum);
         } else if (error.event !== "changed" && error.reason) {
-            message.error(error.reason);
+            message.error(error.message);
         }
 
     });
