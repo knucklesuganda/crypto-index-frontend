@@ -20,7 +20,7 @@ function ProductCard(props) {
 
     if (product.address === '0xDBCFC1Ec8aF08aB1943aD6dEf907BD0f0b7C4fE0') {
         backgroundImage = '/images/indexBg.png';
-    }else if(product.address === '0x7212569605978ce4cc26489611df873706fbc2a1'){
+    }else if(product.address === '0x7212569605978ce4cC26489611df873706fbc2A1'){
         backgroundImage = '/images/ethIndexBg.png';
     }
 

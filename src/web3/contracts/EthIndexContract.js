@@ -58,7 +58,7 @@ export async function getIndexInformation(providerData, indexAddress) {
             name: "Ether",
             symbol: "ETH",
             address: buyToken.address,
-            decimals: await buyToken.decimals(),
+            decimals: buyToken.decimals,
             image: buyToken.tokenImage,
             balance: await providerData.provider.getBalance(providerData.account),
         },
