@@ -1,5 +1,8 @@
 {
-    "routes": [],
+    "routes": [
+        { "route": "/robots.txt" },
+        { "route": "/sitemap.xml" }
+    ],
     "responseOverrides": {
         "404": {
             "rewrite": "/not_found"
