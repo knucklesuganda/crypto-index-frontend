@@ -17,11 +17,10 @@ function UserAccount() {
     const { t } = useTranslation();
 
     useEffect(() => {
-        window.addEventListener('account_connected', (_) => {
-            setIsLoggedIn(true);
-        }, false);
+        const accountConnected = (_) => { setIsLoggedIn(true); };
+        window.addEventListener('account_connected', accountConnected, false);
 
-        return () => { window.removeEventListener("account_connected"); };
+        return () => { window.removeEventListener('account_connected', accountConnected); };
     }, [setIsLoggedIn]);
 
     if (!isLoggedIn) {
