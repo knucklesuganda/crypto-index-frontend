@@ -35,23 +35,23 @@ function ProductCard(props) {
     onMouseEnter={() => { setIsHover(true); }}
     onMouseLeave={() => { setIsHover(false); }}
     onClick={() => { navigate(createProductPage(product.address)); }}>
-        <Col
-            style={{
-                backgroundImage: `url(${backgroundImage})`,
-                backgroundSize: "cover",
-                borderRadius: "10%",
-                backgroundRepeat: "no-repeat",
-                backgroundOrigin: "initial",
-                backgroundPosition: "center",
-                cursor: "pointer",
-                width: isMobile ? "100vw" : "20vw",
-                height: isMobile ? "50vh" : "20vh",
-                border: "2px solid white",
-                boxShadow: isHover ? "none" : "0 0 16px 10px rgba(255, 255, 255, 0.2)",
-                transition: "200ms",
-                filter: isHover ? "grayscale(100%) brightness(0.2)" : "none",
-                margin: "0",
-            }} />
+
+        <Col style={{
+            backgroundImage: `url(${backgroundImage})`,
+            backgroundSize: "cover",
+            borderRadius: "10%",
+            backgroundRepeat: "no-repeat",
+            backgroundOrigin: "initial",
+            backgroundPosition: "center",
+            cursor: "pointer",
+            width: isMobile ? "100vw" : "20vw",
+            height: isMobile ? "50vh" : "20vh",
+            border: "2px solid white",
+            boxShadow: isHover ? "none" : "0 0 16px 10px rgba(255, 255, 255, 0.2)",
+            transition: "200ms",
+            filter: isHover ? "grayscale(100%) brightness(0.2)" : "none",
+            margin: "0",
+        }} />
 
         <Typography.Text style={{
             fontSize: isMobile ? "6em" : "4em",
