@@ -13,15 +13,17 @@ import { MobileOnly, useMobileQuery } from "../../../components/MediaQuery";
 function ProductCard(props) {
     const navigate = useNavigate();
     const { product } = props;
-    const isMobile = useMobileQuery();
     const [isHover, setIsHover] = useState(isMobile);
+    const isMobile = useMobileQuery();
 
-    let backgroundImage;
+    let backgroundImage, productType;
 
     if (product.address === '0xDBCFC1Ec8aF08aB1943aD6dEf907BD0f0b7C4fE0') {
         backgroundImage = '/images/indexBg.png';
+        productType = 'index';
     } else if (product.address === '0x7212569605978ce4cC26489611df873706fbc2A1') {
         backgroundImage = '/images/ethIndexBg.png';
+        productType = 'index';
     }
 
     return <Col style={{
@@ -34,7 +36,7 @@ function ProductCard(props) {
     }}
     onMouseEnter={() => { setIsHover(true); }}
     onMouseLeave={() => { setIsHover(false); }}
-    onClick={() => { navigate(createProductPage(product.address)); }}>
+    onClick={() => { navigate(createProductPage(productType, product.address)); }}>
 
         <Col style={{
             backgroundImage: `url(${backgroundImage})`,
