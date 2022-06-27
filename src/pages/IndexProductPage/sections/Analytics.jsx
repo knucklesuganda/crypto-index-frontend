@@ -5,8 +5,6 @@ import { Loading } from "../../../components";
 import { formatBigNumber } from "../../../web3/utils";
 import { SaveOutlined } from '@ant-design/icons';
 import { addTokenToWallet } from "../../../web3/wallet/functions";
-import { getIndexComponents as getIndexComponents_ } from "../../../web3/contracts/IndexContract";
-import { getIndexComponents as getETHIndexComponents } from "../../../web3/contracts/EthIndexContract";
 import { Col, Row, Typography, Table, message } from "antd";
 import { OnlyDesktop, useMobileQuery } from "../../../components/MediaQuery";
 

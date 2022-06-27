@@ -1,13 +1,13 @@
 import { Row, Col, Typography } from "antd";
-import { useState, useEffect, Fragment } from "react";
-import { Title, Loading, WalletConnector } from "../../../components";
-import { listProducts } from "../../../web3/contracts/ObserverContract";
-import { useProvider } from "../../../hooks/useProvider";
-import { useNavigate } from "react-router";
-import { createProductPage } from "../../../routes";
-import { useTranslation } from "react-i18next";
 import settings from "../../../settings";
+import { useState, useEffect, Fragment } from "react";
+import { useNavigate } from "react-router";
+import { useTranslation } from "react-i18next";
+import { createProductPage } from "../../../routes";
+import { useProvider } from "../../../hooks/useProvider";
+import { Title, Loading, WalletConnector } from "../../../components";
 import { MobileOnly, useMobileQuery } from "../../../components/MediaQuery";
+import { Observer } from "../../../web3/contracts/management/observer";
 
 
 function ProductCard(props) {
@@ -34,9 +34,9 @@ function ProductCard(props) {
         marginBottom: "5em",
         cursor: "pointer",
     }}
-    onMouseEnter={() => { setIsHover(true); }}
-    onMouseLeave={() => { setIsHover(false); }}
-    onClick={() => { navigate(createProductPage(productType, product.address)); }}>
+        onMouseEnter={() => { setIsHover(true); }}
+        onMouseLeave={() => { setIsHover(false); }}
+        onClick={() => { navigate(createProductPage(productType, product.address)); }}>
 
         <Col style={{
             backgroundImage: `url(${backgroundImage})`,
@@ -78,10 +78,10 @@ export function IndexBuyProducts(props) {
 
     useEffect(() => {
         if (providerData !== null) {
-            listProducts(providerData, settings.OBSERVER_ADDRESS).then((productData) => {
+            const observer = new Observer(settings.OBSERVER_ADDRESS, providerData);
+
+            observer.listProducts().then((productData) => {
                 setProductData(productData);
-            }).catch((error) => {
-                console.log(error)
             });
         }
 
@@ -101,11 +101,8 @@ export function IndexBuyProducts(props) {
                             display: "flex",
                             paddingLeft: isMobile ? "0" : "1em",
                             paddingRight: isMobile ? "0" : "2em",
-                            justifyContent: isMobile ? "center" : "inherit"
-                        }}>{
-                                productData.map((product, index) =>
-                                    <ProductCard key={index} product={product} />)
-                            }</Row>
+                            justifyContent: isMobile ? "center" : "inherit",
+                        }}>{productData.map((product, index) => <ProductCard key={index} product={product} />)}</Row>
                     </Col>
                 </Row>
             }</Fragment>

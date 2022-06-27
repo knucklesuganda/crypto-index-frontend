@@ -126,7 +126,7 @@ export class BaseIndex {
         return { ratioData, priceData };
     }
 
-    async retrieveIndexDebt(amount, isBuyDebt) {
+    async retrieveDebt(amount, isBuyDebt) {
         if (await this.index.isSettlement()) {
             throw new ProductSettlementError();
         }
