@@ -4,24 +4,21 @@ import { useTranslation } from "react-i18next";
 import { addTokenNotification, TokenInput } from "../../../components";
 import { OnlyDesktop, useMobileQuery } from "../../../components/MediaQuery";
 import { LoadingOutlined, RiseOutlined, FallOutlined } from '@ant-design/icons';
-import { convertBigNumber, formatBigNumber, formatNumber, parseEther } from "../../../web3/utils";
+import { convertToEther, formatBigNumber, formatNumber } from "../../../web3/utils";
 import { Form, Col, Radio, Row, Button, Typography, Collapse, message, Avatar, Spin, Modal } from "antd";
-import { useIndex } from "../../../hooks/useIndex";
+import {
+    DebtExceededError, LiquidityError, NoTokensError, ProductSettlementError, BalanceError, AmountError,
+} from "../../../web3/contracts/index/index";
 
 
 function DebtSection(props) {
-    const {
-        providerData,
-        userDebt,
-        isBuyDebt,
-        totalDebt,
-        sectionSymbol,
-        changeProgress,
-        productData,
-    } = props;
-    const index = useIndex();
+    const { providerData, isBuyDebt, changeProgress, productData, product } = props;
     const { t } = useTranslation();
     const inputRef = useRef(null);
+
+    const userDebt = isBuyDebt ? productData.userBuyDebt : productData.userSellDebt;
+    const totalDebt = isBuyDebt ? productData.totalBuyDebt : productData.totalSellDebt;
+    const sectionSymbol = isBuyDebt ? productData.productToken.symbol : productData.buyToken.symbol;
 
     return <Col style={{ display: "flex", flexDirection: "column", alignContent: 'center' }}>
         <Typography.Text style={{ paddingBottom: "0.2em", fontSize: "1.2em" }}
@@ -37,51 +34,42 @@ function DebtSection(props) {
 
         <Col style={{ marginTop: "0.4em", marginBottom: "0.4em" }}>
             <Form onFinish={(values) => {
-                if (values.amount === 0) {
-                    return;
-                }
+                changeProgress(true);
 
-                const realAmount = convertBigNumber(values.amount);
+                product.retrieveDebt(values.amount, isBuyDebt).then(() => {
 
-                if (realAmount.gt(totalDebt)) {
-                    message.error(t('buy_product.error_debt_exceeded'));
-                } else {
-                    changeProgress(true);
+                    if (isBuyDebt) {
+                        addTokenNotification({
+                            providerData,
+                            token: productData.productToken,
+                            message: t('add_token_notification'),
+                            productName: productData.name,
+                        });
+                    }
+                    changeProgress(false);
 
-                    index.retrieveDebt(realAmount, isBuyDebt).then(() => {
-                        if (isBuyDebt) {
-                            addTokenNotification({
-                                providerData,
-                                token: productData.productToken,
-                                message: t('add_token_notification'),
-                                productName: productData.name,
-                            });
-                        }
-                        changeProgress(false);
+                }).catch(error => {
+                    changeProgress(false);
+                    let errorMessage = t('error');
 
-                    }).catch(error => {
-                        changeProgress(false);
-                        let errorMessage = t('error');
+                    if (error instanceof ProductSettlementError) {
+                        errorMessage = t('buy_product.error_product_settlement');
+                    } else if (error instanceof DebtExceededError) {
+                        errorMessage = t('buy_product.error_debt_exceeded');
+                    }
 
-                        if (error instanceof ProductSettlementError) {
-                            errorMessage = t('buy_product.error_product_settlement');
-                        }
-
-                        message.error(errorMessage);
-                    });
-                }
+                    message.error(errorMessage);
+                });
 
             }}>
-                <TokenInput prefixSymbol={isBuyDebt ? productData.productToken.symbol : productData.buyToken.symbol}
+                <TokenInput prefixSymbol={sectionSymbol}
                     productPrice={productData.price}
                     postfixSymbol={productData.buyToken.symbol}
                     maxValue={formatBigNumber(userDebt)}
-                    useAddon={isBuyDebt}
-                    inputRef={inputRef} />
+                    useAddon={isBuyDebt} inputRef={inputRef} />
 
-                <Button htmlType="submit" type="primary" danger={
-                    productData.isSettlement || totalDebt.eq(0)
-                } style={{ width: "100%" }}>{t('buy_product.user_debt_claim')}</Button>
+                <Button htmlType="submit" type="primary" danger={productData.isSettlement || totalDebt.eq(0)}
+                    style={{ width: "100%" }}>{t('buy_product.user_debt_claim')}</Button>
             </Form>
         </Col>
 
@@ -151,7 +139,7 @@ function createProductAlert(name) {
 export function ProductBuySection(props) {
     const { providerData, productData, product } = props;
     const [inProgress, setInProgress] = useState(false);
-    const [operationType, setOperationType] = useState('buy');
+    const [operationType, setOperationType] = useState(false);
     const { t } = useTranslation();
 
     return <Spin spinning={inProgress} indicator={<LoadingOutlined style={{ fontSize: "2em" }} />}>
@@ -160,40 +148,20 @@ export function ProductBuySection(props) {
                 onFinish={(values) => {
                     if (createProductAlert(productData.name)) {
                         return;
-                    } else if (values.amount === 0 || values.amount < 0.00001) {
-                        message.error(t("buy_product.buy_form.amount_error"));
-                        return;
                     }
 
-                    const weiAmount = parseEther(values.amount.toString());
-                    const enoughLiquidity = productData.availableLiquidity.lt(weiAmount) ||
-                        productData.totalManagedTokens.gte(productData.availableLiquidity);
-
-                    let errorMessage = null;
-                    if (productData.isSettlement) {
-                        errorMessage = t("buy_product.buy_form.settlement_error");
-                    } else if (enoughLiquidity) {
-                        errorMessage = t("buy_product.buy_form.liquidity_error");
-                    } else if (operationType === "buy" && productData.availableTokens.lt(weiAmount)) {
-                        errorMessage = t("buy_product.buy_form.no_tokens_error");
-                    }
-
-                    if (errorMessage === null) {
-                        message.error(errorMessage);
-                        return;
-                    }
+                    const amount = values.amount;
+                    const productPrice = productData.price;
 
                     let operationPromise;
                     setInProgress(true);
 
-                    if (operationType === "buy") {
-                        const tokenAmount = productData.price.mul(
-                            convertBigNumber(values.amount)).div(convertBigNumber(1));
-                        const approveAmount = weiAmount;
-
-                        operationPromise = index.buy(tokenAmount, approveAmount);
+                    if (operationType) {
+                        operationPromise = product.buy(
+                            convertToEther(amount).mul(productPrice).div(convertToEther(1)), amount,
+                        );
                     } else {
-                        operationPromise = index.sell(weiAmount);
+                        operationPromise = product.sell(amount);
                     }
 
                     operationPromise.then((transactionHash) => {
@@ -206,7 +174,7 @@ export function ProductBuySection(props) {
                             let tokenBalance;
                             let tokenSymbol;
 
-                            if (operationType === "buy") {
+                            if (operationType) {
                                 tokenBalance = productData.buyToken.balance;
                                 tokenSymbol = productData.buyToken.symbol;
                             } else {
@@ -215,27 +183,46 @@ export function ProductBuySection(props) {
                             }
 
                             errorMessage = `${t('buy_product.buy_form.balance_error')}: 
-                                    ${formatNumber(formatBigNumber(tokenBalance))} ${tokenSymbol}`;
+                                ${formatNumber(formatBigNumber(tokenBalance))} ${tokenSymbol}`;
+
+                        } else if (error instanceof AmountError) {
+                            errorMessage = t("buy_product.buy_form.amount_error");
+                        } else if (error instanceof ProductSettlementError) {
+                            errorMessage = t("buy_product.buy_form.settlement_error");
+                        } else if (error instanceof LiquidityError) {
+                            errorMessage = t("buy_product.buy_form.liquidity_error");
+                        } else if (error instanceof NoTokensError) {
+                            errorMessage = t("buy_product.buy_form.no_tokens_error");
                         } else {
                             errorMessage = `${t("error")}: ${error.message}`;
                         }
 
                         setInProgress(false);
-                        message.error({ content: errorMessage });
+                        message.error(errorMessage);
                     });
 
                 }}>
 
-                <TokenInput useAddon minValue={0.00001}
+                <TokenInput useAddon
+                    minValue={0.00001}
                     productPrice={productData.price}
                     postfixSymbol={productData.buyToken.symbol}
                     maxValue={formatBigNumber(productData.availableLiquidity)}
                     productSymbol={productData.productToken.symbol}
-                    prefixSymbol={productData.productToken.symbol} />
+                    prefixSymbol={productData.productToken.symbol}
+                />
 
                 <Form.Item style={{ marginBottom: "0.4em" }}>
                     <Radio.Group defaultValue="buy" style={{ display: "flex" }}
-                        onChange={(event) => { setOperationType(event.target.value) }}>
+                        onChange={(event) => {
+
+                            if (event.target.value === "buy") {
+                                setOperationType(true);
+                            } else {
+                                setOperationType(false);
+                            }
+
+                        }}>
 
                         <Radio.Button value="buy" style={{ width: "100%" }}>
                             {t('buy_product.buy_form.operation.buy')}
@@ -244,9 +231,10 @@ export function ProductBuySection(props) {
                         <Radio.Button value="sell" style={{ width: "100%" }}>
                             {t("buy_product.buy_form.operation.sell")}
                         </Radio.Button>
+
                     </Radio.Group>
 
-                    {operationType === "sell" ?
+                    {!operationType ?
                         <Typography.Text type="danger">
                             {t('buy_product.buy_form.operation.sell_advise.start')}
                             <Typography.Text style={{ cursor: "pointer" }} underline target="_blank" onClick={() => {
@@ -258,16 +246,15 @@ export function ProductBuySection(props) {
                             type="success" href={settings.BUY_DAI_LINK} target="_blank">
 
                             {t("buy_product.token_buy")} {productData.buyToken.symbol} {t("buy_product.token_buy_here")}
-                        </Typography.Link>
-                    }
+                        </Typography.Link>}
                 </Form.Item>
 
                 <Form.Item>
                     <Button htmlType="submit" style={{ width: "100%" }}
                         title={productData.isSettlement ? t('buy_product.buy_form.settlement_error') : null}
                         type={productData.isSettlement ? "danger" : "primary"}>
-                        {operationType === "buy" ?
-                            t('buy_product.buy_form.operation.buy') : t('buy_product.buy_form.operation.sell')}
+                        {operationType ? t('buy_product.buy_form.operation.buy')
+                            : t('buy_product.buy_form.operation.sell')}
                     </Button>
                 </Form.Item>
             </Form>
@@ -277,8 +264,7 @@ export function ProductBuySection(props) {
             <DebtSectionCollapse sectionIcon={<RiseOutlined />}
                 sectionTitle={t('buy_product.buy_debt')} debt={productData.userBuyDebt}>
 
-                <DebtSection isBuyDebt
-                    providerData={providerData}
+                <DebtSection isBuyDebt product={product} providerData={providerData}
                     userDebt={productData.userBuyDebt}
                     totalDebt={productData.totalBuyDebt}
                     sectionSymbol={productData.productToken.symbol}
@@ -289,8 +275,7 @@ export function ProductBuySection(props) {
             <DebtSectionCollapse sectionIcon={<FallOutlined />}
                 sectionTitle={t('buy_product.sell_debt')} debt={productData.userSellDebt}>
 
-                <DebtSection
-                    providerData={providerData}
+                <DebtSection product={product} providerData={providerData}
                     userDebt={productData.userSellDebt}
                     totalDebt={productData.totalSellDebt}
                     sectionSymbol={productData.buyToken.symbol}

@@ -21,7 +21,7 @@ export function formatNumber(value) {
     return value.toString().replace(/(?<!(\.\d*|^.{0}))(?=(\d{3})+(?!\d))/g, ',');
 }
 
-export function convertBigNumber(value) {
+export function convertToEther(value) {
     return BigNumber.from(parseEther(value.toString()));
 }
 

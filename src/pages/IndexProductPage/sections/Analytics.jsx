@@ -16,28 +16,20 @@ function AnalyticsText(props){
 
 
 export function AnalyticsSection(props) {
-    const { providerData, productType } = props;
+    const { productData, productAddress, product, providerData } = props;
     const [productComponents, setProductComponents] = useState(null);
     const isMobile = useMobileQuery();
     const { t } = useTranslation();
 
-    let getIndexComponents = getIndexComponents_;
-
-    if(productType === "index"){
-        getIndexComponents = getIndexComponents_;
-    }else if(productType === "eth_index"){
-        getIndexComponents = getETHIndexComponents;
-    }
-
     useEffect(() => {
-        getIndexComponents(providerData, props.productAddress).then(components => {
+        product.getComponents(productAddress).then(components => {
             setProductComponents(components);
         });
 
         return () => {};
-    }, [providerData, props.productAddress, getIndexComponents]);
+    }, [productAddress, product]);
 
-    if (props.productData === null || productComponents === null) {
+    if (productData === null || productComponents === null) {
         return <Loading />;
     }
 
@@ -49,25 +41,26 @@ export function AnalyticsSection(props) {
         <Col style={{ border: "1px solid #303030", background: "#0a0a0a", padding: "1em" }}>
             {[
                 <AnalyticsText>
-                    {t('buy_product.analytics.about_product')}: {props.productData.longDescription}
+                    {t('buy_product.analytics.about_product')}: {productData.longDescription}
                 </AnalyticsText>,
 
                 <AnalyticsText title={t("buy_product.analytics.total_locked_value_hint")}>
                     {t('buy_product.analytics.total_locked_value')}: {' '}
-                    {formatBigNumber(props.productData.totalLockedValue)} {props.productData.buyToken.symbol}
+                    {formatBigNumber(props.productData.totalLockedValue)} {productData.buyToken.symbol}
                 </AnalyticsText>,
 
                 <AnalyticsText title={t("buy_product.analytics.product_fee_hint")}>
-                    {t('buy_product.analytics.product_fee')}: {props.productData.fee}%
+                    {t('buy_product.analytics.product_fee')}: {productData.fee}%
                 </AnalyticsText>,
 
                 <AnalyticsText title={t("buy_product.analytics.available_tokens")}>
-                    {t('buy_product.analytics.available_tokens_hint')}: {formatBigNumber(props.productData.availableTokens)}
-                    /{formatBigNumber(props.productData.maxTokens)} {props.productData.productToken.symbol}
+                    {t('buy_product.analytics.available_tokens_hint')}: {formatBigNumber(productData.availableTokens)}
+                    /{formatBigNumber(productData.maxTokens)} {productData.productToken.symbol}
                 </AnalyticsText>,
 
                 <AnalyticsText title={t("buy_product.analytics.liquidity_hint")}>
-                    {t('buy_product.analytics.liquidity')}: {formatBigNumber(props.productData.availableLiquidity)} {props.productData.productToken.symbol}
+                    {t('buy_product.analytics.liquidity')}: {formatBigNumber(productData.availableLiquidity)}
+                     {productData.productToken.symbol}
                 </AnalyticsText>,
 
                 <Typography.Text title={t('buy_product.analytics.save_token_hint')}
@@ -76,15 +69,15 @@ export function AnalyticsSection(props) {
                         addTokenToWallet(
                             providerData.provider,
                             {
-                                address: props.productData.buyToken.address,
-                                symbol: props.productData.buyToken.symbol,
-                                decimals: props.productData.buyToken.decimals,
-                                image: props.productData.buyToken.image,
+                                address: productData.buyToken.address,
+                                symbol: productData.buyToken.symbol,
+                                decimals: productData.buyToken.decimals,
+                                image: productData.buyToken.image,
                             }
                         ).catch((error) => {
                             message.error({ content: `${t('error')}: ${error.message}` });
                         });
-                    }}>{t('buy_product.analytics.buy_token')}: {props.productData.buyToken.symbol}</Typography.Text>
+                    }}>{t('buy_product.analytics.buy_token')}: {productData.buyToken.symbol}</Typography.Text>
             ].map((text, index) => <Col key={index}>{text}</Col>)}
         </Col>
 
@@ -106,8 +99,8 @@ export function AnalyticsSection(props) {
                                 textAlign: 'center',
                             },
                         }}
-                        animation={false} interactions={[{ type: 'element-active' }]}
-                    />
+                        animation={false}
+                        interactions={[{ type: 'element-active' }]} />
                 </Col>
 
                 <Col>
@@ -133,7 +126,8 @@ export function AnalyticsSection(props) {
                                             });
                                         }} title={t('buy_product.analytics.save_token')} />
                                     </Row>,
-                                    tokenPrice: `${formatBigNumber(tokenInfo.price)} ${props.productData.buyToken.symbol}`,
+
+                                    tokenPrice: `${formatBigNumber(tokenInfo.price)} ${productData.buyToken.symbol}`,
                                     tokenQuantity: formatBigNumber(tokenInfo.productBalance),
                                 };
                             })

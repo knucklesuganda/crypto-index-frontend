@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { createIndex } from "../web3/contracts";
 
 export function useIndex(productAddress, providerData) {

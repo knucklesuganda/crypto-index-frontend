@@ -1,10 +1,14 @@
-
-import { ethers } from "ethers";
-import { ERC20 } from "../tokens/erc20";
+import { ethers, BigNumber } from "ethers";
+import { ERC20 } from "../tokens/ERC20";
+import { convertToEther, parseEther } from "../../utils";
 
 
 export class BalanceError extends Error { }
 export class ProductSettlementError extends Error { }
+export class AmountError extends Error { }
+export class LiquidityError extends Error { }
+export class NoTokensError extends Error { }
+export class DebtExceededError extends Error { }
 
 
 export class BaseIndex {
@@ -22,7 +26,34 @@ export class BaseIndex {
         throw new Error("Function is not overriden");
     }
 
+    async _indexOperationValidate(weiAmount){
+        if (weiAmount.eq(BigNumber.from("0")) || weiAmount < BigNumber.from('10000000000000', 10)) {
+            throw new AmountError();
+        }
+
+        const availableLiquidity = await this.index.getAvailableLiquidity();
+        const totalManagedTokens = await this._getTotalManagedTokens();
+        const isEnoughLiquidity = availableLiquidity.lt(weiAmount) || totalManagedTokens.gte(availableLiquidity);
+        const isSettlement = await this.index.isSettlementActive();
+
+        if (isSettlement) {
+            throw new ProductSettlementError();
+        } else if (isEnoughLiquidity) {
+            throw new LiquidityError();
+        }
+    }
+
     async buy(amount, approveAmount) {
+        const availableTokens = await this.index.availableTokens();
+        const weiAmount = convertToEther(amount.toString());
+        approveAmount = convertToEther(approveAmount.toString());
+
+        if (availableTokens.lt(weiAmount)) {
+            throw new NoTokensError();
+        }
+
+        await this._indexOperationValidate(weiAmount);
+
         const buyToken = new ERC20(await this.index.buyTokenAddress(), this.providerData);
         const buyTokenBalance = await buyToken.getBalance();
 
@@ -31,7 +62,7 @@ export class BaseIndex {
         }
 
         const approveGas = await this._estimateApproveGas(buyToken, approveAmount);
-        const approveTransaction = await this._executeApprove(token, approveAmount, approveGas);
+        const approveTransaction = await this._executeApprove(buyToken, approveAmount, approveGas);
         await approveTransaction.wait();
 
         const buyGas = await this._estimateBuyGas(amount, approveAmount);
@@ -39,6 +70,27 @@ export class BaseIndex {
         await buyTransaction.wait();
 
         return buyTransaction.hash;
+    }
+
+    async sell(amount) {
+        const weiAmount = parseEther(amount.toString());
+        await this._indexOperationValidate(amount, weiAmount);
+
+        const productToken = new ERC20(await this.index.productToken(), this.providerData);
+        const allowance = await productToken.getAllowance(this.providerData.account, this.address);
+        const balance = await productToken.getBalance();
+
+        if (balance.lt(weiAmount)) {
+            throw new BalanceError();
+        } else if (!allowance.gte(weiAmount)) {
+            const approveTransaction = await productToken.approve(this.address, weiAmount);
+            await approveTransaction.wait();
+        }
+
+        const sellTransaction = await this.index.sell(amount, { from: this.providerData.account });
+        await sellTransaction.wait();
+
+        return sellTransaction.hash;
     }
 
     async _executeBuy(amount, approveAmount, gasEstimation) {
@@ -78,26 +130,12 @@ export class BaseIndex {
 
             buyToken: await buyToken.getInformation(),
             productToken: await indexToken.getInformation(),
-            totalManagedTokens: (await this.index.tokensToBuy()).add(await this.index.tokensToSell()),
+            totalManagedTokens: await this._getTotalManagedTokens(),
         };
     }
 
-    async sell(amount) {
-        const productToken = new ERC20(await this.index.productToken(), this.providerData);
-        const allowance = await productToken.getAllowance(this.providerData.account, this.address);
-        const balance = await productToken.getBalance();
-
-        if (balance.lt(amount)) {
-            throw new BalanceError();
-        } else if (!allowance.gte(amount)) {
-            const approveTransaction = await productToken.approve(this.address, amount);
-            await approveTransaction.wait();
-        }
-
-        const sellTransaction = await this.index.sell(amount, { from: this.providerData.account });
-        await sellTransaction.wait();
-
-        return sellTransaction.hash;
+    async _getTotalManagedTokens(){
+        return (await this.index.tokensToBuy()).add(await this.index.tokensToSell());
     }
 
     async getComponents() {
@@ -119,7 +157,7 @@ export class BaseIndex {
                 token: tokenInfo,
                 name: tokenInfo.name,
                 productBalance: await token.getBalance(this.address),
-                price: await index.getTokenPrice(component),
+                price: await this.index.getTokenPrice(component),
             });
         }
 
@@ -127,12 +165,20 @@ export class BaseIndex {
     }
 
     async retrieveDebt(amount, isBuyDebt) {
-        if (await this.index.isSettlement()) {
+        amount = convertToEther(amount);
+        const totalDebt = await this.index.getTotalDebt(isBuyDebt);
+
+        if(amount.eq('0')){
+            throw new AmountError();
+        } else if (await this.index.isSettlement()) {
             throw new ProductSettlementError();
+        }else if(amount.gt(totalDebt)){
+            throw new DebtExceededError();
         }
 
-        const debtTransaction = await this.index.retrieveDebt(amount, isBuyDebt, { from: this.providerData.account });
+        const debtTransaction = await this.index.retrieveDebt(amount, isBuyDebt);
         await debtTransaction.wait();
+
         return debtTransaction.hash;
     }
 

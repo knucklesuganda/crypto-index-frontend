@@ -25,7 +25,7 @@ export function useProductData(productAddress, providerData) {
         }, settings.STATE_UPDATE_INTERVAL);
 
         return () => { clearInterval(updateInterval.current); };
-    }, [providerData, productAddress]);
+    }, [providerData, productAddress, index]);
 
     return { productData, index };
 }

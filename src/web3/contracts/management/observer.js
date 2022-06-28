@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { ERC20Index } from "../index/erc20Index";
 import { EtherIndex } from "../index/etherIndex";
-import ObserverABI from './sources/Observer.json';
+import ObserverABI from '../sources/Observer.json';
 
 
 export class Observer {
@@ -15,7 +15,7 @@ export class Observer {
     async listProducts() {
         const productsList = [];
 
-        for (let product of await observer.getProducts()) {
+        for (let product of await this.observer.getProducts()) {
             let productInfo;
 
             if (product.productType === 'index') {

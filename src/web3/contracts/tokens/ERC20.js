@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import ERC20ABI from './sources/ERC20.json';
+import ERC20ABI from '../sources/ERC20.json';
 
 
 export class ERC20 {
@@ -34,8 +34,7 @@ export class ERC20 {
     }
 
     async getTotalSupply() {
-        const token = createERC20(providerData, tokenAddress);
-        return await token.totalSupply();
+        return await this.token.totalSupply();
     }
 
     async getBalance(account) {

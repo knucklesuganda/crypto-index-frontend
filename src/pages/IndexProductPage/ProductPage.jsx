@@ -3,12 +3,12 @@ import { useNavigate, useParams } from "react-router";
 import { useTranslation } from "react-i18next";
 import { formatBigNumber } from "../../web3/utils";
 import { Observer } from "../../web3/contracts";
-import { AnalyticsSection, ProductBuySection, ProductInfo } from "./sections";
 import { OnlyDesktop } from "../../components/MediaQuery";
 import { useProvider, useProductData } from "../../hooks";
 import { Loading, WalletConnector } from "../../components";
 import { addTokenToWallet } from "../../web3/wallet/functions";
 import { Col, Row, Divider, Typography, message } from "antd";
+import { AnalyticsSection, ProductBuySection, ProductInfo } from "./sections";
 import settings from "../../settings";
 
 
@@ -32,7 +32,6 @@ export default function ProductPage() {
         });
 
         return () => {};
-
     }, [productAddress, navigate, providerData]);
 
     if (providerData === null) {
@@ -41,9 +40,7 @@ export default function ProductPage() {
         return <Loading />;
     }
 
-    return <Col style={{
-        paddingRight: "1em", paddingBottom: "4em", paddingLeft: "1em", width: "100wv"
-    }}>
+    return <Col style={{ paddingRight: "1em", paddingBottom: "4em", paddingLeft: "1em", width: "100wv" }}>
         <OnlyDesktop>
             <Divider style={{ marginTop: "0.2em" }} />
         </OnlyDesktop>
@@ -58,12 +55,7 @@ export default function ProductPage() {
         }}>
             <Row style={{ display: "flex", alignItems: "baseline" }}>
                 <Typography.Title level={2} title={t('buy_product.product_name')}
-                    style={{
-                        cursor: "pointer",
-                        margin: 0,
-                        fontWeight: 100,
-                        marginBottom: "0.3em"
-                    }}
+                    style={{ cursor: "pointer", margin: 0, fontWeight: 100, marginBottom: "0.3em" }}
                     onMouseEnter={(event) => { event.target.style.color = '#1890ff'; }}
                     onMouseLeave={(event) => { event.target.style.color = '#bfbfbf'; }}
 
