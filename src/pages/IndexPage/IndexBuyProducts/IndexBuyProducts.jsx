@@ -13,8 +13,8 @@ import { Observer } from "../../../web3/contracts/management/observer";
 function ProductCard(props) {
     const navigate = useNavigate();
     const { product } = props;
-    const [isHover, setIsHover] = useState(isMobile);
     const isMobile = useMobileQuery();
+    const [isHover, setIsHover] = useState(isMobile);
 
     let backgroundImage, productType;
 
@@ -31,7 +31,6 @@ function ProductCard(props) {
         placeContent: "center",
         alignItems: "center",
         marginRight: isMobile ? "0" : "2em",
-        marginBottom: "5em",
         cursor: "pointer",
     }}
         onMouseEnter={() => { setIsHover(true); }}

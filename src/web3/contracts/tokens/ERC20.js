@@ -5,7 +5,7 @@ import ERC20ABI from '../sources/ERC20.json';
 export class ERC20 {
 
     constructor(address, providerData) {
-        this.index = new ethers.Contract(address, ERC20ABI.abi, providerData.signer);
+        this.token = new ethers.Contract(address, ERC20ABI.abi, providerData.signer);
         this.providerData = providerData;
         this.address = address;
     }

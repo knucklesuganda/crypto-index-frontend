@@ -9,7 +9,7 @@ import { Col, Row, Typography, Table, message } from "antd";
 import { OnlyDesktop, useMobileQuery } from "../../../components/MediaQuery";
 
 
-function AnalyticsText(props){
+function AnalyticsText(props) {
     return <Typography.Text style={{ fontSize: "1.2em", ...props.style }} title={props.title}>
         {props.children}</Typography.Text>;
 }
@@ -26,7 +26,7 @@ export function AnalyticsSection(props) {
             setProductComponents(components);
         });
 
-        return () => {};
+        return () => { };
     }, [productAddress, product]);
 
     if (productData === null || productComponents === null) {
@@ -60,7 +60,7 @@ export function AnalyticsSection(props) {
 
                 <AnalyticsText title={t("buy_product.analytics.liquidity_hint")}>
                     {t('buy_product.analytics.liquidity')}: {formatBigNumber(productData.availableLiquidity)}
-                     {productData.productToken.symbol}
+                    {productData.productToken.symbol}
                 </AnalyticsText>,
 
                 <Typography.Text title={t('buy_product.analytics.save_token_hint')}
@@ -82,78 +82,78 @@ export function AnalyticsSection(props) {
         </Col>
 
         <OnlyDesktop>
-            <Row style={{ paddingTop: "1em", width: "100%", display: "flex", alignItems: "center" }} gutter={[100, 16]}>
-                <Col span={12}>
-                    <Pie legend={{ flipPage: false }}
-                        appendPadding={10}
-                        angleField='value'
-                        colorField='type'
-                        radius={0.9}
-                        data={productComponents.ratioData}
-                        label={{
-                            type: 'inner',
-                            offset: '-30%',
-                            content: ({ percent }) => `${(percent * 100).toFixed(0)}%`,
-                            style: {
-                                fontSize: 14,
-                                textAlign: 'center',
-                            },
-                        }}
-                        animation={false}
-                        interactions={[{ type: 'element-active' }]} />
-                </Col>
+            <Row style={{ paddingTop: "1em", width: "100vw", display: "flex", alignItems: "center" }} gutter={[100, 16]}>
+                <Pie style={{ width: "44vw", marginRight: "2em" }} 
+                    legend={{ flipPage: false }}
+                    appendPadding={10}
+                    angleField='value'
+                    colorField='type'
+                    radius={0.9}
+                    data={productComponents.ratioData}
+                    label={{
+                        type: 'inner',
+                        offset: '-30%',
+                        content: ({ percent }) => `${(percent * 100).toFixed(0)}%`,
+                        style: {
+                            fontSize: 14,
+                            textAlign: 'center',
+                        },
+                    }}
+                    animation={false}
+                    interactions={[{ type: 'element-active' }]} />
 
-                <Col>
-                    <Table bordered style={{ background: "none" }}
-                        pagination={{ position: ['none', 'bottomLeft'], simple: true }}
-                        dataSource={
-                            productComponents.priceData.map((tokenInfo, index) => {
-                                return {
-                                    key: index,
-                                    tokenName: <Row style={{ display: "flex", alignItems: "center" }}>
-                                        <Typography.Link style={{ color: "red!important" }} onClick={() => {
-                                            window.open(`https://etherscan.io/token/${tokenInfo.token.address}`);
-                                        }}>{tokenInfo.name}</Typography.Link>
+                <Table bordered style={{ background: "none", width: "44vw", padding: 0 }}
+                    pagination={{ position: ['none', 'bottomLeft'], simple: true }}
+                    render={() => {
+                        
+                    }}
+                    dataSource={
+                        productComponents.priceData.map((tokenInfo, index) => {
+                            return {
+                                key: index,
+                                tokenName: <Row style={{ display: "flex", alignItems: "center" }}>
+                                    <Typography.Link style={{ color: "red!important" }} onClick={() => {
+                                        window.open(`https://etherscan.io/token/${tokenInfo.token.address}`);
+                                    }}>{tokenInfo.name}</Typography.Link>
 
-                                        <SaveOutlined style={{ fontSize: "1.2em", marginLeft: "0.5em" }} onClick={() => {
-                                            addTokenToWallet(providerData.provider, {
-                                                address: tokenInfo.token.address,
-                                                symbol: tokenInfo.token.symbol,
-                                                decimals: tokenInfo.token.decimals,
-                                                image: tokenInfo.token.image,
-                                            }).catch((error) => {
-                                                message.error({ content: `${t('error')}: ${error.message}` });
-                                            });
-                                        }} title={t('buy_product.analytics.save_token')} />
-                                    </Row>,
+                                    <SaveOutlined style={{ fontSize: "1.2em", marginLeft: "0.5em" }} onClick={() => {
+                                        addTokenToWallet(providerData.provider, {
+                                            address: tokenInfo.token.address,
+                                            symbol: tokenInfo.token.symbol,
+                                            decimals: tokenInfo.token.decimals,
+                                            image: tokenInfo.token.image,
+                                        }).catch((error) => {
+                                            message.error({ content: `${t('error')}: ${error.message}` });
+                                        });
+                                    }} title={t('buy_product.analytics.save_token')} />
+                                </Row>,
 
-                                    tokenPrice: `${formatBigNumber(tokenInfo.price)} ${productData.buyToken.symbol}`,
-                                    tokenQuantity: formatBigNumber(tokenInfo.productBalance),
-                                };
-                            })
-                        }
+                                tokenPrice: `${formatBigNumber(tokenInfo.price)} ${productData.buyToken.symbol}`,
+                                tokenQuantity: formatBigNumber(tokenInfo.productBalance),
+                            };
+                        })
+                    }
 
-                        columns={[
-                            {
-                                title: t('buy_product.analytics.table.name'),
-                                dataIndex: 'tokenName',
-                                key: 'tokenName',
-                            },
+                    columns={[
+                        {
+                            title: t('buy_product.analytics.table.name'),
+                            dataIndex: 'tokenName',
+                            key: 'tokenName',
+                        },
 
-                            {
-                                title: t('buy_product.analytics.table.price'),
-                                dataIndex: 'tokenPrice',
-                                key: 'tokenPrice',
-                            },
+                        {
+                            title: t('buy_product.analytics.table.price'),
+                            dataIndex: 'tokenPrice',
+                            key: 'tokenPrice',
+                        },
 
-                            {
-                                title: t('buy_product.analytics.table.quantity'),
-                                dataIndex: 'tokenQuantity',
-                                key: 'tokenQuantity',
-                            },
-                        ]}
-                    />
-                </Col>
+                        {
+                            title: t('buy_product.analytics.table.quantity'),
+                            dataIndex: 'tokenQuantity',
+                            key: 'tokenQuantity',
+                        },
+                    ]}
+                />
             </Row>
         </OnlyDesktop>
 

@@ -76,7 +76,7 @@ export function IndexPreview(props) {
             ]}
             pagination={false} />
             :
-            <Row style={{ width: "100%", marginBottom: "5em" }}>
+            <Row style={{ width: "100%" }}>
                 <Col span={6} style={{ display: "flex", justifyContent: "flex-start", flexDirection: "column" }}
                     onMouseEnter={() => { setOtherVisible(true) }}
                     onMouseLeave={() => { setOtherVisible(false) }}>

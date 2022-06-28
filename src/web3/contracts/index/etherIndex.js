@@ -27,7 +27,7 @@ export class EtherIndex extends BaseIndex {
     async _executeApprove(token, amount, gasEstimation) { }
 
     async getInformation() {
-        const information = super.getInformation();
+        const information = await super.getInformation();
 
         return {
             ...information,
@@ -37,7 +37,7 @@ export class EtherIndex extends BaseIndex {
                 address: information.buyToken.address,
                 decimals: information.buyToken.decimals,
                 image: information.buyToken.tokenImage,
-                balance: await providerData.provider.getBalance(providerData.account),
+                balance: await this.providerData.provider.getBalance(this.providerData.account),
             },
         };
     }

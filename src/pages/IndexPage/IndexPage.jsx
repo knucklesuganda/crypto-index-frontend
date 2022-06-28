@@ -1,11 +1,11 @@
-import { useState, useRef, useEffect } from "react";
-import { Row, Col, Menu, Divider } from "antd";
-import { IndexPreview } from "./IndexPreview/IndexPreview";
 import { IndexStart } from "./IndexStart";
-import { IndexBuyProducts } from "./IndexBuyProducts/IndexBuyProducts";
+import { Row, Col, Menu, Divider } from "antd";
 import { useTranslation } from "react-i18next";
+import { useState, useRef, useEffect } from "react";
+import { IndexPreview } from "./IndexPreview/IndexPreview";
+import { IndexBuyProducts } from "./IndexBuyProducts/IndexBuyProducts";
 import { OnlyDesktop, useDesktopQuery } from "../../components/MediaQuery";
-import useVisibility from "../../hooks/useVisibility";
+import { useVisibility } from "../../hooks";
 
 
 export default function IndexPage() {
