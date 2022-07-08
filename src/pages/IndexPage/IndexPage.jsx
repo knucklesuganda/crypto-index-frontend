@@ -1,106 +1,81 @@
-import { IndexStart } from "./IndexStart";
-import { Row, Col, Menu, Divider } from "antd";
+import { Fragment } from "react";
+import { useDesktopQuery } from "../../components/MediaQuery";
+import { Row, Col, Typography, Image } from "antd";
+import { useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
-import { useState, useRef, useEffect } from "react";
-import { IndexPreview } from "./IndexPreview/IndexPreview";
-import { IndexBuyProducts } from "./IndexBuyProducts/IndexBuyProducts";
-import { OnlyDesktop, useDesktopQuery } from "../../components/MediaQuery";
-import { useVisibility } from "../../hooks";
+import settings from "../../settings";
+import "./style.css";
+import { createProductPage } from "../../routes";
+
+
+const { Text, Link } = Typography;
+
+
+function ProductCard(props) {
+    const navigate = useNavigate();
+    const { isDesktop } = props;
+
+    return <Col onClick={() => { navigate(props.url) }} className="productCard" style={{
+        marginBottom: isDesktop ? "0" : "2em",
+    }}>
+        <Image className="productCardImage" style={{
+            width: isDesktop ? "85wh" : "85wh",
+            height: isDesktop ? "35vh" : "25vh",
+            borderRadius: "24px",
+            backgroundSize: "cover",
+            backgroundRepeat: "no-repeat",
+            backgroundOrigin: "initial",
+            backgroundPosition: "center",
+            border: "1px solid white",
+            boxShadow: "5px 5px 50px 40px black",
+            zIndex: 1,
+        }} src={props.image} preview={false} />
+
+        <Text className="productCardText">{props.text}</Text>
+    </Col>;
+}
 
 
 export default function IndexPage() {
-    const [currentPage, setCurrentPage] = useState(0);
-    const startId = 'start';
-    const previewId = "preview";
-    const buyProductsId = "buy-products";
-
-    const { t } = useTranslation();
     const isDesktop = useDesktopQuery();
-    const isTransition = useRef(false);
+    const { t } = useTranslation();
+    document.body.style.backgroundImage = "url('/images/background.png')";
 
-    const indexStartRef = useRef(null);
-    const previewsRef = useRef(null);
-    const buyProductsRef = useRef(null);
-
-    const isIndexStartVisible = useVisibility(indexStartRef);
-    const isPreviewsVisible = useVisibility(previewsRef);
-    const isBuyProductsVisible = useVisibility(buyProductsRef);    
-
-    const sectionRefs = [indexStartRef, previewsRef, buyProductsRef];
-    const visibilities = [isIndexStartVisible, isPreviewsVisible, isBuyProductsVisible];
-
-    const scrollIntoComponent = (componentId, page) => {
-        document.getElementById(componentId).scrollIntoView({ behavior: "smooth",  block: 'nearest', });
-        setCurrentPage(page);
-        setTimeout(() => { isTransition.current = false; }, 500);
-    };
-
-    const handleMenu = () => {
-        visibilities.forEach((isVisible, index) => {
-
-            if(isVisible){
-                setCurrentPage(index);
-            }
-
-        });
-    };
-
-    useEffect(() => {
-        handleMenu();
-        return () => {};
-    });
-
-    return (
-        <Row style={{
-            paddingRight: isDesktop ? "1em" : "0",
-            justifyContent: isDesktop ? "inherit" : "center",
-            paddingTop: "0.5em",
-        }} onWheel={handleMenu}>
-            <Col span={22} style={{ display: 'flex', direction: "column" }}>
-                <Row style={{ width: "100%" }}>
-                    {[
-                        <IndexStart id={startId} setNextPage={() => {
-                            scrollIntoComponent(previewId, 1);
-                        }} />,
-
-                        <IndexPreview id={previewId} isOpen={currentPage === 1} setNextPage={() => {
-                            scrollIntoComponent(buyProductsId, 2);
-                        }} />,
-
-                        <IndexBuyProducts id={buyProductsId} setNextPage={() => {
-                            scrollIntoComponent(startId, 0);
-                        }} />,
-
-                    ].map((item, index) => <Col ref={sectionRefs[index]} key={index} span={24} style={{
-                        height: isDesktop ? "100vh" : "inherit",
-                        marginBottom: isDesktop ? "5em" : "inherit"
-                    }}>{isDesktop || index === 0 ? null : <Divider />} {item}</Col>)}
-                </Row>
-            </Col>
-
-            <OnlyDesktop>
-                <Col span={2} id="menu" >
-                    <Menu selectedKeys={[currentPage.toString()]} mode="inline" style={{
-                        background: "none", position: "fixed",
-                    }} onSelect={({ _, key }) => { setCurrentPage(parseInt(key)); }}>
-                        <Menu.ItemGroup>
-                            <Menu.Item key='0'>
-                                <a href={`#${startId}`}>{t('index.menu.start')}</a>
-                            </Menu.Item>
-
-                            <Menu.Item key='1'>
-                                <a href={`#${previewId}`}>{t('index.menu.preview')}</a>
-                            </Menu.Item>
-
-                            <Menu.Item key='2'>
-                                <a href={`#${buyProductsId}`} style={{ color: "lime", fontWeight: "bold" }}>
-                                    {t('index.menu.buy_products')}
-                                </a>
-                            </Menu.Item>
-                        </Menu.ItemGroup>
-                    </Menu>
-                </Col>
-            </OnlyDesktop>
+    return <Col style={{
+        paddingRight: isDesktop ? "1em" : "0",
+        paddingTop: isDesktop ? "5em" : "0.5em",
+        paddingLeft: isDesktop ? "10em" : "0",
+        alignItems: isDesktop ? "flex-start" : "center",
+        display: "flex",
+        justifyContent: "space-between",
+        flexDirection: "column",
+        height: isDesktop ? "80vh" : "inherit",
+    }}>
+        <Row style={{ display: "flex", justifyContent: "space-between", width: "80vw" }}>
+            <ProductCard image="/images/indexBg.png" text={t('index.crypto_index')} isDesktop={isDesktop}
+                url={createProductPage('index', '0xDBCFC1Ec8aF08aB1943aD6dEf907BD0f0b7C4fE0')} />
+            <ProductCard image="/images/ethIndexBg.png" text={t('index.eth_index')} isDesktop={isDesktop}
+                url={createProductPage('index', '0x7212569605978ce4cC26489611df873706fbc2A1')} />
         </Row>
-    );
+
+        <Row style={{
+            fontWeight: "100",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: isDesktop ? "flex-start" : "center",
+            marginTop: isDesktop ? "15em" : "0",
+        }}>
+            <Text style={{ fontSize: isDesktop ? "4.8em" : "3.5em" }}>
+                <b style={{ fontWeight: "bolder" }}>{t("index.void")}</b> {t("index.crypto_index")}
+            </Text>
+
+            {isDesktop ? <Text style={{ fontSize: "2em" }}>{t("index.description")}</Text> : null}
+
+            <Link style={{ fontSize: "1.5em", marginBottom: "0.5em" }} href={settings.MEDIUM_LINK}>
+                {t("index.read_medium")}</Link>
+
+            <Link style={{ fontSize: "1.5em" }} href='/whitepaper.pdf'>{t("index.whitepaper")}</Link>
+        </Row>
+
+    </Col>;
 }

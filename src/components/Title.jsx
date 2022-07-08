@@ -10,7 +10,9 @@ export function Title(props) {
         display: "flex",
         justifyContent: isMobile ? "center" : "inherit",
         ...props.style,
-    }} id={props.id}>
-        <Typography.Text style={{ color: "white!important", fontSize: "2em" }}>{ props.children }</Typography.Text>
+    }}>
+        <Typography.Text style={{ color: "white", fontSize: "2em" }}>
+            {props.children}
+        </Typography.Text>
     </Col>;
 }
