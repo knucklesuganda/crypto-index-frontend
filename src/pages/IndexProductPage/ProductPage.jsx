@@ -1,38 +1,21 @@
-import { useEffect } from 'react';
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import { useTranslation } from "react-i18next";
 import { formatBigNumber } from "../../web3/utils";
-import { Observer } from "../../web3/contracts";
 import { OnlyDesktop } from "../../components/MediaQuery";
 import { useProvider, useProductData } from "../../hooks";
 import { Loading, WalletConnector } from "../../components";
 import { addTokenToWallet } from "../../web3/wallet/functions";
 import { Col, Row, Divider, Typography, message } from "antd";
 import { AnalyticsSection, ProductBuySection, ProductInfo } from "./sections";
-import settings from "../../settings";
 
 
 export default function ProductPage() {
-    const navigate = useNavigate();
     const { t } = useTranslation();
     const { productAddress } = useParams();
     const { providerData, handleWalletConnection } = useProvider();
     const { productData, index } = useProductData(productAddress, providerData);
 
-    useEffect(() => {
-        if (providerData === null || settings.DEBUG) {
-            return;
-        }
-
-        const observer = new Observer(settings.OBSERVER_ADDRESS, providerData);
-        observer.checkProductExists(productAddress).then(doesExist => {
-            if (!doesExist) {
-                navigate('/not_found/');
-            }
-        });
-
-        return () => {};
-    }, [productAddress, navigate, providerData]);
+    document.body.style.backgroundImage = "";
 
     if (providerData === null) {
         return <WalletConnector handleWalletConnection={handleWalletConnection} />;

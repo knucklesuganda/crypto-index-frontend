@@ -11,6 +11,7 @@ export class ERC20 {
     }
 
     async approve(approvalAddress, amount) {
+        console.log(approvalAddress, amount)
         return await this.token.approve(approvalAddress, amount, { from: this.providerData.account });
     }
 

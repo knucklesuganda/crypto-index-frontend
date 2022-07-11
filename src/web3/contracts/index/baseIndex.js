@@ -46,7 +46,6 @@ export class BaseIndex {
     async buy(amount, approveAmount) {
         const availableTokens = await this.index.availableTokens();
         const weiAmount = convertToEther(amount.toString());
-        approveAmount = convertToEther(approveAmount.toString());
 
         if (availableTokens.lt(weiAmount)) {
             throw new NoTokensError();
@@ -65,8 +64,8 @@ export class BaseIndex {
         const approveTransaction = await this._executeApprove(buyToken, approveAmount, approveGas);
         await approveTransaction.wait();
 
-        const buyGas = await this._estimateBuyGas(amount, approveAmount);
-        const buyTransaction = await this._executeBuy(amount, approveAmount, buyGas);
+        const buyGas = await this._estimateBuyGas(weiAmount, approveAmount);
+        const buyTransaction = await this._executeBuy(weiAmount, approveAmount, buyGas);
         await buyTransaction.wait();
 
         return buyTransaction.hash;
@@ -74,7 +73,7 @@ export class BaseIndex {
 
     async sell(amount) {
         const weiAmount = parseEther(amount.toString());
-        await this._indexOperationValidate(amount, weiAmount);
+        await this._indexOperationValidate(weiAmount);
 
         const productToken = new ERC20(await this.index.productToken(), this.providerData);
         const allowance = await productToken.getAllowance(this.providerData.account, this.address);

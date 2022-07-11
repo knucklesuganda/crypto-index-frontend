@@ -139,7 +139,7 @@ function createProductAlert(name) {
 export function ProductBuySection(props) {
     const { providerData, productData, product } = props;
     const [inProgress, setInProgress] = useState(false);
-    const [operationType, setOperationType] = useState(false);
+    const [operationType, setOperationType] = useState(true);
     const { t } = useTranslation();
 
     return <Spin spinning={inProgress} indicator={<LoadingOutlined style={{ fontSize: "2em" }} />}>
@@ -158,7 +158,7 @@ export function ProductBuySection(props) {
 
                     if (operationType) {
                         operationPromise = product.buy(
-                            convertToEther(amount).mul(productPrice).div(convertToEther(1)), amount,
+                            amount, convertToEther(amount).mul(productPrice).div(convertToEther(1)), 
                         );
                     } else {
                         operationPromise = product.sell(amount);

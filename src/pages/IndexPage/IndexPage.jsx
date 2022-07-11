@@ -1,11 +1,10 @@
-import { Fragment } from "react";
 import { useDesktopQuery } from "../../components/MediaQuery";
 import { Row, Col, Typography, Image } from "antd";
 import { useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
+import { createProductPage } from "../../routes";
 import settings from "../../settings";
 import "./style.css";
-import { createProductPage } from "../../routes";
 
 
 const { Text, Link } = Typography;
@@ -39,23 +38,24 @@ function ProductCard(props) {
 export default function IndexPage() {
     const isDesktop = useDesktopQuery();
     const { t } = useTranslation();
+
     document.body.style.backgroundImage = "url('/images/background.png')";
 
     return <Col style={{
+        display: "flex",
+        justifyContent: "space-between",
+        flexDirection: "column",
         paddingRight: isDesktop ? "1em" : "0",
         paddingTop: isDesktop ? "5em" : "0.5em",
         paddingLeft: isDesktop ? "10em" : "0",
         alignItems: isDesktop ? "flex-start" : "center",
-        display: "flex",
-        justifyContent: "space-between",
-        flexDirection: "column",
         height: isDesktop ? "80vh" : "inherit",
     }}>
         <Row style={{ display: "flex", justifyContent: "space-between", width: "80vw" }}>
             <ProductCard image="/images/indexBg.png" text={t('index.crypto_index')} isDesktop={isDesktop}
-                url={createProductPage('index', '0xDBCFC1Ec8aF08aB1943aD6dEf907BD0f0b7C4fE0')} />
+                url={createProductPage('index', settings.PRODUCTS.INDEX_ADDRESS)} />
             <ProductCard image="/images/ethIndexBg.png" text={t('index.eth_index')} isDesktop={isDesktop}
-                url={createProductPage('index', '0x7212569605978ce4cC26489611df873706fbc2A1')} />
+                url={createProductPage('index', settings.PRODUCTS.ETH_INDEX_ADDRESS)} />
         </Row>
 
         <Row style={{
