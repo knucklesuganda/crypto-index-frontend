@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import IndexPage from './pages/IndexPage/IndexPage';
-import ProductPage from './pages/ProductPage/ProductPage';
+import ProductPage from './pages/IndexProductPage/ProductPage';
 import NotFoundPage from "./pages/NotFoundPage";
 import { Header } from "./components";
 import { INDEX_PAGE, PRODUCT_PAGE } from "./routes";

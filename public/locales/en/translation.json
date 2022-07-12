@@ -1,51 +1,22 @@
 {
     "title": "Void Management",
     "accept_wallet": "Accept connection request in your wallet",
+    "wallet": {
+        "download": "Install a wallet",
+        "download_description": "Download a decentralized crypto wallet",
+        "setup": "How to setup a wallet?",
+        "buy_crypto": "Get crypto to your wallet",
+        "buy_crypto_description": "Buy crypto from exchanges",
+        "connect_wallet": "Connect the wallet",
+        "connect_wallet_description": "Connect your crypto wallet to void management"
+    },
     "index": {
-        "menu": {
-            "start": "Start",
-            "preview": "Crypto Index",
-            "buy_products": "Buy Products"
-        },
-        "start": {
-            "crypto_title": {
-                "titles": [
-                    "Derivatives",
-                    "Indices",
-                    "Products",
-                    "Safety"
-                ],
-                "end": "For Everyone",
-                "start": "Crypto"
-            },
-            "not_real_data": "Not real data",
-            "cards": {
-                "global_solutions": "Global solutions in crypto finance",
-                "new_derivatives": "Derivatives you have never seen before",
-                "protect": "Protect yourself with anti-volatility products"
-            }
-        },
-        "preview": {
-            "title": "Tokens VS Crypto Index",
-            "medium": "Read our Medium article on Crypto Index",
-
-            "tokens": {
-                "title": "Tokens",
-                "fees": "Large fees",
-                "management": "Bad management",
-                "transactions": "Many transactions"
-            },
-
-            "index": {
-                "title": "Index",
-                "fees": "Easy management",
-                "management": "Low fees",
-                "transactions": "Single transaction"
-            }
-        },
-        "buy": {
-            "title": "Buy products"
-        }
+        "crypto_index": "Crypto Index",
+        "eth_index": "ETH Index",
+        "void": "Void",
+        "description": "Buy many tokens in one transaction. Diversify your crypto assets.",
+        "read_medium": "Read about us on Medium",
+        "whitepaper": "Whitepaper"
     },
     "buy_product": {
         "token_buy": "Buy",

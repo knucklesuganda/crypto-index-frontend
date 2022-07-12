@@ -1,18 +1,22 @@
-import { Row, Card, Typography, Button, Col, message } from "antd";
-import { useState, useCallback  } from "react";
+import settings from "../settings";
+import { useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { clearProvider } from "../web3/wallet/providers";
+import { Row, Card, Typography, Button, Col, message, Steps, Collapse } from "antd";
+
+const { Step } = Steps;
 
 
 export function WalletConnector(props) {
     const [isHidden, setIsHidden] = useState(false);
-    const {handleWalletConnection} = props;
+    const { handleWalletConnection } = props;
     const { t } = useTranslation();
+    const [currentStep, setCurrentStep] = useState(0);
 
     const connectWallet = useCallback(() => {
 
         setIsHidden(true);
-        handleWalletConnection().catch((error) => {
+        handleWalletConnection().catch((_) => {
             setIsHidden(false);
             message.info(t("accept_wallet"));
         });
@@ -37,18 +41,47 @@ export function WalletConnector(props) {
             </Col>
 
             <Col>
-                <Button type="primary" style={{ width: "20em", marginTop: "1em" }} onClick={() => {
-                    connectWallet();
-                }}>{t("wallet_connector.connect_wallet")}
-                </Button>
+                <Button type="primary" style={{ width: "20em", marginTop: "1em" }}
+                    onClick={() => { connectWallet() }}>{t("wallet_connector.connect_wallet")}</Button>
             </Col>
 
             <Col>
                 <Button type="text" size="middle" style={{ marginTop: "0.5em" }} onClick={() => {
-                    clearProvider().then(() => {
-                        connectWallet();
-                    });
+                    clearProvider().then(() => { connectWallet(); });
                 }}>{t("wallet_connector.choose_another_provider")}</Button>
+            </Col>
+
+            <Col style={{ marginTop: "1em", display: "flex", justifyContent: "center" }}>
+                <Collapse bordered={false} style={{ background: "none" }}>
+                    <Collapse.Panel key="1" showArrow={false} header={
+                        <Typography.Text style={{ width: "100%", textDecoration: "underline", fontStyle: "italic" }}>
+                            {t("wallet.setup")}</Typography.Text>
+                    }>
+                        <Steps direction="vertical" current={currentStep}
+                            onChange={(value) => { setCurrentStep(value) }}>
+
+                            <Step title={t("wallet.download")} description={
+                                <Typography.Link target="_blank" href={settings.DOWNLOAD_WALLET}>
+                                    {t("wallet.download_description")}
+                                </Typography.Link>
+                            } />
+
+                            <Step title={t("wallet.buy_crypto")} description={
+                                <Typography.Link target="_blank" href={settings.BUY_ETH_LINK}>
+                                    {t("wallet.buy_crypto_description")}
+                                </Typography.Link>
+                            } />
+
+                            <Step title={t("wallet.connect_wallet")} description={
+                                <Typography.Text onClick={() => { connectWallet() }}
+                                    style={{ color: "#177ddc", cursor: "pointer" }}>
+                                        {t("wallet.connect_wallet_description")}
+                                </Typography.Text>
+                            } />
+                        </Steps>
+
+                    </Collapse.Panel>
+                </Collapse>
             </Col>
         </Card>
     </Row>;
