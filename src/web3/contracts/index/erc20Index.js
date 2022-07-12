@@ -29,8 +29,7 @@ export class ERC20Index extends BaseIndex {
 
     async _executeApprove(token, amount, gasEstimation) {
         return await token.approve(this.index.address, amount, {
-            from: this.providerData.account, gasLimit: gasEstimation
-        });
+            from: this.providerData.account, gasLimit: gasEstimation });
     }
 
 }

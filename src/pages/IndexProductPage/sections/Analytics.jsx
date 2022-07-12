@@ -22,12 +22,16 @@ export function AnalyticsSection(props) {
     const { t } = useTranslation();
 
     useEffect(() => {
-        product.getComponents(productAddress).then(components => {
-            setProductComponents(components);
-        });
+        if (isMobile) {
+            setProductComponents({ ratioData: [], priceData: [] });
+        } else {
+            product.getComponents().then(components => {
+                setProductComponents(components);
+            });
+        }
 
         return () => { };
-    }, [productAddress, product]);
+    }, [productAddress, product, isMobile]);
 
     if (productData === null || productComponents === null) {
         return <Loading />;
@@ -83,7 +87,7 @@ export function AnalyticsSection(props) {
 
         <OnlyDesktop>
             <Row style={{ paddingTop: "1em", width: "100vw", display: "flex", alignItems: "center" }} gutter={[100, 16]}>
-                <Pie style={{ width: "44vw", marginRight: "2em" }} 
+                <Pie style={{ width: "44vw", marginRight: "2em" }}
                     legend={{ flipPage: false }}
                     appendPadding={10}
                     angleField='value'
@@ -105,7 +109,7 @@ export function AnalyticsSection(props) {
                 <Table bordered style={{ background: "none", width: "44vw", padding: 0 }}
                     pagination={{ position: ['none', 'bottomLeft'], simple: true }}
                     render={() => {
-                        
+
                     }}
                     dataSource={
                         productComponents.priceData.map((tokenInfo, index) => {

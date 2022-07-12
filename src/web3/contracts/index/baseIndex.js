@@ -3,12 +3,12 @@ import { ERC20 } from "../tokens/ERC20";
 import { convertToEther, parseEther } from "../../utils";
 
 
-export class BalanceError extends Error { }
-export class ProductSettlementError extends Error { }
-export class AmountError extends Error { }
-export class LiquidityError extends Error { }
-export class NoTokensError extends Error { }
-export class DebtExceededError extends Error { }
+export class BalanceError extends Error {}
+export class ProductSettlementError extends Error {}
+export class AmountError extends Error {}
+export class LiquidityError extends Error {}
+export class NoTokensError extends Error {}
+export class DebtExceededError extends Error {}
 
 
 export class BaseIndex {
@@ -157,17 +157,14 @@ export class BaseIndex {
             const token = new ERC20(component.tokenAddress, this.providerData);
             const tokenInfo = await token.getInformation(this.providerData, component.tokenAddress);
 
-            ratioData.push({
-                type: tokenInfo.name,
-                value: component.indexPercentage,
-            });
-
+            ratioData.push({ type: tokenInfo.name, value: component.indexPercentage });
             priceData.push({
                 token: tokenInfo,
                 name: tokenInfo.name,
                 productBalance: await token.getBalance(this.address),
                 price: await this.index.getTokenPrice(component),
             });
+
         }
 
         return { ratioData, priceData };

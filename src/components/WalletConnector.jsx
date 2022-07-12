@@ -52,7 +52,7 @@ export function WalletConnector(props) {
             </Col>
 
             <Col style={{ marginTop: "1em", display: "flex", justifyContent: "center" }}>
-                <Collapse defaultActiveKey={['1']} bordered={false} style={{ background: "none" }}>
+                <Collapse bordered={false} style={{ background: "none" }}>
                     <Collapse.Panel key="1" showArrow={false} header={
                         <Typography.Text style={{ width: "100%", textDecoration: "underline", fontStyle: "italic" }}>
                             {t("wallet.setup")}</Typography.Text>
