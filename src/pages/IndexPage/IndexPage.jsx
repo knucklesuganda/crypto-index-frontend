@@ -65,7 +65,7 @@ export default function IndexPage() {
             alignItems: isDesktop ? "flex-start" : "center",
             marginTop: isDesktop ? "15em" : "0",
         }}>
-            <Text style={{ fontSize: isDesktop ? "4.8em" : "3.5em" }}>
+            <Text style={{ fontSize: isDesktop ? "4.8em" : "3.5em", textAlign: isDesktop ? "inherit" : "center" }}>
                 <b style={{ fontWeight: "bolder" }}>{t("index.void")}</b> {t("index.crypto_index")}
             </Text>
 

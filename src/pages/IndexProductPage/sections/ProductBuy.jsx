@@ -4,10 +4,11 @@ import { useTranslation } from "react-i18next";
 import { addTokenNotification, TokenInput } from "../../../components";
 import { OnlyDesktop, useMobileQuery } from "../../../components/MediaQuery";
 import { LoadingOutlined, RiseOutlined, FallOutlined } from '@ant-design/icons';
-import { convertToEther, formatBigNumber, formatNumber } from "../../../web3/utils";
+import { formatBigNumber, formatNumber } from "../../../web3/utils";
 import { Form, Col, Radio, Row, Button, Typography, Collapse, message, Avatar, Spin, Modal } from "antd";
 import {
-    DebtExceededError, LiquidityError, NoTokensError, ProductSettlementError, BalanceError, AmountError,
+    DebtExceededError, LiquidityError, NoTokensError,
+    ProductSettlementError, BalanceError, AmountError,
 } from "../../../web3/contracts/index/index";
 
 
@@ -150,18 +151,13 @@ export function ProductBuySection(props) {
                         return;
                     }
 
-                    const amount = values.amount;
-                    const productPrice = productData.price;
-
                     let operationPromise;
                     setInProgress(true);
 
                     if (operationType) {
-                        operationPromise = product.buy(
-                            amount, convertToEther(amount).mul(productPrice).div(convertToEther(1)), 
-                        );
+                        operationPromise = product.buy(values.amount);
                     } else {
-                        operationPromise = product.sell(amount);
+                        operationPromise = product.sell(values.amount);
                     }
 
                     operationPromise.then((transactionHash) => {
@@ -264,7 +260,8 @@ export function ProductBuySection(props) {
             <DebtSectionCollapse sectionIcon={<RiseOutlined />}
                 sectionTitle={t('buy_product.buy_debt')} debt={productData.userBuyDebt}>
 
-                <DebtSection isBuyDebt product={product} providerData={providerData}
+                <DebtSection isBuyDebt product={product}
+                    providerData={providerData}
                     userDebt={productData.userBuyDebt}
                     totalDebt={productData.totalBuyDebt}
                     sectionSymbol={productData.productToken.symbol}
@@ -275,7 +272,8 @@ export function ProductBuySection(props) {
             <DebtSectionCollapse sectionIcon={<FallOutlined />}
                 sectionTitle={t('buy_product.sell_debt')} debt={productData.userSellDebt}>
 
-                <DebtSection product={product} providerData={providerData}
+                <DebtSection product={product}
+                    providerData={providerData}
                     userDebt={productData.userSellDebt}
                     totalDebt={productData.totalSellDebt}
                     sectionSymbol={productData.buyToken.symbol}

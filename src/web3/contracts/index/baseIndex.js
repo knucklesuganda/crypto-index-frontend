@@ -26,6 +26,10 @@ export class BaseIndex {
         throw new Error("Function is not overriden");
     }
 
+    async _getBuyTokenBalance(buyToken){
+        return await buyToken.getBalance();
+    }
+
     async _indexOperationValidate(weiAmount){
         if (weiAmount.eq(BigNumber.from("0")) || weiAmount < BigNumber.from('10000000000000', 10)) {
             throw new AmountError();
@@ -43,9 +47,12 @@ export class BaseIndex {
         }
     }
 
-    async buy(amount, approveAmount) {
+    async buy(amount) {
         const availableTokens = await this.index.availableTokens();
         const weiAmount = convertToEther(amount.toString());
+
+        const productPrice = await this.index.getPrice();
+        const approveAmount = weiAmount.mul(productPrice).div(convertToEther(1));
 
         if (availableTokens.lt(weiAmount)) {
             throw new NoTokensError();
@@ -54,7 +61,7 @@ export class BaseIndex {
         await this._indexOperationValidate(weiAmount);
 
         const buyToken = new ERC20(await this.index.buyTokenAddress(), this.providerData);
-        const buyTokenBalance = await buyToken.getBalance();
+        const buyTokenBalance = await this._getBuyTokenBalance(buyToken);
 
         if (buyTokenBalance.lt(approveAmount)) {
             throw new BalanceError();
@@ -62,7 +69,10 @@ export class BaseIndex {
 
         const approveGas = await this._estimateApproveGas(buyToken, approveAmount);
         const approveTransaction = await this._executeApprove(buyToken, approveAmount, approveGas);
-        await approveTransaction.wait();
+
+        if(approveTransaction !== null){
+            await approveTransaction.wait();
+        }
 
         const buyGas = await this._estimateBuyGas(weiAmount, approveAmount);
         const buyTransaction = await this._executeBuy(weiAmount, approveAmount, buyGas);
@@ -75,7 +85,7 @@ export class BaseIndex {
         const weiAmount = parseEther(amount.toString());
         await this._indexOperationValidate(weiAmount);
 
-        const productToken = new ERC20(await this.index.productToken(), this.providerData);
+        const productToken = new ERC20(await this.index.indexToken(), this.providerData);
         const allowance = await productToken.getAllowance(this.providerData.account, this.address);
         const balance = await productToken.getBalance();
 
@@ -86,7 +96,7 @@ export class BaseIndex {
             await approveTransaction.wait();
         }
 
-        const sellTransaction = await this.index.sell(amount, { from: this.providerData.account });
+        const sellTransaction = await this.index.sell(weiAmount, { from: this.providerData.account });
         await sellTransaction.wait();
 
         return sellTransaction.hash;
@@ -169,7 +179,7 @@ export class BaseIndex {
 
         if(amount.eq('0')){
             throw new AmountError();
-        } else if (await this.index.isSettlement()) {
+        } else if (await this.index.isSettlementActive()) {
             throw new ProductSettlementError();
         }else if(amount.gt(totalDebt)){
             throw new DebtExceededError();

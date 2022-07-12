@@ -1,6 +1,15 @@
 {
     "title": "Void Management",
     "accept_wallet": "Accept connection request in your wallet",
+    "wallet": {
+        "download": "Install a wallet",
+        "download_description": "Download a decentralized crypto wallet",
+        "setup": "How to setup a wallet?",
+        "buy_crypto": "Get crypto on your wallet",
+        "buy_crypto_description": "Buy crypto from exchanges",
+        "connect_wallet": "Connect it",
+        "connect_wallet_description": "Connect your crypto wallet to our website"
+    },
     "index": {
         "crypto_index": "Crypto Index",
         "eth_index": "ETH Index",

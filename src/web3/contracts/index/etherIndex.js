@@ -17,14 +17,20 @@ export class EtherIndex extends BaseIndex {
 
     async _executeBuy(amount, approveAmount, gasEstimation) {
         try {
-            return await this.index.buy(amount, { value: approveAmount, gasLimit: gasEstimation });
+            return await this.index.buyETH(amount, { value: approveAmount, gasLimit: gasEstimation });
         }catch(error){
+            console.log(error)
             throw new Error("Unknown error");
         }
     }
 
-    async _estimateApproveGas(token, approveAmount) { }
-    async _executeApprove(token, amount, gasEstimation) { }
+    async _getBuyTokenBalance(buyToken){
+        const { provider, account } = this.providerData;
+        return await provider.getBalance(account);
+    }
+
+    async _estimateApproveGas(token, approveAmount) { return null; }
+    async _executeApprove(token, amount, gasEstimation) { return null; }
 
     async getInformation() {
         const information = await super.getInformation();
