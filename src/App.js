@@ -1,10 +1,10 @@
 import { Suspense } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import IndexPage from './pages/IndexPage/IndexPage';
-import ProductPage from './pages/IndexProductPage/ProductPage';
+import { Header, Loading } from "./components";
 import NotFoundPage from "./pages/NotFoundPage";
-import { Header } from "./components";
+import IndexPage from './pages/IndexPage/IndexPage';
 import { INDEX_PAGE, PRODUCT_PAGE } from "./routes";
+import ProductPage from './pages/IndexProductPage/ProductPage';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import 'antd/dist/antd.min.css';
 import 'antd/dist/antd.dark.min.css';
 import "./App.css";
@@ -13,7 +13,7 @@ import "./App.css";
 function App() {
     document.title = "Void";
 
-    return <Suspense fallback={"Loading"}>
+    return <Suspense fallback={<Loading />}>
         <BrowserRouter>
             <Header>
                 <Routes>

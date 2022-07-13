@@ -1,9 +1,11 @@
-import { useDesktopQuery } from "../../components/MediaQuery";
+import { useDesktopQuery, useHalfScreenQuery } from "../../components/MediaQuery";
 import { Row, Col, Typography, Image } from "antd";
 import { useNavigate } from "react-router";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { createProductPage } from "../../routes";
 import settings from "../../settings";
+import { Loading } from "../../components";
 import "./style.css";
 
 
@@ -13,13 +15,23 @@ const { Text, Link } = Typography;
 function ProductCard(props) {
     const navigate = useNavigate();
     const { isDesktop } = props;
+    const [isLoaded, setIsLoaded] = useState(false);
 
-    return <Col onClick={() => { navigate(props.url) }} className="productCard" style={{
-        marginBottom: isDesktop ? "0" : "2em",
-    }}>
+    const imageSize = {
+        width: isDesktop ? "85wh" : "85wh",
+        height: isDesktop ? "35vh" : "25vh",
+    };
+
+    return <Col className="productCard" onClick={() => { if (isLoaded) { navigate(props.url); } }}
+        style={{ cursor: isLoaded ? "pointer" : "inherit", marginBottom: isDesktop ? "0" : "2em" }}>
+
+        {isLoaded ? null : <Col style={{ position: "absolute", ...imageSize }}>
+            <Loading />
+        </Col>}
+
         <Image className="productCardImage" style={{
-            width: isDesktop ? "85wh" : "85wh",
-            height: isDesktop ? "35vh" : "25vh",
+            zIndex: 1,
+            ...imageSize,
             borderRadius: "24px",
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
@@ -27,24 +39,24 @@ function ProductCard(props) {
             backgroundPosition: "center",
             border: "1px solid white",
             boxShadow: "5px 5px 50px 40px black",
-            zIndex: 1,
-        }} src={props.image} preview={false} />
+        }} src={props.image} preview={false} onLoad={() => { setIsLoaded(true) }} />
 
-        <Text className="productCardText">{props.text}</Text>
+        {isLoaded ? <Text className="productCardText">{props.text}</Text> : null}
     </Col>;
 }
 
 
 export default function IndexPage() {
-    const isDesktop = useDesktopQuery();
     const { t } = useTranslation();
+    const isDesktop = useDesktopQuery();
+    const isHalfScreen = useHalfScreenQuery();
 
-    document.body.style.backgroundImage = "url('/images/background.png')";
+    document.body.className = 'indexBackground';
 
     return <Col style={{
         display: "flex",
-        justifyContent: "space-between",
-        flexDirection: "column",
+        justifyContent: isHalfScreen ? "flex-start" : "space-between",
+        flexDirection: isHalfScreen ? "row" : "column",
         paddingRight: isDesktop ? "1em" : "0",
         paddingTop: isDesktop ? "5em" : "0.5em",
         paddingLeft: isDesktop ? "10em" : "0",
@@ -52,9 +64,12 @@ export default function IndexPage() {
         height: isDesktop ? "80vh" : "inherit",
     }}>
         <Row style={{ display: "flex", justifyContent: "space-between", width: "80vw" }}>
-            <ProductCard image="/images/indexBg.png" text={t('index.crypto_index')} isDesktop={isDesktop}
+            <ProductCard image={`${settings.STATIC_STORAGE}/assets/indexBg.png`}
+                text={t('index.crypto_index')} isDesktop={isDesktop}
                 url={createProductPage('index', settings.PRODUCTS.INDEX_ADDRESS)} />
-            <ProductCard image="/images/ethIndexBg.png" text={t('index.eth_index')} isDesktop={isDesktop}
+
+            <ProductCard image={`${settings.STATIC_STORAGE}/assets/ethIndexBg.png`}
+                text={t('index.eth_index')} isDesktop={isDesktop}
                 url={createProductPage('index', settings.PRODUCTS.ETH_INDEX_ADDRESS)} />
         </Row>
 
@@ -63,7 +78,7 @@ export default function IndexPage() {
             display: "flex",
             flexDirection: "column",
             alignItems: isDesktop ? "flex-start" : "center",
-            marginTop: isDesktop ? "15em" : "0",
+            marginTop: isDesktop ? (isHalfScreen ? "0em" : "15em") : "0",
         }}>
             <Text style={{ fontSize: isDesktop ? "4.8em" : "3.5em", textAlign: isDesktop ? "inherit" : "center" }}>
                 <b style={{ fontWeight: "bolder" }}>{t("index.void")}</b> {t("index.crypto_index")}
