@@ -16,11 +16,7 @@ function ProductCard(props) {
     const navigate = useNavigate();
     const { isDesktop } = props;
     const [isLoaded, setIsLoaded] = useState(false);
-
-    const imageSize = {
-        width: isDesktop ? "85wh" : "85wh",
-        height: isDesktop ? "35vh" : "25vh",
-    };
+    const imageSize = { width: isDesktop ? "85wh" : "85wh", height: isDesktop ? "35vh" : "25vh" };
 
     return <Col className="productCard" onClick={() => { if (isLoaded) { navigate(props.url); } }}
         style={{ cursor: isLoaded ? "pointer" : "inherit", marginBottom: isDesktop ? "0" : "2em" }}>

@@ -15,7 +15,7 @@ export default function ProductPage() {
     const { providerData, handleWalletConnection } = useProvider();
     const { productData, index } = useProductData(productAddress, providerData);
 
-    document.body.style.backgroundImage = "";
+    document.body.className = "";
 
     if (providerData === null) {
         return <WalletConnector handleWalletConnection={handleWalletConnection} />;
