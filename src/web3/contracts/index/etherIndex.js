@@ -19,7 +19,6 @@ export class EtherIndex extends BaseIndex {
         try {
             return await this.index.buyETH(amount, { value: approveAmount, gasLimit: gasEstimation });
         }catch(error){
-            console.log(error)
             throw new Error("Unknown error");
         }
     }

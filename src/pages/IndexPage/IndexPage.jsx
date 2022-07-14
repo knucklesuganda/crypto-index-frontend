@@ -35,7 +35,8 @@ function ProductCard(props) {
             backgroundPosition: "center",
             border: "1px solid white",
             boxShadow: "5px 5px 50px 40px black",
-        }} src={props.image} preview={false} onLoad={() => { setIsLoaded(true) }} />
+            display: isLoaded ? "inherit" : "none",
+        }} src={props.image} preview={false} alt={props.text} onLoad={() => { setIsLoaded(true) }} />
 
         {isLoaded ? <Text className="productCardText">{props.text}</Text> : null}
     </Col>;
@@ -46,7 +47,6 @@ export default function IndexPage() {
     const { t } = useTranslation();
     const isDesktop = useDesktopQuery();
     const isHalfScreen = useHalfScreenQuery();
-
     document.body.className = 'indexBackground';
 
     return <Col style={{
@@ -85,7 +85,8 @@ export default function IndexPage() {
             <Link style={{ fontSize: "1.5em", marginBottom: "0.5em" }} href={settings.MEDIUM_LINK}>
                 {t("index.read_medium")}</Link>
 
-            <Link style={{ fontSize: "1.5em" }} href='/whitepaper.pdf'>{t("index.whitepaper")}</Link>
+            <Link style={{ fontSize: "1.5em", background: "black" }} href='/whitepaper.pdf'>
+                {t("index.whitepaper")}</Link>
         </Row>
 
     </Col>;
