@@ -1,5 +1,5 @@
 {
-    "short_name": "void",
+    "short_name": "Void Management",
     "name": "Void Management",
     "description": "Void Management crypto website. Dapps on Ethereum. First Crypto Index",
     "icons": [
@@ -27,6 +27,9 @@
     ],
     "start_url": "/",
     "display": "standalone",
-    "theme_color": "white",
+    "prefer_related_applications": true,
+    "categories": ["finance", "business"],
+    "lang": "en-US",
+    "theme_color": "black",
     "background_color": "black"
 }
