@@ -14,7 +14,6 @@ export default function ProductPage() {
     const { productAddress } = useParams();
     const { providerData, handleWalletConnection } = useProvider();
     const { productData, index } = useProductData(productAddress, providerData);
-
     document.body.className = "";
 
     if (providerData === null) {
