@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 
-export default function useVisibility(ref) {
+export function useVisibility(ref) {
 
     const [isIntersecting, setIntersecting] = useState(false);
 

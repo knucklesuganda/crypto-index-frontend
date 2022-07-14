@@ -1,0 +1,23 @@
+
+.productCard{
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    transition: 100ms;
+}
+
+.productCard:hover .productCardImage{
+
+    transition: 100ms;
+    filter: grayscale(100%);
+
+}
+
+.productCardText{
+    font-size: 2.2em;
+    font-weight: 100;
+    transition: 100ms;
+    z-index: 100;
+}

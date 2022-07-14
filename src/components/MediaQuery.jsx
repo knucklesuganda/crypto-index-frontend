@@ -12,6 +12,11 @@ export function MobileOnly(props){
 }
 
 
+export function useHalfScreenQuery(){
+    return useMediaQuery({ query: '(max-width: 1490px and min-width: 480px)' });
+}
+
+
 export function useMobileQuery(){
     return useMediaQuery({ query: '(max-width: 480px)' });
 }
