@@ -15,13 +15,12 @@ function App() {
 
     return <Suspense fallback={<Loading />}>
         <BrowserRouter>
-            <Header>
-                <Routes>
-                    <Route path={INDEX_PAGE} element={<IndexPage />} />
-                    <Route path={PRODUCT_PAGE} element={<ProductPage />} />
-                    <Route path="*" element={<NotFoundPage />} />
-                </Routes>
-            </Header>
+            <Header />
+            <Routes>
+                <Route path={INDEX_PAGE} element={<IndexPage />} />
+                <Route path={PRODUCT_PAGE} element={<ProductPage />} />
+                <Route path="*" element={<NotFoundPage />} />
+            </Routes>
         </BrowserRouter>
     </Suspense>;
 }

@@ -10,6 +10,7 @@ import { TranslationOutlined, YoutubeOutlined, TwitterOutlined } from '@ant-desi
 import { clearProvider } from "../../web3/wallet/providers";
 import { DiscordLogo } from "./DiscordLogo";
 import "./style.css";
+import { useNavigate } from "react-router";
 
 
 function UserAccount() {
@@ -46,12 +47,13 @@ function UserAccount() {
 
 export function Header(props) {
     const { t, i18n } = useTranslation();
+    const navigate = useNavigate();
 
     return <Fragment>
         <Row id="header_row">
             <Col>
                 <Title id='start'>
-                    <a href={INDEX_PAGE} style={{ color: "white" }}>{t('title')}</a>
+                    <span onClick={() => {navigate(INDEX_PAGE)}} style={{ color: "white" }}>{t('title')}</span>
                 </Title>
             </Col>
 
@@ -95,7 +97,5 @@ export function Header(props) {
         </Row>
 
         <MobileOnly><Divider /></MobileOnly>
-
-        {props.children}
     </Fragment>;
 }
