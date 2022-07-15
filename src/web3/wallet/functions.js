@@ -1,12 +1,14 @@
 import { message } from "antd";
+import { hexValue } from "ethers/lib/utils";
+import settings from "../../settings";
 
 
 export async function addTokenToWallet(provider, token) {
     let symbol = token.symbol;
 
-    if(token.address === token.symbol){
+    if (token.address === token.symbol) {
         symbol = token.address.slice(0, 6) + "...";
-    }else if(token.symbol.length > 11){
+    } else if (token.symbol.length > 11) {
         symbol = token.symbol.slice(0, 6) + "...";
     }
 
@@ -21,4 +23,33 @@ export async function addTokenToWallet(provider, token) {
             image: token.image,
         },
     });
+}
+
+
+export function getNetwork(networkId) {
+    if (networkId === settings.NETWORKS.POLYGON.ID) {
+        return settings.NETWORKS.POLYGON;
+    } else {
+        return settings.NETWORKS.ETHEREUM;
+    }
+}
+
+
+export async function changeNetwork(provider, networkId) {
+
+    const networkData = getNetwork(networkId);
+
+    try {
+        await provider.send('wallet_switchEthereumChain', [{ chainId: hexValue(networkData.ID) }]);
+    } catch (error) {
+        if (error.code === 4902) {
+            await provider.send('wallet_addEthereumChain', [{
+                chainName: networkData.NAME,
+                chainId: hexValue(networkData.ID),
+                nativeCurrency: networkData.CURRENCY,
+                rpcUrls: networkData.URLS,
+            }]);
+        }
+        throw new Error(error);
+    }
 }

@@ -10,11 +10,19 @@
 }
 
 
-#header_links{
+#header_links, #network_choice{
     display: flex;
     align-items: center;
     cursor: pointer;
     margin-top: 0.2em;
+}
+
+
+#network_choice{
+    cursor: pointer;
+    background: #0a0a0a;
+    border: 1px solid #303030;
+    border-radius: 4px;
 }
 
 

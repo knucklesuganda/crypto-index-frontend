@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { createProductPage } from "../../routes";
 import settings from "../../settings";
 import { Loading } from "../../components";
+import { useNetwork } from "../../hooks/useNetwork";
 import "./style.css";
 
 
@@ -47,7 +48,13 @@ export default function IndexPage() {
     const { t } = useTranslation();
     const isDesktop = useDesktopQuery();
     const isHalfScreen = useHalfScreenQuery();
-    document.body.className = 'indexBackground';
+    const { network } = useNetwork();
+
+    if(network && network.ID === settings.NETWORKS.POLYGON.ID){
+        document.body.className = 'polygonIndexBackground';
+    }else{
+        document.body.className = 'indexBackground';   
+    }
 
     return <Col style={{
         display: "flex",

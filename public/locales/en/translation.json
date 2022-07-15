@@ -8,7 +8,9 @@
         "buy_crypto": "Get crypto to your wallet",
         "buy_crypto_description": "Buy crypto from exchanges",
         "connect_wallet": "Connect the wallet",
-        "connect_wallet_description": "Connect your crypto wallet to void management"
+        "connect_wallet_description": "Connect your crypto wallet to void management",
+        "change_network": "Change network in your wallet",
+        "same_network": "You are already on that network"
     },
     "index": {
         "crypto_index": "Crypto Index",

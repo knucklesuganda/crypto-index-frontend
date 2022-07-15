@@ -42,11 +42,10 @@ export async function connectWallet(initial) {
         if (initial === true && typeof web3Modal.cachedProvider === "string") {
 
             try{
-            web3ModalProvider = await web3Modal.connectTo(web3Modal.cachedProvider);
+                web3ModalProvider = await web3Modal.connectTo(web3Modal.cachedProvider);
             }catch(error){
                 throw new NotConnectedError(error.message);
             }
-
 
         } else if (initial === true) {
             throw new NoProviderError();
@@ -59,8 +58,8 @@ export async function connectWallet(initial) {
 
     provider = new ethers.providers.Web3Provider(web3ModalProvider);
     signer = provider.getSigner();
-
     sessionStorage.account = await _getWallet();
+
     window.dispatchEvent(new Event("account_connected"));
     setupEvents(provider);
 

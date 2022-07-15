@@ -8,10 +8,10 @@ const { Step } = Steps;
 
 
 export function WalletConnector(props) {
-    const [isHidden, setIsHidden] = useState(false);
-    const { handleWalletConnection } = props;
     const { t } = useTranslation();
+    const { handleWalletConnection } = props;
     const [currentStep, setCurrentStep] = useState(0);
+    const [isHidden, setIsHidden] = useState(false);
 
     const connectWallet = useCallback(() => {
 

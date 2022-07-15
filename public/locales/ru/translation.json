@@ -8,7 +8,9 @@
         "buy_crypto": "Получите криптовалюту",
         "buy_crypto_description": "Купите криптовалюту с централизированных бирж",
         "connect_wallet": "Подключитесь",
-        "connect_wallet_description": "Подключите кошелек к void менеджмент"
+        "connect_wallet_description": "Подключите кошелек к void менеджмент",
+        "change_network": "Смените сеть в вашем кошельке",
+        "same_network": "Вы уже подключены к данной сети"
     },
     "index": {
         "crypto_index": "Крипто Индекс",

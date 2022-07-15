@@ -1,37 +1,14 @@
 import { message } from 'antd';
-import settings from '../../settings';
-
-
-let networkChangeRequest;
-
-
-function switchChain(ethereum){
-
-    ethereum.request({
-        method: 'wallet_switchEthereumChain',
-        params: [{ chainId: settings.CHAIN_ID }],
-    }).then(() => {
-        networkChangeRequest = false;
-    }).catch((error) => {
-        networkChangeRequest = false;
-        message.error(error.message ? error.message : "User did not change the chain");
-    });
-
-}
 
 
 export async function setupEvents(provider) {
     const { provider: ethereum } = provider;
 
     provider.on("error", (error) => {
-
-        if (error.event === "changed" && !networkChangeRequest) {
-            networkChangeRequest = true;
-            switchChain(ethereum);
-        } else if (error.event !== "changed" && error.reason) {
+        if (error.event !== "changed" && error.reason) {
             message.error(error.message);
         }
-
+        console.log(error);
     });
 
     ethereum.on("disconnect", () => {
@@ -39,7 +16,6 @@ export async function setupEvents(provider) {
     })
 
     ethereum.on('chainChanged', () => {
-        switchChain(ethereum);
         window.location.reload();
     });
 
