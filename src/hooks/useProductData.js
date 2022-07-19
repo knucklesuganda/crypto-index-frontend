@@ -1,31 +1,40 @@
-import { useState, useEffect, useRef } from "react";
-import { useIndex } from "./useIndex";
 import settings from "../settings";
+import { useState, useEffect, useRef } from "react";
+import { getNetwork, getProductByAddress } from "../web3/wallet/functions";
 
 
-export function useProductData(productAddress, providerData) {
+export function useProductData(providerData, productAddress) {
     const [productData, setProductData] = useState(null);
-    const index = useIndex(productAddress, providerData);
+    const [product, setProduct] = useState(null);
     const updateInterval = useRef(null);
 
     useEffect(() => {
-        if (providerData === null || index === null) {
+        if(providerData !== null){
+            providerData.provider.getNetwork().then(({ chainId }) => {
+
+                const networkData = getNetwork(chainId);
+                const foundProduct = getProductByAddress(networkData.PRODUCTS);
+                const productInstance = new foundProduct.contract(productAddress, providerData);
+
+                setProduct(productInstance);
+            });
+        }
+
+        if (providerData === null || product === null) {
             return;
         }
 
-        index.getInformation().then(product => {
-            setProductData(product);
-            document.title = `Void | ${product.name}`;
+        product.getInformation().then(productInfo => {
+            setProductData(productInfo);
+            document.title = `Void | ${productInfo.name}`;
         });
 
         updateInterval.current = setInterval(() => {
-            index.getInformation().then((index) => {
-                setProductData(index);
-            });
+            product.getInformation().then((productInfo) => { setProductData(productInfo); });
         }, settings.STATE_UPDATE_INTERVAL);
 
         return () => { clearInterval(updateInterval.current); };
-    }, [providerData, productAddress, index]);
+    }, [providerData, productAddress, product]);
 
-    return { productData, index };
+    return { productData, index: product };
 }

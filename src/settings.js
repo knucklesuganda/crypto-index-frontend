@@ -1,3 +1,10 @@
+import { createProductPage } from "./routes";
+import { ERC20Index } from "./web3/contracts/index/erc20Index";
+import { EtherIndex } from "./web3/contracts/index/etherIndex";
+
+
+const STATIC_STORAGE = "https://voidmanagementstorage.blob.core.windows.net";
+
 
 const settings = {
     DEBUG: false,
@@ -7,7 +14,7 @@ const settings = {
     MEDIUM_LINK: "https://medium.com/@voidmanagement/crypto-revolution-decentralized-index-c05f45a0efb1#",
     BUY_ETH_LINK: "https://www.coinbase.com/price/ethereum",
     DOWNLOAD_WALLET: "https://metamask.io/",
-    STATIC_STORAGE: "https://voidmanagementstorage.blob.core.windows.net",
+    STATIC_STORAGE,
 
     NETWORKS: {
         ETHEREUM: {
@@ -15,18 +22,37 @@ const settings = {
             ID: 1,
             CURRENCY: { name: 'ETHEREUM', decimals: 18, symbol: 'ETH' },
             URLS: [],
+
+            PRODUCTS: [
+                {
+                    image: `${STATIC_STORAGE}/assets/indexBg.png`,
+                    text: 'index.crypto_index',
+                    url: createProductPage('index', '0xDBCFC1Ec8aF08aB1943aD6dEf907BD0f0b7C4fE0'),
+                    contract: ERC20Index,
+                },
+                {
+                    image: `${STATIC_STORAGE}/assets/ethIndexBg.png`,
+                    text: 'index.eth_index',
+                    url: createProductPage('index', '0x7212569605978ce4cC26489611df873706fbc2A1'),
+                    contract: EtherIndex,
+                }
+            ],
         },
         POLYGON: {
             NAME: "Polygon",
             ID: 137,
             CURRENCY: { name: 'MATIC', decimals: 18, symbol: 'MATIC' },
             URLS: ["https://polygon-rpc.com/"],
-        },
-    },
 
-    PRODUCTS: {
-        INDEX_ADDRESS: '0xDBCFC1Ec8aF08aB1943aD6dEf907BD0f0b7C4fE0',
-        ETH_INDEX_ADDRESS: '0x7212569605978ce4cC26489611df873706fbc2A1',
+            PRODUCTS: [
+                {
+                    image: `${STATIC_STORAGE}/assets/indexBg.png`,
+                    text: 'index.safe_token',
+                    url: createProductPage('index', ''),
+                    contract: ERC20Index,
+                }
+            ],
+        },
     },
 };
 

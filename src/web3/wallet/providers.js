@@ -13,14 +13,13 @@ const providerOptions = {
 
 class NoProviderError extends Error { }
 export class NoInitialProviderError extends NoProviderError { }
-export class NotConnectedError extends Error {}
+export class NotConnectedError extends Error { }
 
 
 let signer = null, provider = null;
 let web3Modal = new Web3Modal({
 
     cacheProvider: true,
-    network: "mainnet",
     providerOptions,
 
     theme: {
@@ -34,33 +33,30 @@ let web3Modal = new Web3Modal({
 
 
 export async function connectWallet(initial) {
+    if(signer && provider){
+        return { account: sessionStorage.account, signer, provider };
+    }
 
     let web3ModalProvider;
 
-    try {
-
-        if (initial === true && typeof web3Modal.cachedProvider === "string") {
-
-            try{
-                web3ModalProvider = await web3Modal.connectTo(web3Modal.cachedProvider);
-            }catch(error){
-                throw new NotConnectedError(error.message);
-            }
-
-        } else if (initial === true) {
-            throw new NoProviderError();
+    if (initial === true && (typeof web3Modal.cachedProvider !== "string" || !web3Modal.cachedProvider)) {
+        throw new NoProviderError();
+    } else if (initial === true) {
+        try {
+            web3ModalProvider = await web3Modal.connectTo(web3Modal.cachedProvider);
+        } catch (error) {
+            throw new NotConnectedError(error.message);
         }
-
+    } else {
         web3ModalProvider = await web3Modal.connect();
-    } catch (error) {
-        throw new NoProviderError(error);
     }
 
-    provider = new ethers.providers.Web3Provider(web3ModalProvider);
+    provider = new ethers.providers.Web3Provider(web3ModalProvider, "any");
     signer = provider.getSigner();
     sessionStorage.account = await _getWallet();
 
     window.dispatchEvent(new Event("account_connected"));
+    window.dispatchEvent(new Event("network_changed"));
     setupEvents(provider);
 
     return { account: sessionStorage.account, signer, provider };

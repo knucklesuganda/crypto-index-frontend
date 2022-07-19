@@ -1,12 +1,11 @@
 import { useDesktopQuery, useHalfScreenQuery } from "../../components/MediaQuery";
 import { Row, Col, Typography, Image } from "antd";
-import { useNavigate } from "react-router";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { createProductPage } from "../../routes";
-import settings from "../../settings";
-import { Loading } from "../../components";
 import { useNetwork } from "../../hooks/useNetwork";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router";
+import { Loading } from "../../components";
+import settings from "../../settings";
+import { useState, useEffect } from "react";
 import "./style.css";
 
 
@@ -46,15 +45,18 @@ function ProductCard(props) {
 
 export default function IndexPage() {
     const { t } = useTranslation();
+    const { network } = useNetwork();
     const isDesktop = useDesktopQuery();
     const isHalfScreen = useHalfScreenQuery();
-    const { network } = useNetwork();
+    const currentProducts = network ? network.PRODUCTS : settings.NETWORKS.ETHEREUM.PRODUCTS;
 
-    if(network && network.ID === settings.NETWORKS.POLYGON.ID){
-        document.body.className = 'polygonIndexBackground';
-    }else{
-        document.body.className = 'indexBackground';   
-    }
+    useEffect(() => {
+        if (network && network.ID === settings.NETWORKS.POLYGON.ID) {
+            document.body.className = 'polygonIndexBackground';
+        } else {
+            document.body.className = 'indexBackground';
+        }
+    }, [network]);
 
     return <Col style={{
         display: "flex",
@@ -66,15 +68,11 @@ export default function IndexPage() {
         alignItems: isDesktop ? "flex-start" : "center",
         height: isDesktop ? "80vh" : "inherit",
     }}>
-        <Row style={{ display: "flex", justifyContent: "space-between", width: "80vw" }}>
-            <ProductCard image={`${settings.STATIC_STORAGE}/assets/indexBg.png`}
-                text={t('index.crypto_index')} isDesktop={isDesktop}
-                url={createProductPage('index', settings.PRODUCTS.INDEX_ADDRESS)} />
-
-            <ProductCard image={`${settings.STATIC_STORAGE}/assets/ethIndexBg.png`}
-                text={t('index.eth_index')} isDesktop={isDesktop}
-                url={createProductPage('index', settings.PRODUCTS.ETH_INDEX_ADDRESS)} />
-        </Row>
+        <Row style={{ display: "flex", justifyContent: "space-between", width: "80vw" }}>{
+            currentProducts.map((product, index) => <ProductCard key={index}
+                image={product.image} text={t(product.text)}
+                isDesktop={isDesktop} url={product.url} />)
+        }</Row>
 
         <Row style={{
             fontWeight: "100",

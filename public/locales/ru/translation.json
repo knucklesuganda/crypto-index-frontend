@@ -10,7 +10,8 @@
         "connect_wallet": "Подключитесь",
         "connect_wallet_description": "Подключите кошелек к void менеджмент",
         "change_network": "Смените сеть в вашем кошельке",
-        "same_network": "Вы уже подключены к данной сети"
+        "same_network": "Вы уже подключены к данной сети",
+        "safe_token": "Сейф Токен"
     },
     "index": {
         "crypto_index": "Крипто Индекс",

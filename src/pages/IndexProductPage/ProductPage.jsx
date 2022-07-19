@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useParams } from "react-router";
 import { useTranslation } from "react-i18next";
 import { formatBigNumber } from "../../web3/utils";
@@ -13,8 +14,12 @@ export default function ProductPage() {
     const { t } = useTranslation();
     const { productAddress } = useParams();
     const { providerData, handleWalletConnection } = useProvider();
-    const { productData, index } = useProductData(productAddress, providerData);
-    document.body.className = "";
+    const { productData, product } = useProductData(providerData, productAddress);
+
+    useEffect(() => {
+        document.body.className = "";
+        return () => {};
+    });
 
     if (providerData === null) {
         return <WalletConnector handleWalletConnection={handleWalletConnection} />;
@@ -59,11 +64,11 @@ export default function ProductPage() {
                 </Typography.Title>
             </Row>
 
-            <ProductBuySection product={index} providerData={providerData} productData={productData} />
+            <ProductBuySection product={product} providerData={providerData} productData={productData} />
         </Row>
 
         <Col span={24}>
-            <AnalyticsSection product={index}
+            <AnalyticsSection product={product}
                 providerData={providerData}
                 productAddress={productAddress}
                 productData={productData} />
@@ -73,5 +78,4 @@ export default function ProductPage() {
             <ProductInfo data={t('buy_product.questions')} />
         </Col>
     </Col>;
-
 }

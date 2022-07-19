@@ -35,8 +35,16 @@ export function getNetwork(networkId) {
 }
 
 
-export async function changeNetwork(provider, networkId) {
+export function getProductByAddress(products, address){
+    for (const product of products) {
+        if(product.address === address){
+            return product;
+        }
+    }
+}
 
+
+export async function changeNetwork(provider, networkId) {
     const networkData = getNetwork(networkId);
 
     try {
@@ -49,7 +57,10 @@ export async function changeNetwork(provider, networkId) {
                 nativeCurrency: networkData.CURRENCY,
                 rpcUrls: networkData.URLS,
             }]);
+        }else{
+            throw new Error(error);
         }
-        throw new Error(error);
     }
+
+    window.dispatchEvent(new Event("network_changed"));
 }

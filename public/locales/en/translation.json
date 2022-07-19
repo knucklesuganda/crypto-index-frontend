@@ -18,7 +18,8 @@
         "void": "Void",
         "description": "Buy many tokens in one transaction. Diversify your crypto assets.",
         "read_medium": "Read about us on Medium",
-        "whitepaper": "Whitepaper"
+        "whitepaper": "Whitepaper",
+        "safe_token": "Safe Token"
     },
     "buy_product": {
         "token_buy": "Buy",
