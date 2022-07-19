@@ -9,32 +9,33 @@ export function useProductData(providerData, productAddress) {
     const updateInterval = useRef(null);
 
     useEffect(() => {
-        if(providerData !== null){
-            providerData.provider.getNetwork().then(({ chainId }) => {
+        if(!providerData){
+            return () => {};
+        }
 
+        if(!product){
+            providerData.provider.getNetwork().then(({ chainId }) => {
                 const networkData = getNetwork(chainId);
                 const foundProduct = getProductByAddress(networkData.PRODUCTS);
-                const productInstance = new foundProduct.contract(productAddress, providerData);
 
+                if(!foundProduct){ return () => {}; }
+
+                const productInstance = new foundProduct.contract(productAddress, providerData);
                 setProduct(productInstance);
             });
+        }else{
+            product.getInformation().then(productInfo => {
+                setProductData(productInfo);
+                document.title = `Void | ${productInfo.name}`;
+            });
+
+            updateInterval.current = setInterval(() => {
+                product.getInformation().then((productInfo) => { setProductData(productInfo); });
+            }, settings.STATE_UPDATE_INTERVAL);
         }
-
-        if (providerData === null || product === null) {
-            return;
-        }
-
-        product.getInformation().then(productInfo => {
-            setProductData(productInfo);
-            document.title = `Void | ${productInfo.name}`;
-        });
-
-        updateInterval.current = setInterval(() => {
-            product.getInformation().then((productInfo) => { setProductData(productInfo); });
-        }, settings.STATE_UPDATE_INTERVAL);
 
         return () => { clearInterval(updateInterval.current); };
     }, [providerData, productAddress, product]);
 
-    return { productData, index: product };
+    return { productData, product };
 }

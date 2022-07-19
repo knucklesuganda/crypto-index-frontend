@@ -16,24 +16,22 @@ function AnalyticsText(props) {
 
 
 export function AnalyticsSection(props) {
-    const { productData, productAddress, product, providerData } = props;
+    const { productData, product, providerData } = props;
     const [productComponents, setProductComponents] = useState(null);
     const isMobile = useMobileQuery();
     const { t } = useTranslation();
 
     useEffect(() => {
-        if (isMobile) {
-            setProductComponents({ ratioData: [], priceData: [] });
-        } else {
+        if (product) {
             product.getComponents().then(components => {
                 setProductComponents(components);
             });
         }
 
-        return () => { };
-    }, [productAddress, product, isMobile]);
+        return () => {};
+    }, [product]);
 
-    if (productData === null || productComponents === null) {
+    if (!productData || !productComponents) {
         return <Loading />;
     }
 

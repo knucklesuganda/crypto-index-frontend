@@ -1,4 +1,3 @@
-import settings from "../../../settings";
 import { useState, useRef } from 'react';
 import { useTranslation } from "react-i18next";
 import { addTokenNotification, TokenInput } from "../../../components";
@@ -10,6 +9,7 @@ import {
     DebtExceededError, LiquidityError, NoTokensError,
     ProductSettlementError, BalanceError, AmountError,
 } from "../../../web3/contracts/index/index";
+import { useNetwork } from "../../../hooks/useNetwork";
 
 
 function DebtSection(props) {
@@ -138,6 +138,7 @@ function createProductAlert(name) {
 
 
 export function ProductBuySection(props) {
+    const { network } = useNetwork();
     const { providerData, productData, product } = props;
     const [inProgress, setInProgress] = useState(false);
     const [operationType, setOperationType] = useState(true);
@@ -239,7 +240,7 @@ export function ProductBuySection(props) {
                         </Typography.Text> :
 
                         <Typography.Link style={{ fontSize: "1.1em", textDecoration: "underline" }}
-                            type="success" href={settings.BUY_DAI_LINK} target="_blank">
+                            type="success" href={network.BUY_TOKEN_LINK} target="_blank">
 
                             {t("buy_product.token_buy")} {productData.buyToken.symbol} {t("buy_product.token_buy_here")}
                         </Typography.Link>}

@@ -87,11 +87,15 @@ export default function IndexPage() {
 
             {isDesktop ? <Text style={{ fontSize: "2em" }}>{t("index.description")}</Text> : null}
 
-            <Link style={{ fontSize: "1.5em", marginBottom: "0.5em" }} href={settings.MEDIUM_LINK}>
-                {t("index.read_medium")}</Link>
+            <Link style={{
+                textDecoration: "underline",
+                color: "white", 
+                fontSize: "1.5em",
+                marginBottom: "0.5em",
+            }} href={network.MEDIUM_LINK}>{t("index.read_medium")}</Link>
 
-            <Link style={{ fontSize: "1.5em", background: "black" }} href='/whitepaper.pdf'>
-                {t("index.whitepaper")}</Link>
+            <Link style={{ textDecoration: "underline", color: "white", fontSize: "1.5em" }}
+                href={network.WHITEPAPER}>{t("index.whitepaper")}</Link>
         </Row>
 
     </Col>;

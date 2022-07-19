@@ -9,3 +9,8 @@ body {
     width: 100vw;
     height: 100%;
 }
+
+
+.web3modal-modal-lightbox{
+    z-index: 100;
+}

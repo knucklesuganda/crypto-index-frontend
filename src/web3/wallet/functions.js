@@ -56,6 +56,7 @@ export async function changeNetwork(provider, networkId) {
                 chainId: hexValue(networkData.ID),
                 nativeCurrency: networkData.CURRENCY,
                 rpcUrls: networkData.URLS,
+                blockExplorerUrls: networkData.EXPLORERS,
             }]);
         }else{
             throw new Error(error);

@@ -2,13 +2,12 @@ import { clearProvider, connectWallet } from "../../web3/wallet/providers";
 import { Col, Row, Dropdown, Menu, Typography, message } from "antd";
 import { changeNetwork } from "../../web3/wallet/functions";
 import { useNetwork } from '../../hooks/useNetwork';
-import { DownOutlined } from '@ant-design/icons';
+import { EthereumLogo } from "./logos/EthereumLogo";
+import { PolygonLogo } from "./logos/PolygonLogo";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
-import { EthereumLogo } from "./logos/EthereumLogo";
 import settings from '../../settings';
 import "./style.css";
-import { PolygonLogo } from "./logos/PolygonLogo";
 
 
 function NetworkLabel(props){
@@ -53,10 +52,7 @@ function NetworkPicker(props) {
         }} />
     }>
         <Col className="user_account_button" style={{ marginRight: "1em" }}>
-            <Typography.Text style={{ fontSize: "1.2em", paddingLeft: "0.5em", paddingRight: "0.5em" }}>
-                {network ? network.NAME : null}
-            </Typography.Text>
-            <DownOutlined />
+            <NetworkLabel text={network.NAME} icon={network.ID === 1 ? <EthereumLogo /> : <PolygonLogo />} />
         </Col>
     </Dropdown>;
 }
@@ -67,10 +63,7 @@ export function UserAccount() {
     const { t } = useTranslation();
 
     const handleWalletConnection = () => {
-        connectWallet().catch(() => {
-            message.error(t("accept_wallet"));
-        });
-        message.info(t("accept_wallet"));
+        connectWallet().catch(() => { message.error(t("accept_wallet")); });
     };
 
     useEffect(() => {

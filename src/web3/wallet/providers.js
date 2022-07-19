@@ -7,7 +7,12 @@ import settings from "../../settings";
 const providerOptions = {
     walletconnect: {
         package: window.WalletConnectProvider.default,
-        options: { rpc: { 1: settings.PUBLIC_RPC_URL } },
+        options: {
+            rpc: {
+                1: settings.NETWORKS.ETHEREUM.URLS,
+                137: settings.NETWORKS.POLYGON.URLS,
+            },
+        },
     }
 };
 
@@ -27,13 +32,14 @@ let web3Modal = new Web3Modal({
         main: "#ffffff",
         secondary: "#177ddc",
         border: "#a0a0a0",
-        hover: "#272323"
+        hover: "#272323",
     },
 });
 
 
 export async function connectWallet(initial) {
-    if(signer && provider){
+    if(signer !== null && provider !== null){
+        window.dispatchEvent(new Event("account_connected"));
         return { account: sessionStorage.account, signer, provider };
     }
 

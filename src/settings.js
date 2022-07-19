@@ -9,11 +9,8 @@ const STATIC_STORAGE = "https://voidmanagementstorage.blob.core.windows.net";
 const settings = {
     DEBUG: false,
     STATE_UPDATE_INTERVAL: 10000,
-    PUBLIC_RPC_URL: "https://eth-mainnet.alchemyapi.io/v2/KQmEoXn9kKfPL4AAljiW1XV39HRHff_K",
-    BUY_DAI_LINK: "https://app.uniswap.org/#/swap?inputCurrency=0x6b175474e89094c44da98b954eedeac495271d0f&outputCurrency=0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2&chain=mainnet",
-    MEDIUM_LINK: "https://medium.com/@voidmanagement/crypto-revolution-decentralized-index-c05f45a0efb1#",
-    BUY_ETH_LINK: "https://www.coinbase.com/price/ethereum",
     DOWNLOAD_WALLET: "https://metamask.io/",
+    BUY_ETH_LINK: "https://www.coinbase.com/price/ethereum",
     STATIC_STORAGE,
 
     NETWORKS: {
@@ -21,7 +18,8 @@ const settings = {
             NAME: "Ethereum",
             ID: 1,
             CURRENCY: { name: 'ETHEREUM', decimals: 18, symbol: 'ETH' },
-            URLS: [],
+            URLS: ["https://eth-mainnet.alchemyapi.io/v2/KQmEoXn9kKfPL4AAljiW1XV39HRHff_K"],
+            EXPLORERS: ["https://etherscan.io"],
 
             PRODUCTS: [
                 {
@@ -37,12 +35,17 @@ const settings = {
                     contract: EtherIndex,
                 }
             ],
+
+            BUY_TOKEN_LINK: "https://app.uniswap.org/#/swap?inputCurrency=0x6b175474e89094c44da98b954eedeac495271d0f&outputCurrency=0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2&chain=mainnet",
+            MEDIUM_LINK: "https://medium.com/@voidmanagement/crypto-revolution-decentralized-index-c05f45a0efb1#",
+            WHITEPAPER: '/whitepaper.pdf',
         },
         POLYGON: {
             NAME: "Polygon",
             ID: 137,
             CURRENCY: { name: 'MATIC', decimals: 18, symbol: 'MATIC' },
             URLS: ["https://polygon-rpc.com/"],
+            EXPLORERS: ["https://polygonscan.com"],
 
             PRODUCTS: [
                 {
@@ -52,6 +55,10 @@ const settings = {
                     contract: ERC20Index,
                 }
             ],
+
+            BUY_TOKEN_LINK: "https://app.uniswap.org/#/swap?inputCurrency=0x6b175474e89094c44da98b954eedeac495271d0f&outputCurrency=0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2&chain=mainnet",
+            MEDIUM_LINK: "https://medium.com/@voidmanagement/crypto-revolution-decentralized-index-c05f45a0efb1#",
+            WHITEPAPER: '/whitepaper.pdf',
         },
     },
 };

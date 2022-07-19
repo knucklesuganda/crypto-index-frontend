@@ -1,28 +1,34 @@
 import { useEffect } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useTranslation } from "react-i18next";
 import { formatBigNumber } from "../../web3/utils";
 import { OnlyDesktop } from "../../components/MediaQuery";
 import { useProvider, useProductData } from "../../hooks";
 import { Loading, WalletConnector } from "../../components";
-import { addTokenToWallet } from "../../web3/wallet/functions";
+import { addTokenToWallet, getProductByAddress } from "../../web3/wallet/functions";
 import { Col, Row, Divider, Typography, message } from "antd";
 import { AnalyticsSection, ProductBuySection, ProductInfo } from "./sections";
+import { useNetwork } from "../../hooks/useNetwork";
+import { INDEX_PAGE } from "../../routes";
 
 
 export default function ProductPage() {
     const { t } = useTranslation();
+    const { network } = useNetwork();
     const { productAddress } = useParams();
     const { providerData, handleWalletConnection } = useProvider();
     const { productData, product } = useProductData(providerData, productAddress);
+    const navigate = useNavigate();
 
     useEffect(() => {
         document.body.className = "";
-        return () => {};
+        return () => { };
     });
 
     if (providerData === null) {
         return <WalletConnector handleWalletConnection={handleWalletConnection} />;
+    } else if (getProductByAddress(network.PRODUCTS, productAddress) === null) {
+        navigate(INDEX_PAGE);
     } else if (productData === null) {
         return <Loading />;
     }
