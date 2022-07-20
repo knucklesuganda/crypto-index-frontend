@@ -10,7 +10,7 @@ import settings from '../../settings';
 import "./style.css";
 
 
-function NetworkLabel(props){
+function NetworkLabel(props) {
     return <Row style={{ display: "flex", justifyContent: "space-between", alignContent: "center" }}>
         <Typography.Text style={{ marginRight: "0.5em", fontSize: "1.2em" }}>{props.text}</Typography.Text>
         {props.icon}
@@ -18,9 +18,9 @@ function NetworkLabel(props){
 }
 
 
-function NetworkPicker(props) {
+function NetworkPicker() {
     const { t } = useTranslation();
-    const { network, provider } = useNetwork();
+    const { network, provider, changeNetworkParam } = useNetwork();
 
     return <Dropdown placement="bottom" trigger={['click']} overlay={
         <Menu items={[
@@ -34,14 +34,12 @@ function NetworkPicker(props) {
                 key: settings.NETWORKS.POLYGON.ID,
             },
         ]} onClick={(data) => {
-            if (provider === null) {
-                return props.walletConnectHandler();
-            }
-
             const networkId = parseInt(data.key);
 
             if (network.ID === networkId) {
                 message.error(t("wallet.same_network"));
+            } else if (!provider) {
+                changeNetworkParam(data.key);
             } else {
                 message.info(t("wallet.change_network"));
 
@@ -49,9 +47,10 @@ function NetworkPicker(props) {
                     message.error(t("wallet.change_network"));
                 });
             }
+
         }} />
     }>
-        <Col className="user_account_button" style={{ marginRight: "1em" }}>
+        <Col className="bordered_button" style={{ marginRight: "1em" }}>
             <NetworkLabel text={network.NAME} icon={network.ID === 1 ? <EthereumLogo /> : <PolygonLogo />} />
         </Col>
     </Dropdown>;
@@ -73,9 +72,9 @@ export function UserAccount() {
     }, [setIsLoggedIn]);
 
     return <Row>
-        <NetworkPicker walletConnectHandler={() => { handleWalletConnection(); }} />
+        <NetworkPicker />
 
-        <Col className="user_account_button" onClick={() => {
+        <Col className="bordered_button" onClick={() => {
             if (isLoggedIn) {
                 clearProvider();
                 window.location.reload();

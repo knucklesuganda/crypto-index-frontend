@@ -10,8 +10,7 @@
         "connect_wallet": "Подключитесь",
         "connect_wallet_description": "Подключите кошелек к void менеджмент",
         "change_network": "Смените сеть в вашем кошельке",
-        "same_network": "Вы уже подключены к данной сети",
-        "safe_token": "Сейф Токен"
+        "same_network": "Вы уже подключены к данной сети"
     },
     "index": {
         "crypto_index": "Крипто Индекс",
@@ -19,7 +18,8 @@
         "void": "Void",
         "description": "Покупайте много токенов в одной транзакции. Диверсифицируйте",
         "read_medium": "Прочитайте нашу статью на Медиум",
-        "whitepaper": "Белая Книга(Whitepaper)"
+        "whitepaper": "Белая Книга(Whitepaper)",
+        "safe_token": "Сейф Токен"
     },
     "buy_product": {
         "token_buy": "Купите",

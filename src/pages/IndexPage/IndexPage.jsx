@@ -1,12 +1,13 @@
 import { useDesktopQuery, useHalfScreenQuery } from "../../components/MediaQuery";
-import { Row, Col, Typography, Image } from "antd";
+import { Row, Col, Typography, Image, message } from "antd";
 import { useNetwork } from "../../hooks/useNetwork";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { Loading } from "../../components";
 import settings from "../../settings";
 import { useState, useEffect } from "react";
 import "./style.css";
+import { changeNetwork, getNetwork } from "../../web3/wallet/functions";
 
 
 const { Text, Link } = Typography;
@@ -89,7 +90,7 @@ export default function IndexPage() {
 
             <Link style={{
                 textDecoration: "underline",
-                color: "white", 
+                color: "white",
                 fontSize: "1.5em",
                 marginBottom: "0.5em",
             }} href={network.MEDIUM_LINK}>{t("index.read_medium")}</Link>

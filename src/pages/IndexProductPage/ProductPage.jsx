@@ -22,7 +22,7 @@ export default function ProductPage() {
 
     useEffect(() => {
         document.body.className = "";
-        return () => { };
+        return () => {};
     });
 
     if (providerData === null) {

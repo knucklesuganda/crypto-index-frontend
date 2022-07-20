@@ -1,4 +1,4 @@
-import { createProductPage } from "./routes";
+import { createIndexProductPage, createSafeTokenPage } from "./routes";
 import { ERC20Index } from "./web3/contracts/index/erc20Index";
 import { EtherIndex } from "./web3/contracts/index/etherIndex";
 
@@ -25,13 +25,13 @@ const settings = {
                 {
                     image: `${STATIC_STORAGE}/assets/indexBg.png`,
                     text: 'index.crypto_index',
-                    url: createProductPage('index', '0xDBCFC1Ec8aF08aB1943aD6dEf907BD0f0b7C4fE0'),
+                    url: createIndexProductPage('0xDBCFC1Ec8aF08aB1943aD6dEf907BD0f0b7C4fE0'),
                     contract: ERC20Index,
                 },
                 {
                     image: `${STATIC_STORAGE}/assets/ethIndexBg.png`,
                     text: 'index.eth_index',
-                    url: createProductPage('index', '0x7212569605978ce4cC26489611df873706fbc2A1'),
+                    url: createIndexProductPage('0x7212569605978ce4cC26489611df873706fbc2A1'),
                     contract: EtherIndex,
                 }
             ],
@@ -51,12 +51,12 @@ const settings = {
                 {
                     image: `${STATIC_STORAGE}/assets/indexBg.png`,
                     text: 'index.safe_token',
-                    url: createProductPage('index', ''),
+                    url: createSafeTokenPage('0xF823b07A9b98546bF2581E3FFDF4c907c110ceB6'),
                     contract: ERC20Index,
                 }
             ],
 
-            BUY_TOKEN_LINK: "https://app.uniswap.org/#/swap?inputCurrency=0x6b175474e89094c44da98b954eedeac495271d0f&outputCurrency=0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2&chain=mainnet",
+            BUY_TOKEN_LINK: "https://app.uniswap.org/#/swap&chain=polygon",
             MEDIUM_LINK: "https://medium.com/@voidmanagement/crypto-revolution-decentralized-index-c05f45a0efb1#",
             WHITEPAPER: '/whitepaper.pdf',
         },

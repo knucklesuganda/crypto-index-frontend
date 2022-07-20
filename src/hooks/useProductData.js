@@ -9,8 +9,10 @@ export function useProductData(providerData, productAddress) {
     const updateInterval = useRef(null);
 
     useEffect(() => {
+        const cleanupFunction = () => { clearInterval(updateInterval.current); };
+
         if(!providerData){
-            return () => {};
+            return cleanupFunction;
         }
 
         if(!product){
@@ -18,7 +20,9 @@ export function useProductData(providerData, productAddress) {
                 const networkData = getNetwork(chainId);
                 const foundProduct = getProductByAddress(networkData.PRODUCTS);
 
-                if(!foundProduct){ return () => {}; }
+                if(!foundProduct){
+                    return cleanupFunction;
+                }
 
                 const productInstance = new foundProduct.contract(productAddress, providerData);
                 setProduct(productInstance);
@@ -34,7 +38,7 @@ export function useProductData(providerData, productAddress) {
             }, settings.STATE_UPDATE_INTERVAL);
         }
 
-        return () => { clearInterval(updateInterval.current); };
+        return cleanupFunction;
     }, [providerData, productAddress, product]);
 
     return { productData, product };
