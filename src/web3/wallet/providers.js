@@ -1,7 +1,8 @@
 import Web3Modal from "web3modal";
 import { ethers } from "ethers";
-import { setupEvents } from "./events";
+import { setupEvents } from "./event_handlers";
 import settings from "../../settings";
+import { NetworkChanged, WalletConnected } from "./events";
 
 
 const providerOptions = {
@@ -39,7 +40,7 @@ let web3Modal = new Web3Modal({
 
 export async function connectWallet(initial) {
     if(signer !== null && provider !== null){
-        window.dispatchEvent(new Event("account_connected"));
+        window.dispatchEvent(new WalletConnected());
         return { account: sessionStorage.account, signer, provider };
     }
 
@@ -61,8 +62,8 @@ export async function connectWallet(initial) {
     signer = provider.getSigner();
     sessionStorage.account = await _getWallet();
 
-    window.dispatchEvent(new Event("account_connected"));
-    window.dispatchEvent(new Event("network_changed"));
+    window.dispatchEvent(new WalletConnected());
+    window.dispatchEvent(new NetworkChanged());
     setupEvents(provider);
 
     return { account: sessionStorage.account, signer, provider };
@@ -78,6 +79,6 @@ export async function clearProvider() {
 }
 
 
-export async function _getWallet() {
+async function _getWallet() {
     return (await provider.listAccounts())[0];
 }

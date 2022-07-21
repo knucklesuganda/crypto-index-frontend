@@ -1,44 +1,49 @@
-import { useLocation, useNavigate } from "react-router";
-import { getNetwork } from "../web3/wallet/functions";
-import { connectWallet } from "../web3/wallet/providers";
-import { useEffect, useState } from "react";
+import { changeNetwork, getNetwork } from "../web3/wallet/functions";
+import { NetworkChanged, connectWallet } from "../web3/wallet";
+import { useEffect, useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router";
 import settings from "../settings";
 
 
-function getChainParameter(){
+export function getChainParameter(){
     const searchParams = new URLSearchParams(window.location.search);
     return parseInt(searchParams.get('chain'));
 }
 
 
 export function useNetwork() {
-    const [network, setNetwork] = useState(settings.NETWORKS.ETHEREUM);
-    const [provider, setProvider] = useState(null);
+    const [network, setNetwork] = useState(getNetwork(getChainParameter()));
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
-    function changeNetworkParam(chainId){
+    const changeNetworkParam = useCallback((chainId) => {
+
         const searchParams = new URLSearchParams(window.location.search);
         searchParams.set("chain", chainId);
-        window.dispatchEvent(new Event("network_changed"));
+        window.dispatchEvent(new NetworkChanged());
         navigate({ pathname: window.location.pathname, search: searchParams.toString() }, { replace: true });
-    }
 
-    const networkChangeEvent = () => {
+    }, [navigate]);
+
+    const networkChangeEvent = useCallback(() => {
         connectWallet(true).then(({ provider }) => {
-            setProvider(provider);
-
             provider.getNetwork().then(({ chainId }) => {
                 const chainParameter = getChainParameter();
 
                 if(chainId !== chainParameter){
-                    changeNetworkParam(chainId);
+                    changeNetwork(provider, chainParameter).catch(() => {});
+                    chainId = chainParameter;
                 }
 
                 setNetwork(getNetwork(chainId));
             });
 
-        }).catch(() => {});
-    };
+        }).catch(() => {
+            const chainParameter = getChainParameter();
+            setNetwork(getNetwork(chainParameter));
+        });
+    }, []);
 
     useEffect(() => {
         let chainParameter = getChainParameter();
@@ -48,14 +53,12 @@ export function useNetwork() {
             changeNetworkParam(chainParameter);
         }
 
-        const networkData = getNetwork(chainParameter);
-        setNetwork(networkData);
-
-        window.addEventListener("network_changed", networkChangeEvent);
+        setNetwork(getNetwork(chainParameter));
+        window.addEventListener((new NetworkChanged()).type, networkChangeEvent);
         networkChangeEvent();
 
-        return () => { window.removeEventListener("network_changed", networkChangeEvent); }
-    }, [window.location.search, provider]);
+        return () => { window.removeEventListener((new NetworkChanged()).type, networkChangeEvent); }
+    }, [changeNetworkParam, networkChangeEvent]);
 
-    return { network, provider, changeNetworkParam };
+    return { network, changeNetworkParam };
 }

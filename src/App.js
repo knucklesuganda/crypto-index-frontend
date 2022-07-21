@@ -6,7 +6,7 @@ import { INDEX_PAGE, INDEX_PRODUCT_PAGE, SAFETOKEN_PRODUCT_PAGE } from "./routes
 import ProductPage from './pages/IndexProductPage/ProductPage';
 import SafeTokenPage from "./pages/SafeTokenPage/SafeTokenPage";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { unsetEvents } from "./web3/wallet/events";
+import { unsetEvents } from "./web3/wallet/event_handlers";
 import 'antd/dist/antd.min.css';
 import 'antd/dist/antd.dark.min.css';
 import "./App.css";
@@ -16,9 +16,7 @@ function App() {
     document.title = "Void";
 
     useEffect(() => {
-        return () => {
-            unsetEvents();
-        }
+        return () => { unsetEvents() };
     });
 
     return <Suspense fallback={<Loading />}>

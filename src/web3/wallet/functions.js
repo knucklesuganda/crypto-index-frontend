@@ -3,6 +3,9 @@ import { hexValue } from "ethers/lib/utils";
 import settings from "../../settings";
 
 
+export class AlreadySendError extends Error {}
+
+
 export async function addTokenToWallet(provider, token) {
     let symbol = token.symbol;
 
@@ -58,10 +61,10 @@ export async function changeNetwork(provider, networkId) {
                 rpcUrls: networkData.URLS,
                 blockExplorerUrls: networkData.EXPLORERS,
             }]);
+        }else if(error.code === -32002){
+            throw new AlreadySendError();
         }else{
-            throw new Error(error);
+            throw error;
         }
     }
-
-    window.dispatchEvent(new Event("network_changed"));
 }

@@ -1,6 +1,5 @@
-import { clearProvider, connectWallet } from "../../web3/wallet/providers";
+import { clearProvider, connectWallet, WalletConnected } from "../../web3/wallet";
 import { Col, Row, Dropdown, Menu, Typography, message } from "antd";
-import { changeNetwork } from "../../web3/wallet/functions";
 import { useNetwork } from '../../hooks/useNetwork';
 import { EthereumLogo } from "./logos/EthereumLogo";
 import { PolygonLogo } from "./logos/PolygonLogo";
@@ -20,7 +19,7 @@ function NetworkLabel(props) {
 
 function NetworkPicker() {
     const { t } = useTranslation();
-    const { network, provider, changeNetworkParam } = useNetwork();
+    const { network, changeNetworkParam } = useNetwork();
 
     return <Dropdown placement="bottom" trigger={['click']} overlay={
         <Menu items={[
@@ -38,16 +37,9 @@ function NetworkPicker() {
 
             if (network.ID === networkId) {
                 message.error(t("wallet.same_network"));
-            } else if (!provider) {
-                changeNetworkParam(data.key);
-            } else {
-                message.info(t("wallet.change_network"));
-
-                changeNetwork(provider, networkId).catch(() => {
-                    message.error(t("wallet.change_network"));
-                });
+            } else{
+                changeNetworkParam(networkId);
             }
-
         }} />
     }>
         <Col className="bordered_button" style={{ marginRight: "1em" }}>
@@ -67,8 +59,8 @@ export function UserAccount() {
 
     useEffect(() => {
         const accountConnected = (_) => { setIsLoggedIn(true); };
-        window.addEventListener('account_connected', accountConnected, false);
-        return () => { window.removeEventListener('account_connected', accountConnected); };
+        window.addEventListener(new WalletConnected().type, accountConnected, false);
+        return () => { window.removeEventListener(new WalletConnected().type, accountConnected); };
     }, [setIsLoggedIn]);
 
     return <Row>
@@ -83,7 +75,8 @@ export function UserAccount() {
             }
         }}>
             <Typography.Text style={{ fontSize: "1.2em" }}>
-                {isLoggedIn ? `${t("logout")} ${sessionStorage.account.slice(0, 15)}...` : 'Connect wallet'}
+                { isLoggedIn ? `${t("logout")} ${sessionStorage.account.slice(0, 15)}...` : 
+                    t('wallet_connector.connect_wallet')}
             </Typography.Text>
         </Col>
     </Row>;

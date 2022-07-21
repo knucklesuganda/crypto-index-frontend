@@ -1,24 +1,8 @@
-import { message } from 'antd';
 
-
-function errorEventListener(error) {
-    if (error.event !== "changed" && error.reason) {
-        message.error(error.message);
-    }
+export class WalletConnected extends Event{
+    constructor(){ super("wallet_connected"); }
 }
 
-function disconnectEventListener(){ window.location.reload(); }
-function chainChangedEventListener(){
-    message.info("Chain was changed");
-    window.dispatchEvent(new Event("account_connected"));
+export class NetworkChanged extends Event{
+    constructor() { super("network_changed"); }
 }
-
-
-export function setupEvents(provider) {
-    provider.on("error", errorEventListener);
-    provider.on("disconnect", disconnectEventListener);
-    provider.on('chainChanged', chainChangedEventListener);
-    provider.on('accountsChanged', disconnectEventListener);
-}
-
-export function unsetEvents() { window.ethereum.removeAllListeners(); }

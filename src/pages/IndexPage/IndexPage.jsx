@@ -1,13 +1,13 @@
 import { useDesktopQuery, useHalfScreenQuery } from "../../components/MediaQuery";
-import { Row, Col, Typography, Image, message } from "antd";
+import { Row, Col, Typography, Image } from "antd";
 import { useNetwork } from "../../hooks/useNetwork";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { Loading } from "../../components";
 import settings from "../../settings";
 import { useState, useEffect } from "react";
 import "./style.css";
-import { changeNetwork, getNetwork } from "../../web3/wallet/functions";
+import { NetworkChanged } from "../../web3/wallet";
 
 
 const { Text, Link } = Typography;
@@ -49,14 +49,23 @@ export default function IndexPage() {
     const { network } = useNetwork();
     const isDesktop = useDesktopQuery();
     const isHalfScreen = useHalfScreenQuery();
-    const currentProducts = network ? network.PRODUCTS : settings.NETWORKS.ETHEREUM.PRODUCTS;
+    const [currentProducts, setCurrentProducts] = useState(settings.NETWORKS.ETHEREUM.PRODUCTS);
 
     useEffect(() => {
-        if (network && network.ID === settings.NETWORKS.POLYGON.ID) {
-            document.body.className = 'polygonIndexBackground';
-        } else {
-            document.body.className = 'indexBackground';
-        }
+        setCurrentProducts(network.PRODUCTS);
+
+        const changeBackground = () => {
+            if (network && network.ID === settings.NETWORKS.POLYGON.ID) {
+                document.body.className = 'polygonIndexBackground';
+            } else {
+                document.body.className = 'indexBackground';
+            }
+        };
+
+        changeBackground();
+        window.addEventListener((new NetworkChanged()).type, changeBackground);
+
+        return () => { window.removeEventListener((new NetworkChanged()).type, changeBackground); };
     }, [network]);
 
     return <Col style={{
