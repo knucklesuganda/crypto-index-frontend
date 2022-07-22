@@ -26,7 +26,7 @@ export function useProductData(providerData, productAddress) {
 
                 const productInstance = new foundProduct.contract(productAddress, providerData);
                 setProduct(productInstance);
-            });
+            }).catch();
         }else{
             product.getInformation().then(productInfo => {
                 setProductData(productInfo);

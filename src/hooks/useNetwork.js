@@ -1,7 +1,6 @@
 import { changeNetwork, getNetwork } from "../web3/wallet/functions";
 import { NetworkChanged, connectWallet } from "../web3/wallet";
 import { useEffect, useCallback, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import settings from "../settings";
 
@@ -15,7 +14,6 @@ export function getChainParameter(){
 export function useNetwork() {
     const [network, setNetwork] = useState(getNetwork(getChainParameter()));
     const navigate = useNavigate();
-    const { t } = useTranslation();
 
     const changeNetworkParam = useCallback((chainId) => {
 
@@ -37,7 +35,7 @@ export function useNetwork() {
                 }
 
                 setNetwork(getNetwork(chainId));
-            });
+            }).cathc(() => {});
 
         }).catch(() => {
             const chainParameter = getChainParameter();

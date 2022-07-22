@@ -42,16 +42,17 @@ const settings = {
         },
         POLYGON: {
             NAME: "Polygon",
-            ID: 137,
+            ID: 1337,
             CURRENCY: { name: 'MATIC', decimals: 18, symbol: 'MATIC' },
-            URLS: ["https://polygon-rpc.com/"],
+            URLS: ['127.0.0.1:8545'],
+            // URLS: ["https://polygon-rpc.com/"],
             EXPLORERS: ["https://polygonscan.com"],
 
             PRODUCTS: [
                 {
                     image: `${STATIC_STORAGE}/assets/indexBg.png`,
                     text: 'index.safe_token',
-                    url: createSafeTokenPage('0xF823b07A9b98546bF2581E3FFDF4c907c110ceB6'),
+                    url: createSafeTokenPage('0xF8cC94BCDe449e1a8F0E34717acd823fF8402b07'),
                     contract: ERC20Index,
                 }
             ],
