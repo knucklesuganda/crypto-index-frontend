@@ -1,9 +1,9 @@
 import { Row, Col, Typography, Form, Button, message, Statistic, Progress } from "antd";
 import { SafeMinter } from "../../web3/contracts/safe_token/SafeMinter";
-import { getMaticPrice } from "../../web3/contracts/safe_token/functions";
+import { getSafeTokenMintPrice } from "../../web3/contracts/safe_token/functions";
 import { getChainParameter, useNetwork } from "../../hooks/useNetwork";
 import { Loading, TokenInput, WalletConnector } from "../../components";
-import { bigNumberToString } from "../../web3/utils";
+import { bigNumberToNumber, convertToEther } from "../../web3/utils";
 import Countdown from "antd/lib/statistic/Countdown";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -27,7 +27,7 @@ export default function SafeTokenPage() {
         //     message.info(t("wallet.change_network"));
         // }
 
-        getMaticPrice().then((price) => { setTokenPrice(price) });
+        getSafeTokenMintPrice().then((price) => { setTokenPrice(price) });
         document.body.className = "";
         document.title = `Void | ${t("index.safe_token")}`;
 
@@ -60,8 +60,16 @@ export default function SafeTokenPage() {
             <Typography.Title level={2} style={{ fontWeight: "100" }}>{t("index.safe_token")}</Typography.Title>
 
             <Form>
-                <TokenInput useAddon inputRef={inputRef} productPrice={1} prefixSymbol="SAFE"
-                    postfixSymbol="ETH" maxValue="" minValue="1" />
+                {tokenPrice === 0 ? <Loading /> :
+                    <TokenInput useAddon
+                        inputRef={inputRef}
+                        productPrice={tokenPrice}
+                        pricePrecision={1}
+                        prefixSymbol="SAFE"
+                        postfixSymbol="USD"
+                        minValue={1}
+                        maxValue={safeTokenData === null ? '0' : safeTokenData.mintSupply} />
+                }
 
                 <Form.Item style={{ marginTop: 0 }}>
                     <Button htmlType="submit" style={{ width: "100%" }} title="Buy SAFE Token" type="primary">
@@ -116,32 +124,44 @@ export default function SafeTokenPage() {
                     {safeTokenData === null ? <Loading /> : <Fragment>
 
                         <Row style={{ display: "flex", justifyContent: "space-between" }}>
-                            <Statistic title="Total supply / Max supply" 
-                                value={bigNumberToString(safeTokenData.totalSupply)}
-                                suffix={`/ ${bigNumberToString(safeTokenData.mintSupply)} SAFE`} />
+                            <Statistic title="Total supply / Max supply"
+                                value={bigNumberToNumber(safeTokenData.totalSupply)}
+                                suffix={`/ ${bigNumberToNumber(safeTokenData.mintSupply)} SAFE`} />
 
-                            <Statistic title="Mint price(10 MATIC = 1 SAFE)" 
-                                value={tokenPrice * 10} suffix="$" style={{ textAlign: "end" }} />
+                            <Statistic title="Mint price(10 MATIC = 1 SAFE)"
+                                value={bigNumberToNumber(tokenPrice, 8)} suffix="$" style={{ textAlign: "end" }} />
                         </Row>
 
                         <Row style={{ marginTop: "1em", display: "flex", justifyContent: "space-between" }}>
-                            <Statistic title="Tokens left to use" value={10} suffix="SAFE" />
-                            <Countdown title="Next reset" value={safeTokenData.nextReset} format="HH:mm:ss"
+                            <Statistic title="Max transfer percentage" value={safeTokenData.maxTransferPercentage}
+                                suffix="%" />
+                            <Countdown title="Next reset" value={safeTokenData.nextResetTime} format="HH:mm:ss"
                                 style={{ textAlign: "end" }} />
                         </Row>
 
-                        <Col style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                            <Typography.Text style={{ color: "#737373", maringBottom: "2em" }}>
-                                Your daily usage limit
-                            </Typography.Text>
+                        <Row style={{ display: "flex", alignItems: "center", justifyContent: "space-around" }}>
+                            <Progress type="circle" width={250}
+                                percent={safeTokenData.userLeftPercentage}
+                                strokeColor={safeTokenData.userLeftPercentage >= 20 ? "green" : "red"}
+                                format={() => <Statistic title="Your daily usage" style={{ fontSize: "0.7em" }}
+                                    value={
+                                        `${bigNumberToNumber(safeTokenData.userLeftLimit)} 
+                                        / ${bigNumberToNumber(safeTokenData.userTransferLimit)}`
+                                    }
+                                />
+                                } />
 
-                            <Col style={{ marginTop: "0.5em" }}></Col>
-
-                            <Progress type="circle" width={200} percent={75} strokeColor="green"
-                                format={() => <Typography.Text style={{ fontSize: "0.5em" }}>
-                                    1000 / 100 000 SAFE
-                                </Typography.Text>} />
-                        </Col>
+                            <Progress type="circle" width={250}
+                                percent={safeTokenData.totalLeftPercentage}
+                                strokeColor={safeTokenData.totalLeftPercentage >= 20 ? "green" : "red"}
+                                format={() => <Statistic title="Total token usage" style={{ fontSize: "0.7em" }}
+                                    value={
+                                        `${bigNumberToNumber(safeTokenData.totalLeftLimit)} 
+                                        / ${bigNumberToNumber(safeTokenData.totalTransferLimit)}`
+                                    }
+                                />}
+                            />
+                        </Row>
 
                     </Fragment>}
                 </Col>

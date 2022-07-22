@@ -1,9 +1,8 @@
 import { ethers } from "ethers";
 import AggregatorV3ABI from "@chainlink/abi/v0.7/interfaces/AggregatorV3Interface.json";
-import settings from "../../../settings";
 
 
-export async function getMaticPrice() {
+export async function getSafeTokenMintPrice() {
     
     const maticFeed = new ethers.Contract(
         '0xab594600376ec9fd91f8e885dadf0ce036862de0',
@@ -12,9 +11,5 @@ export async function getMaticPrice() {
     );
 
     const roundData = await maticFeed.latestRoundData();
-    const price = roundData.answer.toNumber() / 100000000;
-    const decimalPlaces = Math.pow(10, 10);
-
-    return Math.floor(price * decimalPlaces) / decimalPlaces;
-
+    return roundData.answer.mul(10);
 }

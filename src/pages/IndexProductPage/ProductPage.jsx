@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useTranslation } from "react-i18next";
-import { formatBigNumber } from "../../web3/utils";
+import { roundNumber } from "../../web3/utils";
 import { OnlyDesktop } from "../../components/MediaQuery";
 import { useProvider, useProductData } from "../../hooks";
 import { Loading, WalletConnector } from "../../components";
@@ -66,7 +66,7 @@ export default function ProductPage() {
 
                 <Typography.Title level={4} style={{ margin: 0, fontWeight: 100 }}
                     title={t('buy_product.product_price')}>
-                    ({formatBigNumber(productData.price)} {productData.buyToken.symbol})
+                    ({roundNumber(productData.price)} {productData.buyToken.symbol})
                 </Typography.Title>
             </Row>
 

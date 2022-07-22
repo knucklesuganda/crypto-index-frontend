@@ -1,18 +1,28 @@
 import { useState } from 'react';
-import { formatBigNumber, formatNumber } from "../web3/utils";
+import { roundNumber, formatNumber } from "../web3/utils";
 import { InputNumber, Form, Typography } from "antd";
 import { useTranslation } from 'react-i18next';
 
 
 function getTokenAdjustedAmount(amount, productPrice) {
     const totalPrice = productPrice * amount;
+    console.log(totalPrice)
     const roundedPrice = formatNumber(Math.floor((totalPrice + Number.EPSILON) * 100000) / 100000);
     return roundedPrice;
 }
 
 
 export function TokenInput(props) {
-    const { productPrice, prefixSymbol, postfixSymbol, maxValue, useAddon, inputRef, minValue } = props;
+    const {
+        productPrice,
+        pricePrecision,
+        prefixSymbol,
+        postfixSymbol,
+        maxValue,
+        useAddon,
+        inputRef,
+        minValue,
+    } = props;
     const [tokenUsdPrice, setTokenUsdPrice] = useState(0);
     const [status, setStatus] = useState("");
     const { t } = useTranslation();
@@ -24,7 +34,7 @@ export function TokenInput(props) {
             setTokenUsdPrice("0");
             setStatus("error");
         } else {
-            setTokenUsdPrice(getTokenAdjustedAmount(newAmount, formatBigNumber(productPrice)));
+            setTokenUsdPrice(getTokenAdjustedAmount(newAmount, roundNumber(productPrice, pricePrecision)));
             setStatus("");
         }
     };

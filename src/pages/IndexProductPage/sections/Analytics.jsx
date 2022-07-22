@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Pie } from '@ant-design/plots';
 import { useState, useEffect } from 'react';
 import { Loading } from "../../../components";
-import { formatBigNumber } from "../../../web3/utils";
+import { roundNumber } from "../../../web3/utils";
 import { SaveOutlined } from '@ant-design/icons';
 import { addTokenToWallet } from "../../../web3/wallet/functions";
 import { Col, Row, Typography, Table, message } from "antd";
@@ -48,7 +48,7 @@ export function AnalyticsSection(props) {
 
                 <AnalyticsText title={t("buy_product.analytics.total_locked_value_hint")}>
                     {t('buy_product.analytics.total_locked_value')}: {' '}
-                    {formatBigNumber(props.productData.totalLockedValue)} {productData.buyToken.symbol}
+                    {roundNumber(props.productData.totalLockedValue)} {productData.buyToken.symbol}
                 </AnalyticsText>,
 
                 <AnalyticsText title={t("buy_product.analytics.product_fee_hint")}>
@@ -56,12 +56,12 @@ export function AnalyticsSection(props) {
                 </AnalyticsText>,
 
                 <AnalyticsText title={t("buy_product.analytics.available_tokens")}>
-                    {t('buy_product.analytics.available_tokens_hint')}: {formatBigNumber(productData.availableTokens)}
-                    /{formatBigNumber(productData.maxTokens)} {productData.productToken.symbol}
+                    {t('buy_product.analytics.available_tokens_hint')}: {roundNumber(productData.availableTokens)}
+                    /{roundNumber(productData.maxTokens)} {productData.productToken.symbol}
                 </AnalyticsText>,
 
                 <AnalyticsText title={t("buy_product.analytics.liquidity_hint")}>
-                    {t('buy_product.analytics.liquidity')}: {formatBigNumber(productData.availableLiquidity)}
+                    {t('buy_product.analytics.liquidity')}: {roundNumber(productData.availableLiquidity)}
                     {productData.productToken.symbol}
                 </AnalyticsText>,
 
@@ -130,8 +130,8 @@ export function AnalyticsSection(props) {
                                     }} title={t('buy_product.analytics.save_token')} />
                                 </Row>,
 
-                                tokenPrice: `${formatBigNumber(tokenInfo.price)} ${productData.buyToken.symbol}`,
-                                tokenQuantity: formatBigNumber(tokenInfo.productBalance),
+                                tokenPrice: `${roundNumber(tokenInfo.price)} ${productData.buyToken.symbol}`,
+                                tokenQuantity: roundNumber(tokenInfo.productBalance),
                             };
                         })
                     }
