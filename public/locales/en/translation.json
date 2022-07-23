@@ -10,7 +10,8 @@
         "connect_wallet": "Connect the wallet",
         "connect_wallet_description": "Connect your crypto wallet to void management",
         "change_network": "Change network in your wallet",
-        "same_network": "You are already on that network"
+        "same_network": "You are already on that network",
+        "confirm_transaction": "Confirm transaction in your wallet"
     },
     "index": {
         "crypto_index": "Crypto Index",

@@ -4,7 +4,7 @@ import {
     NoTokensError,
     ProductSettlementError,
     BalanceError,
-    AmountError,
 } from "./baseIndex";
+import { AmountError } from "../errors";
 
 export { DebtExceededError, LiquidityError, NoTokensError, ProductSettlementError, BalanceError, AmountError };

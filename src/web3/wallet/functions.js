@@ -53,7 +53,10 @@ export async function changeNetwork(provider, networkId) {
     try {
         await provider.send('wallet_switchEthereumChain', [{ chainId: hexValue(networkData.ID) }]);
     } catch (error) {
-        if (error.code === 4902) {
+        
+
+        if(error.code === -32002){}
+        else if (error.code === 4902) {
             await provider.send('wallet_addEthereumChain', [{
                 chainName: networkData.NAME,
                 chainId: hexValue(networkData.ID),
@@ -61,8 +64,6 @@ export async function changeNetwork(provider, networkId) {
                 rpcUrls: networkData.URLS,
                 blockExplorerUrls: networkData.EXPLORERS,
             }]);
-        }else if(error.code === -32002){
-            throw new AlreadySendError();
         }else{
             throw error;
         }

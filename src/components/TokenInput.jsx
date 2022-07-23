@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import { roundNumber, formatNumber } from "../web3/utils";
+import { formatNumber, roundNumber } from "../web3/utils";
 import { InputNumber, Form, Typography } from "antd";
 import { useTranslation } from 'react-i18next';
 
 
-function getTokenAdjustedAmount(amount, productPrice) {
+function getTokenRoundedPrice(amount, productPrice) {
     const totalPrice = productPrice * amount;
-    console.log(totalPrice)
     const roundedPrice = formatNumber(Math.floor((totalPrice + Number.EPSILON) * 100000) / 100000);
     return roundedPrice;
 }
@@ -15,7 +14,6 @@ function getTokenAdjustedAmount(amount, productPrice) {
 export function TokenInput(props) {
     const {
         productPrice,
-        pricePrecision,
         prefixSymbol,
         postfixSymbol,
         maxValue,
@@ -34,12 +32,13 @@ export function TokenInput(props) {
             setTokenUsdPrice("0");
             setStatus("error");
         } else {
-            setTokenUsdPrice(getTokenAdjustedAmount(newAmount, roundNumber(productPrice, pricePrecision)));
+            setTokenUsdPrice(getTokenRoundedPrice(newAmount, roundNumber(productPrice)));
             setStatus("");
         }
     };
 
-    return <Form.Item name="amount" rules={[{ required: true, message: t('buy_product.buy_form.amount.error') }]}>
+    return <Form.Item name="amount" rules={[{ required: true, message: t('buy_product.buy_form.amount.error') }]}
+        style={{ marginBottom: "0.5em" }}>
         <InputNumber
             ref={inputRef}
             onInput={handleChange}

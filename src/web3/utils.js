@@ -4,10 +4,8 @@ import { parseEther, formatUnits } from "ethers/lib/utils";
 
 export function bigNumberToNumber(value, valuePrecision) {
     valuePrecision = isNaN(valuePrecision) ? 18 : valuePrecision;
-
-    console.log(valuePrecision, formatUnits(value, valuePrecision));
     const decimalPlaces = Math.pow(10, 10);
-
+    console.log("aa", parseFloat(formatUnits(value, valuePrecision)));
     return Math.floor(parseFloat(formatUnits(value, valuePrecision)) * decimalPlaces) / decimalPlaces;
 }
 
@@ -18,6 +16,11 @@ export function roundNumber(value, precision) {
     }
 
     const decimalPlaces = Math.pow(10, precision);
+
+    if(value instanceof BigNumber){
+        value = bigNumberToNumber(value);
+    }
+
     return Math.floor(value * decimalPlaces) / decimalPlaces;
 }
 

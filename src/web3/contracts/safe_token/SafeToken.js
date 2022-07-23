@@ -2,16 +2,16 @@ import SafeTokenAbi from "../sources/SafeToken.json";
 import { BigNumber, Contract } from "ethers";
 import { bigNumberToNumber } from "../../utils";
 
-export class SafeToken{
+export class SafeToken {
 
-    constructor(address, minterAddress, provider){
+    constructor(address, minterAddress, provider) {
         this.address = address;
         this.provider = provider;
         this.minterAddress = minterAddress;
         this.token = new Contract(address, SafeTokenAbi.abi, provider.provider);
     }
 
-    async getNextEpochTime(){
+    async getNextEpochTime() {
         const firstTransferTime = await this.token.firstTransferTime();
 
         const currentTimestamp = Math.round((new Date()).getTime() / 1000);
@@ -22,15 +22,19 @@ export class SafeToken{
         return epochDelay.sub(timeDifference);
     }
 
-    async getInfo(){
+    async getInfo() {
         const totalSupply = await this.token.totalSupply();
         const userTransferLimit = await this.token.getUserTransferLimit();
         const userSentToday = await this.token.getTodayTransferAmount(this.provider.account);
-        const userLeftLimit = userTransferLimit.sub(userSentToday);
+        let userLeftLimit = userTransferLimit.sub(userSentToday);
 
         const totalTransferLimit = await this.token.getTotalTransferLimit();
         const totalSentToday = await this.token.epochTokensTransferred();
         const totalLeftLimit = totalTransferLimit.sub(totalSentToday);
+
+        if (totalLeftLimit < userLeftLimit) {
+            userLeftLimit = totalLeftLimit;
+        }
 
         const nextEpochTime = await this.getNextEpochTime();
         const currentTimestamp = (new Date()).getTime();
@@ -38,6 +42,8 @@ export class SafeToken{
 
         return {
             totalSupply,
+            mintSupply: await this.token.balanceOf(this.minterAddress),
+
             nextResetTime,
             maxTransferPercentage: await this.token.maxSupplyTransferPercentage(),
 
@@ -49,7 +55,12 @@ export class SafeToken{
             totalLeftPercentage: 100 / bigNumberToNumber(totalTransferLimit.div(totalLeftLimit)),
             totalTransferLimit,
 
-            mintSupply: totalSupply.sub(await this.token.balanceOf(this.minterAddress)),
+            token: {
+                symbol: await this.token.symbol(),
+                decimals: await this.token.decimals(),
+                address: this.address,
+                image: "",
+            }
         };
     }
 

@@ -1,11 +1,10 @@
 import { ethers, BigNumber } from "ethers";
 import { ERC20 } from "../tokens/ERC20";
 import { convertToEther, parseEther } from "../../utils";
-
+import { AmountError } from "../errors";
 
 export class BalanceError extends Error {}
 export class ProductSettlementError extends Error {}
-export class AmountError extends Error {}
 export class LiquidityError extends Error {}
 export class NoTokensError extends Error {}
 export class DebtExceededError extends Error {}

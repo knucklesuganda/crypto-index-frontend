@@ -1,25 +1,25 @@
-import { Row, Col, Typography, Form, Button, message, Statistic, Progress } from "antd";
-import { SafeMinter } from "../../web3/contracts/safe_token/SafeMinter";
-import { getSafeTokenMintPrice } from "../../web3/contracts/safe_token/functions";
-import { getChainParameter, useNetwork } from "../../hooks/useNetwork";
-import { Loading, TokenInput, WalletConnector } from "../../components";
-import { bigNumberToNumber, convertToEther } from "../../web3/utils";
+import { bigNumberToNumber, formatNumber } from "../../web3/utils";
+import { Row, Col, Typography, Statistic, Progress } from "antd";
+import { SafeMinter } from "../../web3/contracts/safe_token";
+import { Loading, WalletConnector } from "../../components";
+import { SafeTokenBuy } from "./sections/SafeTokenBuy";
+import { Fragment, useEffect, useState } from "react";
 import Countdown from "antd/lib/statistic/Countdown";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { useNetwork } from "../../hooks/useNetwork";
 import { useTranslation } from "react-i18next";
 import { useProvider } from "../../hooks";
 import { useParams } from "react-router";
 import "./style.css";
+import { addTokenToWallet } from "../../web3/wallet/functions";
 
 
 export default function SafeTokenPage() {
-    const { productAddress } = useParams();
-    const inputRef = useRef(null);
     const { t } = useTranslation();
+    const { productAddress } = useParams();
     const { changeNetworkParam } = useNetwork();
-    const { providerData, handleWalletConnection } = useProvider();
     const [tokenPrice, setTokenPrice] = useState(0);
     const [safeTokenData, setSafeTokenData] = useState(null);
+    const { providerData, handleWalletConnection } = useProvider();
 
     useEffect(() => {
         // if (getChainParameter() !== settings.NETWORKS.POLYGON.ID) {
@@ -27,18 +27,16 @@ export default function SafeTokenPage() {
         //     message.info(t("wallet.change_network"));
         // }
 
-        getSafeTokenMintPrice().then((price) => { setTokenPrice(price) });
         document.body.className = "";
         document.title = `Void | ${t("index.safe_token")}`;
 
         if (providerData !== null) {
-
             const minter = new SafeMinter(productAddress, providerData);
+            minter.getPrice().then(price => setTokenPrice(price));
 
             minter.getToken().then(token => {
                 token.getInfo().then(data => { setSafeTokenData(data) });
             });
-
         }
 
         return () => { };
@@ -57,26 +55,30 @@ export default function SafeTokenPage() {
             alignContent: "center",
             flexDirection: "column",
         }}>
-            <Typography.Title level={2} style={{ fontWeight: "100" }}>{t("index.safe_token")}</Typography.Title>
+            <Row style={{ display: "flex", alignItems: "baseline" }}>
+                <Typography.Title level={2} style={{ cursor: "pointer", fontWeight: 100, marginBottom: "0.3em" }}
+                    onMouseEnter={(event) => { event.target.style.color = '#1890ff'; }}
+                    onMouseLeave={(event) => { event.target.style.color = '#bfbfbf'; }}
+                    onClick={() => {
+                        const token = safeTokenData.token;
 
-            <Form>
-                {tokenPrice === 0 ? <Loading /> :
-                    <TokenInput useAddon
-                        inputRef={inputRef}
-                        productPrice={tokenPrice}
-                        pricePrecision={1}
-                        prefixSymbol="SAFE"
-                        postfixSymbol="USD"
-                        minValue={1}
-                        maxValue={safeTokenData === null ? '0' : safeTokenData.mintSupply} />
-                }
+                        addTokenToWallet(providerData.provider, {
+                            symbol: token.symbol,
+                            address: token.address,
+                            decimals: token.decimals,
+                            image: token.image,
+                        });
 
-                <Form.Item style={{ marginTop: 0 }}>
-                    <Button htmlType="submit" style={{ width: "100%" }} title="Buy SAFE Token" type="primary">
-                        {t("buy_product.token_buy")}
-                    </Button>
-                </Form.Item>
-            </Form>
+                    }}>{t("index.safe_token")}</Typography.Title>
+
+                <Typography.Title level={4} style={{ margin: 0, fontWeight: 100 }}>
+                    ({bigNumberToNumber(tokenPrice)}$)
+                </Typography.Title>
+            </Row>
+
+            <SafeTokenBuy productAddress={productAddress}
+                providerData={providerData} tokenPrice={tokenPrice}
+                mintSupply={safeTokenData ? safeTokenData.mintSupply : null} />
         </Col>
 
         <Row style={{ marginTop: "3em", width: "100%" }}>
@@ -124,12 +126,13 @@ export default function SafeTokenPage() {
                     {safeTokenData === null ? <Loading /> : <Fragment>
 
                         <Row style={{ display: "flex", justifyContent: "space-between" }}>
-                            <Statistic title="Total supply / Max supply"
-                                value={bigNumberToNumber(safeTokenData.totalSupply)}
-                                suffix={`/ ${bigNumberToNumber(safeTokenData.mintSupply)} SAFE`} />
+                            <Statistic title="Mint supply / Total supply"
+                                value={bigNumberToNumber(safeTokenData.mintSupply)}
+                                suffix={`/ ${formatNumber(bigNumberToNumber(safeTokenData.totalSupply))
+                                    } SAFE`} />
 
-                            <Statistic title="Mint price(10 MATIC = 1 SAFE)"
-                                value={bigNumberToNumber(tokenPrice, 8)} suffix="$" style={{ textAlign: "end" }} />
+                            <Statistic title="Mint price(10 MATIC = 1 SAFE)" suffix="$"
+                                value={bigNumberToNumber(tokenPrice)} style={{ textAlign: "end" }} />
                         </Row>
 
                         <Row style={{ marginTop: "1em", display: "flex", justifyContent: "space-between" }}>
@@ -145,8 +148,8 @@ export default function SafeTokenPage() {
                                 strokeColor={safeTokenData.userLeftPercentage >= 20 ? "green" : "red"}
                                 format={() => <Statistic title="Your daily usage" style={{ fontSize: "0.7em" }}
                                     value={
-                                        `${bigNumberToNumber(safeTokenData.userLeftLimit)} 
-                                        / ${bigNumberToNumber(safeTokenData.userTransferLimit)}`
+                                        `${formatNumber(bigNumberToNumber(safeTokenData.userLeftLimit))}
+                                        / ${formatNumber(bigNumberToNumber(safeTokenData.userTransferLimit))}`
                                     }
                                 />
                                 } />
@@ -156,8 +159,8 @@ export default function SafeTokenPage() {
                                 strokeColor={safeTokenData.totalLeftPercentage >= 20 ? "green" : "red"}
                                 format={() => <Statistic title="Total token usage" style={{ fontSize: "0.7em" }}
                                     value={
-                                        `${bigNumberToNumber(safeTokenData.totalLeftLimit)} 
-                                        / ${bigNumberToNumber(safeTokenData.totalTransferLimit)}`
+                                        `${formatNumber(bigNumberToNumber(safeTokenData.totalLeftLimit))} 
+                                        / ${formatNumber(bigNumberToNumber(safeTokenData.totalTransferLimit))}`
                                     }
                                 />}
                             />
