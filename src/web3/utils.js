@@ -5,7 +5,6 @@ import { parseEther, formatUnits } from "ethers/lib/utils";
 export function bigNumberToNumber(value, valuePrecision) {
     valuePrecision = isNaN(valuePrecision) ? 18 : valuePrecision;
     const decimalPlaces = Math.pow(10, 10);
-    console.log("aa", parseFloat(formatUnits(value, valuePrecision)));
     return Math.floor(parseFloat(formatUnits(value, valuePrecision)) * decimalPlaces) / decimalPlaces;
 }
 
@@ -25,7 +24,7 @@ export function roundNumber(value, precision) {
 }
 
 export function formatNumber(value) {
-    return value.toString().replace(/(?<!(\.\d*|^.{0}))(?=(\d{3})+(?!\d))/g, ',');
+    return value.toString().replace(' ', '').replace(/(?<!(\.\d*|^.{0}))(?=(\d{3})+(?!\d))/g, ',');
 }
 
 export function convertToEther(value) {

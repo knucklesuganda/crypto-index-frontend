@@ -6,27 +6,20 @@ import { useTranslation } from 'react-i18next';
 
 function getTokenRoundedPrice(amount, productPrice) {
     const totalPrice = productPrice * amount;
+    //console.log(totalPrice, amount, productPrice)
     const roundedPrice = formatNumber(Math.floor((totalPrice + Number.EPSILON) * 100000) / 100000);
     return roundedPrice;
 }
 
 
 export function TokenInput(props) {
-    const {
-        productPrice,
-        prefixSymbol,
-        postfixSymbol,
-        maxValue,
-        useAddon,
-        inputRef,
-        minValue,
-    } = props;
+    const { productPrice, prefixSymbol, postfixSymbol, maxValue, useAddon, inputRef, minValue } = props;
     const [tokenUsdPrice, setTokenUsdPrice] = useState(0);
     const [status, setStatus] = useState("");
     const { t } = useTranslation();
 
     const handleChange = (value) => {
-        const newAmount = parseFloat(value);
+        const newAmount = parseFloat(value.replace(",", ""));
 
         if (isNaN(newAmount)) {
             setTokenUsdPrice("0");
@@ -50,7 +43,7 @@ export function TokenInput(props) {
             controls={false}
             style={{ width: "100%" }}
             formatter={formatNumber}
-            parser={value => value.replace(/\$\s?|(,*)/g, '')}
+            parser={value => value.replace(',', '')}
             addonAfter={
                 useAddon ? <Typography.Text>{tokenUsdPrice} {postfixSymbol}</Typography.Text> : null
             } />

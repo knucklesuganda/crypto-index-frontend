@@ -1,8 +1,8 @@
-import Web3Modal from "web3modal";
-import { ethers } from "ethers";
-import { setupEvents } from "./event_handlers";
-import settings from "../../settings";
 import { NetworkChanged, WalletConnected } from "./events";
+import { ethers, providers } from "ethers";
+import { setupEvents } from "./event_handlers";
+import Web3Modal from "web3modal";
+import settings from "../../settings";
 
 
 const providerOptions = {
@@ -24,7 +24,6 @@ export class NotConnectedError extends Error { }
 
 let signer = null, provider = null;
 let web3Modal = new Web3Modal({
-
     cacheProvider: true,
     providerOptions,
 
@@ -81,4 +80,10 @@ export async function clearProvider() {
 
 async function _getWallet() {
     return (await provider.listAccounts())[0];
+}
+
+
+export function getDummyProvider(address){
+    const provider = new providers.JsonRpcProvider();
+    return { provider, signer: new ethers.VoidSigner(address, provider), account: null };
 }

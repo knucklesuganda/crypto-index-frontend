@@ -1,16 +1,18 @@
-import { bigNumberToNumber, formatNumber } from "../../web3/utils";
-import { Row, Col, Typography, Statistic, Progress } from "antd";
+
+import { SafeTokenAnalytics } from "./sections/SafeTokenAnalytics";
+import { addTokenToWallet } from "../../web3/wallet/functions";
 import { SafeMinter } from "../../web3/contracts/safe_token";
-import { Loading, WalletConnector } from "../../components";
 import { SafeTokenBuy } from "./sections/SafeTokenBuy";
-import { Fragment, useEffect, useState } from "react";
-import Countdown from "antd/lib/statistic/Countdown";
+import { bigNumberToNumber } from "../../web3/utils";
 import { useNetwork } from "../../hooks/useNetwork";
+import { WalletConnector } from "../../components";
 import { useTranslation } from "react-i18next";
+import { Row, Col, Typography, message } from "antd";
+import { useEffect, useState } from "react";
 import { useProvider } from "../../hooks";
 import { useParams } from "react-router";
 import "./style.css";
-import { addTokenToWallet } from "../../web3/wallet/functions";
+import { getDummyProvider } from "../../web3/wallet/providers";
 
 
 export default function SafeTokenPage() {
@@ -30,21 +32,22 @@ export default function SafeTokenPage() {
         document.body.className = "";
         document.title = `Void | ${t("index.safe_token")}`;
 
-        if (providerData !== null) {
-            const minter = new SafeMinter(productAddress, providerData);
-            minter.getPrice().then(price => setTokenPrice(price));
+        let minter;
 
-            minter.getToken().then(token => {
-                token.getInfo().then(data => { setSafeTokenData(data) });
-            });
+        if (providerData !== null) {
+            minter = new SafeMinter(productAddress, providerData);
+        } else {
+            minter = new SafeMinter(productAddress, getDummyProvider(productAddress));
         }
+
+        minter.getPrice().then(price => setTokenPrice(price));
+
+        minter.getToken().then(token => {
+            token.getInfo().then(data => { setSafeTokenData(data) });
+        });
 
         return () => { };
     }, [changeNetworkParam, t, providerData, productAddress]);
-
-    if (providerData === null) {
-        return <WalletConnector handleWalletConnection={handleWalletConnection} />;
-    }
 
     return <Row style={{ width: "100%", marginTop: "3em", paddingLeft: "3em" }}>
         <Col style={{
@@ -67,7 +70,7 @@ export default function SafeTokenPage() {
                             address: token.address,
                             decimals: token.decimals,
                             image: token.image,
-                        });
+                        }).catch(() => {});
 
                     }}>{t("index.safe_token")}</Typography.Title>
 
@@ -76,12 +79,19 @@ export default function SafeTokenPage() {
                 </Typography.Title>
             </Row>
 
-            <SafeTokenBuy productAddress={productAddress}
-                providerData={providerData} tokenPrice={tokenPrice}
-                mintSupply={safeTokenData ? safeTokenData.mintSupply : null} />
+            {providerData === null ?
+                <WalletConnector style={{ alignContent: "flex-start", height: "auto" }}
+                    handleWalletConnection={handleWalletConnection} />
+
+                :
+
+                <SafeTokenBuy productAddress={productAddress}
+                    providerData={providerData} tokenPrice={tokenPrice}
+                    mintSupply={safeTokenData ? safeTokenData.mintSupply : null} />
+            }
         </Col>
 
-        <Row style={{ marginTop: "3em", width: "100%" }}>
+        <Row style={{ marginTop: "3em", width: "100%", marginBottom: "10em" }}>
             <Col span={8}>
                 <Col>
                     <Typography.Title italic style={{ fontWeight: 100 }}>What is SAFE Token?</Typography.Title>
@@ -110,67 +120,8 @@ export default function SafeTokenPage() {
                 </Col>
             </Col>
 
-            <Col style={{
-                border: "1px solid #303030",
-                boxShadow: "0 0 5px 2px rgba(255, 255, 255, 0.2)",
-                padding: "1em",
-                fontSize: "1.2em",
-                width: "30vw",
-                marginLeft: "10em",
-            }}>
-                <Typography.Title level={3} style={{ fontWeight: 100, textAlign: "center" }}>
-                    Analytics
-                </Typography.Title>
-
-                <Col style={{ width: "100%" }}>
-                    {safeTokenData === null ? <Loading /> : <Fragment>
-
-                        <Row style={{ display: "flex", justifyContent: "space-between" }}>
-                            <Statistic title="Mint supply / Total supply"
-                                value={bigNumberToNumber(safeTokenData.mintSupply)}
-                                suffix={`/ ${formatNumber(bigNumberToNumber(safeTokenData.totalSupply))
-                                    } SAFE`} />
-
-                            <Statistic title="Mint price(10 MATIC = 1 SAFE)" suffix="$"
-                                value={bigNumberToNumber(tokenPrice)} style={{ textAlign: "end" }} />
-                        </Row>
-
-                        <Row style={{ marginTop: "1em", display: "flex", justifyContent: "space-between" }}>
-                            <Statistic title="Max transfer percentage" value={safeTokenData.maxTransferPercentage}
-                                suffix="%" />
-                            <Countdown title="Next reset" value={safeTokenData.nextResetTime} format="HH:mm:ss"
-                                style={{ textAlign: "end" }} />
-                        </Row>
-
-                        <Row style={{ display: "flex", alignItems: "center", justifyContent: "space-around" }}>
-                            <Progress type="circle" width={250}
-                                percent={safeTokenData.userLeftPercentage}
-                                strokeColor={safeTokenData.userLeftPercentage >= 20 ? "green" : "red"}
-                                format={() => <Statistic title="Your daily usage" style={{ fontSize: "0.7em" }}
-                                    value={
-                                        `${formatNumber(bigNumberToNumber(safeTokenData.userLeftLimit))}
-                                        / ${formatNumber(bigNumberToNumber(safeTokenData.userTransferLimit))}`
-                                    }
-                                />
-                                } />
-
-                            <Progress type="circle" width={250}
-                                percent={safeTokenData.totalLeftPercentage}
-                                strokeColor={safeTokenData.totalLeftPercentage >= 20 ? "green" : "red"}
-                                format={() => <Statistic title="Total token usage" style={{ fontSize: "0.7em" }}
-                                    value={
-                                        `${formatNumber(bigNumberToNumber(safeTokenData.totalLeftLimit))} 
-                                        / ${formatNumber(bigNumberToNumber(safeTokenData.totalTransferLimit))}`
-                                    }
-                                />}
-                            />
-                        </Row>
-
-                    </Fragment>}
-                </Col>
-
-            </Col>
-
+            <SafeTokenAnalytics safeTokenData={safeTokenData} 
+                tokenPrice={tokenPrice} isWalletOffline={providerData === null} />
         </Row>
     </Row>;
 }

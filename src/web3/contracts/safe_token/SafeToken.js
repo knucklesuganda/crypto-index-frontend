@@ -22,10 +22,22 @@ export class SafeToken {
         return epochDelay.sub(timeDifference);
     }
 
+    async getMintSupply(){
+        return await this.token.balanceOf(this.minterAddress);
+    }
+
     async getInfo() {
         const totalSupply = await this.token.totalSupply();
         const userTransferLimit = await this.token.getUserTransferLimit();
-        const userSentToday = await this.token.getTodayTransferAmount(this.provider.account);
+
+        let userSentToday;
+
+        if(this.provider.account === null){
+            userSentToday = BigNumber.from("0");
+        }else{
+            userSentToday = await this.token.getTodayTransferAmount(this.provider.account);
+        }
+
         let userLeftLimit = userTransferLimit.sub(userSentToday);
 
         const totalTransferLimit = await this.token.getTotalTransferLimit();
@@ -42,7 +54,7 @@ export class SafeToken {
 
         return {
             totalSupply,
-            mintSupply: await this.token.balanceOf(this.minterAddress),
+            mintSupply: await this.getMintSupply(),
 
             nextResetTime,
             maxTransferPercentage: await this.token.maxSupplyTransferPercentage(),
