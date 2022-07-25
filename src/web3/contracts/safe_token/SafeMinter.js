@@ -1,4 +1,4 @@
-import { convertToEther } from "../../utils";
+import { bigNumberToNumber, convertToEther, formatNumber } from "../../utils";
 import { Contract, BigNumber } from "ethers";
 import { SafeToken } from "./SafeToken";
 import SafeMinterABI from "../sources/SafeMinter.json";
@@ -20,22 +20,24 @@ export class SafeMinter {
     }
 
     async mint(amount) {
-        amount = convertToEther(amount);
+        amount = convertToEther(amount).div(BigNumber.from("10"));
         const { provider, account } = this.providerData;
         const userBalance = await provider.getBalance(account);
 
         const safeToken = await this.getToken();
         const mintSupply = await safeToken.getMintSupply();
 
-        if(amount.eq(0)){
+        if (amount.eq(0)) {
             throw new AmountError();
-        }else if(amount.gt(userBalance)){
-            throw new BalanceError();
-        }else if(amount.gt(mintSupply)){
+        } else if (amount.gt(userBalance)) {
+            const balanceError = new BalanceError();
+            balanceError.balance = `${formatNumber(bigNumberToNumber(userBalance))} MATIC`;
+            throw balanceError;
+        } else if (amount.gt(mintSupply)) {
             throw new NoTokensError();
         }
 
-        const transaction = await this.minter.mint({ value: amount.div(BigNumber.from("10")) });
+        const transaction = await this.minter.mint({ value: amount });
         await transaction.wait();
 
         return transaction;

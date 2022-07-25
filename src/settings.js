@@ -52,7 +52,7 @@ const settings = {
                 {
                     image: `${STATIC_STORAGE}/assets/indexBg.png`,
                     text: 'index.safe_token',
-                    url: createSafeTokenPage('0xF8cC94BCDe449e1a8F0E34717acd823fF8402b07'),
+                    url: createSafeTokenPage('0x11EddA24d8A0F5f026661704560d200c3123e737'),
                     contract: ERC20Index,
                 }
             ],

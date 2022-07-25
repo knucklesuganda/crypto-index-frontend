@@ -30,9 +30,7 @@ export function useNetwork() {
                 const chainParameter = getChainParameter();
 
                 if(chainId !== chainParameter){
-                    changeNetwork(provider, chainParameter).catch((error) => {
-                        console.log(error)
-                    });
+                    changeNetwork(provider, chainParameter).catch((error) => {});
                     chainId = chainParameter;
                 }
 

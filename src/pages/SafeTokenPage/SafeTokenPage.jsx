@@ -1,5 +1,5 @@
-
 import { SafeTokenAnalytics } from "./sections/SafeTokenAnalytics";
+import { getDummyProvider } from "../../web3/wallet/providers";
 import { addTokenToWallet } from "../../web3/wallet/functions";
 import { SafeMinter } from "../../web3/contracts/safe_token";
 import { SafeTokenBuy } from "./sections/SafeTokenBuy";
@@ -8,20 +8,23 @@ import { useNetwork } from "../../hooks/useNetwork";
 import { WalletConnector } from "../../components";
 import { useTranslation } from "react-i18next";
 import { Row, Col, Typography, message } from "antd";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useProvider } from "../../hooks";
 import { useParams } from "react-router";
+import settings from "../../settings";
+import { BigNumber } from "ethers";
 import "./style.css";
-import { getDummyProvider } from "../../web3/wallet/providers";
 
 
 export default function SafeTokenPage() {
     const { t } = useTranslation();
     const { productAddress } = useParams();
-    const { changeNetworkParam } = useNetwork();
+    const { network, changeNetworkParam } = useNetwork();
     const [tokenPrice, setTokenPrice] = useState(0);
     const [safeTokenData, setSafeTokenData] = useState(null);
     const { providerData, handleWalletConnection } = useProvider();
+    const [isPriceMatic, setIsPriceMatic] = useState(true);
+    const tokenDataInterval = useRef(null);
 
     useEffect(() => {
         // if (getChainParameter() !== settings.NETWORKS.POLYGON.ID) {
@@ -32,22 +35,32 @@ export default function SafeTokenPage() {
         document.body.className = "";
         document.title = `Void | ${t("index.safe_token")}`;
 
-        let minter;
+        const getTokenData = () => {
+            let minter;
 
-        if (providerData !== null) {
-            minter = new SafeMinter(productAddress, providerData);
-        } else {
-            minter = new SafeMinter(productAddress, getDummyProvider(productAddress));
-        }
+            if (providerData !== null) {
+                minter = new SafeMinter(productAddress, providerData);
+            } else {
+                minter = new SafeMinter(productAddress, getDummyProvider(productAddress, network));
+            }
 
-        minter.getPrice().then(price => setTokenPrice(price));
+            if(isPriceMatic) {
+                setTokenPrice(BigNumber.from("100000000000000000"));
+            }else{
+                minter.getPrice().then(price => setTokenPrice(price));
+            }
 
-        minter.getToken().then(token => {
-            token.getInfo().then(data => { setSafeTokenData(data) });
-        });
+            minter.getToken().then(token => {
+                token.getInfo().then(data => { setSafeTokenData(data) });
+            });
 
-        return () => { };
-    }, [changeNetworkParam, t, providerData, productAddress]);
+        };
+
+        getTokenData();
+        tokenDataInterval.current = setInterval(getTokenData, settings.STATE_UPDATE_INTERVAL);
+
+        return () => { clearInterval(tokenDataInterval.current) };
+    }, [changeNetworkParam, t, providerData, productAddress, isPriceMatic, network]);
 
     return <Row style={{ width: "100%", marginTop: "3em", paddingLeft: "3em" }}>
         <Col style={{
@@ -70,12 +83,12 @@ export default function SafeTokenPage() {
                             address: token.address,
                             decimals: token.decimals,
                             image: token.image,
-                        }).catch(() => {});
+                        }).catch(() => { });
 
                     }}>{t("index.safe_token")}</Typography.Title>
 
                 <Typography.Title level={4} style={{ margin: 0, fontWeight: 100 }}>
-                    ({bigNumberToNumber(tokenPrice)}$)
+                    ({bigNumberToNumber(tokenPrice)} {isPriceMatic ? "MATIC" : "$"})
                 </Typography.Title>
             </Row>
 
@@ -87,7 +100,8 @@ export default function SafeTokenPage() {
 
                 <SafeTokenBuy productAddress={productAddress}
                     providerData={providerData} tokenPrice={tokenPrice}
-                    mintSupply={safeTokenData ? safeTokenData.mintSupply : null} />
+                    mintSupply={safeTokenData ? safeTokenData.mintSupply : null}
+                    isPriceMatic={isPriceMatic} setIsPriceMatic={setIsPriceMatic} />
             }
         </Col>
 
@@ -120,7 +134,7 @@ export default function SafeTokenPage() {
                 </Col>
             </Col>
 
-            <SafeTokenAnalytics safeTokenData={safeTokenData} 
+            <SafeTokenAnalytics safeTokenData={safeTokenData} isPriceMatic={isPriceMatic}
                 tokenPrice={tokenPrice} isWalletOffline={providerData === null} />
         </Row>
     </Row>;

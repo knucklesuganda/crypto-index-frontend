@@ -35,7 +35,8 @@ export class SafeToken {
         if(this.provider.account === null){
             userSentToday = BigNumber.from("0");
         }else{
-            userSentToday = await this.token.getTodayTransferAmount(this.provider.account);
+            const currentTick = await this.token.currentTick();
+            userSentToday = await this.token.todayTransfers(currentTick, this.provider.account);
         }
 
         let userLeftLimit = userTransferLimit.sub(userSentToday);
@@ -60,7 +61,7 @@ export class SafeToken {
             maxTransferPercentage: await this.token.maxSupplyTransferPercentage(),
 
             userTransferLimit,
-            userLeftLimit,
+            userLeftLimit, 
             userLeftPercentage: 100 / bigNumberToNumber(userTransferLimit.div(userLeftLimit)),
 
             totalLeftLimit,

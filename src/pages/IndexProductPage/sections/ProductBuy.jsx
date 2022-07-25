@@ -4,11 +4,9 @@ import { addTokenNotification, TokenInput } from "../../../components";
 import { OnlyDesktop, useMobileQuery } from "../../../components/MediaQuery";
 import { LoadingOutlined, RiseOutlined, FallOutlined } from '@ant-design/icons';
 import { roundNumber, formatNumber } from "../../../web3/utils";
+import { DebtExceededError, LiquidityError, NoTokensError,
+    ProductSettlementError, BalanceError, AmountError } from "../../../web3/contracts/index/index";
 import { Form, Col, Radio, Row, Button, Typography, Collapse, message, Avatar, Spin, Modal } from "antd";
-import {
-    DebtExceededError, LiquidityError, NoTokensError,
-    ProductSettlementError, BalanceError, AmountError,
-} from "../../../web3/contracts/index/index";
 import { useNetwork } from "../../../hooks/useNetwork";
 
 

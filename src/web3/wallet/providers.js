@@ -83,7 +83,7 @@ async function _getWallet() {
 }
 
 
-export function getDummyProvider(address){
-    const provider = new providers.JsonRpcProvider();
+export function getDummyProvider(address, networkData){
+    const provider = new providers.JsonRpcProvider(networkData.URL, networkData.ID);
     return { provider, signer: new ethers.VoidSigner(address, provider), account: null };
 }

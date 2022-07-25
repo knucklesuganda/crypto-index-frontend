@@ -1,15 +1,15 @@
-import { SafeMinter } from "../../../web3/contracts/safe_token";
-import { Loading, TokenInput } from "../../../components";
-import { LoadingOutlined } from "@ant-design/icons";
-import { Spin, Form, Button, message } from "antd";
-import { useTranslation } from "react-i18next";
 import { useState, useRef } from "react";
+import { useTranslation } from "react-i18next";
+import { LoadingOutlined } from "@ant-design/icons";
+import { Spin, Form, Button, message, Radio } from "antd";
 import { bigNumberToNumber } from "../../../web3/utils";
+import { Loading, TokenInput } from "../../../components";
+import { SafeMinter } from "../../../web3/contracts/safe_token";
 import { AmountError, BalanceError, NoTokensError } from "../../../web3/contracts/errors";
 
 
 export function SafeTokenBuy(props) {
-    const { productAddress, providerData, tokenPrice, mintSupply } = props;
+    const { productAddress, providerData, tokenPrice,  mintSupply, setIsPriceMatic, isPriceMatic } = props;
     const inputRef = useRef(null);
     const { t } = useTranslation();
     const [isBuy, setIsBuy] = useState(false);
@@ -29,7 +29,7 @@ export function SafeTokenBuy(props) {
                 let errorMessage = t("error");
 
                 if(error instanceof BalanceError){
-                    errorMessage = t("buy_product.buy_form.balance_error");
+                    errorMessage = `${t("buy_product.buy_form.balance_error")}: ${error.balance}`;
                 }else if(error instanceof NoTokensError){
                     errorMessage = t("buy_product.buy_form.no_tokens_error");
                 }else if(error instanceof AmountError){
@@ -42,10 +42,20 @@ export function SafeTokenBuy(props) {
             setIsBuy(true);
         }}>
             {tokenPrice === 0 ? <Loading /> :
-                <TokenInput useAddon
-                    inputRef={inputRef} productPrice={tokenPrice}
-                    prefixSymbol="SAFE" postfixSymbol="USD"
-                    minValue={1} maxValue={mintSupply ? bigNumberToNumber(mintSupply) : null} />}
+                <TokenInput useAddon inputRef={inputRef} productPrice={tokenPrice}
+                    prefixSymbol="SAFE"
+                    postfixSymbol={isPriceMatic ? "MATIC" : "USD"}
+                    minValue={1}
+                    maxValue={mintSupply ? bigNumberToNumber(mintSupply) : null} />}
+
+            <Form.Item style={{ marginBottom: 0 }}>
+                <Radio.Group defaultValue="matic" style={{ display: "flex" }} onChange={(event) => { 
+                    setIsPriceMatic(event.target.value === "matic");
+                }}>
+                    <Radio.Button style={{ width: "100%" }} value="usd">Price USD</Radio.Button>
+                    <Radio.Button style={{ width: "100%" }} value="matic">Price MATIC</Radio.Button>
+                </Radio.Group>
+            </Form.Item>
 
             <Form.Item style={{ marginTop: "0.8em" }}>
                 <Button htmlType="submit" style={{ width: "100%" }} title="Buy SAFE Token" type="primary">
