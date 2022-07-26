@@ -1,14 +1,16 @@
+import { SafeTokenDescription } from "./sections/SafeTokenDescription";
+import { getChainParameter, useNetwork } from "../../hooks/useNetwork";
 import { SafeTokenAnalytics } from "./sections/SafeTokenAnalytics";
+import { useMobileQuery } from "../../components/MediaQuery";
 import { getDummyProvider } from "../../web3/wallet/providers";
 import { addTokenToWallet } from "../../web3/wallet/functions";
 import { SafeMinter } from "../../web3/contracts/safe_token";
 import { SafeTokenBuy } from "./sections/SafeTokenBuy";
 import { bigNumberToNumber } from "../../web3/utils";
-import { useNetwork } from "../../hooks/useNetwork";
+import { Row, Col, Typography, message } from "antd";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { WalletConnector } from "../../components";
 import { useTranslation } from "react-i18next";
-import { Row, Col, Typography, message } from "antd";
-import { useEffect, useRef, useState } from "react";
 import { useProvider } from "../../hooks";
 import { useParams } from "react-router";
 import settings from "../../settings";
@@ -25,12 +27,13 @@ export default function SafeTokenPage() {
     const { providerData, handleWalletConnection } = useProvider();
     const [isPriceMatic, setIsPriceMatic] = useState(true);
     const tokenDataInterval = useRef(null);
+    const isMobile = useMobileQuery();
 
     useEffect(() => {
-        // if (getChainParameter() !== settings.NETWORKS.POLYGON.ID) {
-        //     changeNetworkParam(settings.NETWORKS.POLYGON.ID);
-        //     message.info(t("wallet.change_network"));
-        // }
+        if (getChainParameter() !== settings.NETWORKS.POLYGON.ID) {
+            changeNetworkParam(settings.NETWORKS.POLYGON.ID);
+            message.info(t("wallet.change_network"));
+        }
 
         document.body.className = "";
         document.title = `Void | ${t("index.safe_token")}`;
@@ -44,9 +47,9 @@ export default function SafeTokenPage() {
                 minter = new SafeMinter(productAddress, getDummyProvider(productAddress, network));
             }
 
-            if(isPriceMatic) {
+            if (isPriceMatic) {
                 setTokenPrice(BigNumber.from("100000000000000000"));
-            }else{
+            } else {
                 minter.getPrice().then(price => setTokenPrice(price));
             }
 
@@ -62,7 +65,7 @@ export default function SafeTokenPage() {
         return () => { clearInterval(tokenDataInterval.current) };
     }, [changeNetworkParam, t, providerData, productAddress, isPriceMatic, network]);
 
-    return <Row style={{ width: "100%", marginTop: "3em", paddingLeft: "3em" }}>
+    return <Row style={{ width: "100%", marginTop: "3em", paddingLeft: isMobile ? "0" : "3em" }}>
         <Col style={{
             width: "100%",
             display: "flex",
@@ -94,48 +97,30 @@ export default function SafeTokenPage() {
 
             {providerData === null ?
                 <WalletConnector style={{ alignContent: "flex-start", height: "auto" }}
-                    handleWalletConnection={handleWalletConnection} />
-
-                :
-
+                    handleWalletConnection={handleWalletConnection} /> :
                 <SafeTokenBuy productAddress={productAddress}
                     providerData={providerData} tokenPrice={tokenPrice}
                     mintSupply={safeTokenData ? safeTokenData.mintSupply : null}
-                    isPriceMatic={isPriceMatic} setIsPriceMatic={setIsPriceMatic} />
-            }
+                    isPriceMatic={isPriceMatic} setIsPriceMatic={setIsPriceMatic} />}
         </Col>
 
-        <Row style={{ marginTop: "3em", width: "100%", marginBottom: "10em" }}>
-            <Col span={8}>
-                <Col>
-                    <Typography.Title italic style={{ fontWeight: 100 }}>What is SAFE Token?</Typography.Title>
-
-                    <Typography.Text style={{ fontSize: "1.4em" }}>
-                        SAFE Token is a currency that will allow you to protect your investments from big price changes.
-                    </Typography.Text>
-                </Col>
-
-                <Col style={{ marginTop: "4em" }}>
-                    <Typography.Title italic style={{ fontWeight: 100 }}>How does SAFE work?</Typography.Title>
-
-                    <Typography.Text style={{ fontSize: "1.4em" }}>
-                        You can only use a small fraction of tokens each day.
-                        That makes everyone <span style={{ fontStyle: "italic" }}>HODL</span> and protects the price
-                    </Typography.Text>
-                </Col>
-
-                <Col style={{ marginTop: "4em" }}>
-                    <Typography.Title italic style={{ fontWeight: 100 }}>But how does it protect the price?</Typography.Title>
-
-                    <Typography.Text style={{ fontSize: "1.4em" }}>
-                        People cannot sell or buy millions of tokens, and big players have the same daily usage limits as
-                        average people. Without big sells or buys, we cannot move the price heavily!
-                    </Typography.Text>
-                </Col>
-            </Col>
-
-            <SafeTokenAnalytics safeTokenData={safeTokenData} isPriceMatic={isPriceMatic}
-                tokenPrice={tokenPrice} isWalletOffline={providerData === null} />
+        <Row style={{
+            width: "100%",
+            marginTop: "3em",
+            marginBottom: "5em",
+            display: "flex",
+            justifyContent: "center",
+        }}>
+            {isMobile ? <Fragment>
+                <SafeTokenAnalytics safeTokenData={safeTokenData} isPriceMatic={isPriceMatic}
+                    tokenPrice={tokenPrice} isWalletOffline={providerData === null} />
+                <SafeTokenDescription />
+            </Fragment> :
+            <Fragment>
+                <SafeTokenDescription />
+                <SafeTokenAnalytics safeTokenData={safeTokenData} isPriceMatic={isPriceMatic}
+                    tokenPrice={tokenPrice} isWalletOffline={providerData === null} />
+            </Fragment>}
         </Row>
     </Row>;
 }

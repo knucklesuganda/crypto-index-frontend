@@ -19,6 +19,36 @@ export class SafeMinter {
         return new SafeToken(tokenAddress, this.address, this.providerData);
     }
 
+    async burn(amount){
+        amount = convertToEther(amount).div(BigNumber.from("10"));
+
+        const token = await this.getToken();
+        const userBalance = await token.balanceOf(this.providerData.account);
+
+        try{
+            this._checkBalanceErrors(amount, userBalance);
+        }catch(error){
+
+            if(error instanceof BalanceError){
+                error.balance = `${userBalance} SAFE`;
+            }
+
+            throw error;
+        }
+
+        return await token.burn(amount);
+    }
+
+    _checkBalanceErrors(amount, balance){
+        if (amount.eq(0)) {
+            throw new AmountError();
+        } else if (amount.gt(balance)) {
+            const balanceError = new BalanceError();
+            balanceError.balance = `${formatNumber(bigNumberToNumber(balance))} MATIC`;
+            throw balanceError;
+        }
+    }
+
     async mint(amount) {
         amount = convertToEther(amount).div(BigNumber.from("10"));
         const { provider, account } = this.providerData;
@@ -27,13 +57,9 @@ export class SafeMinter {
         const safeToken = await this.getToken();
         const mintSupply = await safeToken.getMintSupply();
 
-        if (amount.eq(0)) {
-            throw new AmountError();
-        } else if (amount.gt(userBalance)) {
-            const balanceError = new BalanceError();
-            balanceError.balance = `${formatNumber(bigNumberToNumber(userBalance))} MATIC`;
-            throw balanceError;
-        } else if (amount.gt(mintSupply)) {
+        this._checkBalanceErrors(amount, userBalance);
+
+        if (amount.gt(mintSupply)) {
             throw new NoTokensError();
         }
 
@@ -48,7 +74,7 @@ export class SafeMinter {
             '0xab594600376ec9fd91f8e885dadf0ce036862de0', AggregatorV3ABI.abi, this.providerData.signer,
         );
         const roundData = await maticFeed.latestRoundData();
-        return roundData.answer.mul(BigNumber.from("10").pow("10")).mul(10);
+        return roundData.answer.mul(BigNumber.from("10").pow("10")).div("10");
     }
 
 }

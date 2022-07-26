@@ -64,4 +64,6 @@ const settings = {
     },
 };
 
+
+settings.ALL_PRODUCTS = [...settings.NETWORKS.ETHEREUM.PRODUCTS, ...settings.NETWORKS.POLYGON.PRODUCTS];
 export default settings;

@@ -1,5 +1,5 @@
 import { Suspense, useEffect } from "react";
-import { Header, Loading, BottomNotification } from "./components";
+import { Header, Loading } from "./components";
 import NotFoundPage from "./pages/NotFoundPage";
 import IndexPage from './pages/IndexPage/IndexPage';
 import { INDEX_PAGE, INDEX_PRODUCT_PAGE, SAFETOKEN_PRODUCT_PAGE } from "./routes";
@@ -28,8 +28,6 @@ function App() {
                 <Route path={SAFETOKEN_PRODUCT_PAGE} element={<SafeTokenPage />} />
                 <Route path="*" element={<NotFoundPage />} />
             </Routes>
-
-            <BottomNotification />
         </BrowserRouter>
     </Suspense>;
 }
