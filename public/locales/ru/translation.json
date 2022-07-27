@@ -21,7 +21,12 @@
         "description": "Покупайте много токенов в одной транзакции. Диверсифицируйте",
         "read_medium": "Прочитайте нашу статью на Медиум",
         "whitepaper": "Белая Книга(Whitepaper)",
-        "safe_token": "Сейф Токен"
+        "safe_token": "Сейф Токен",
+
+        "polygon_whitepaper": "SAFE Whitepaper(Белая книга)",
+        "polygon_description": "Сохраните криптовалюту с лимитами токенов. Держать токены будут все!",
+        "polygon_safe_token": "SAFE Токен",
+        "polygon_read_medium": "Читайте про SAFE токен на Медиум"
     },
     "buy_product": {
         "token_buy": "Купите",

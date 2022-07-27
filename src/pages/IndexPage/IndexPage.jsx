@@ -92,20 +92,20 @@ export default function IndexPage() {
             marginTop: isDesktop ? (isHalfScreen ? "0em" : "15em") : "0",
         }}>
             <Text style={{ fontSize: isDesktop ? "4.8em" : "3.5em", textAlign: isDesktop ? "inherit" : "center" }}>
-                <b style={{ fontWeight: "bolder" }}>{t("index.void")}</b> {t("index.crypto_index")}
+                <b style={{ fontWeight: "bolder" }}>{t("index.void")}</b> {t(network.INDEX_TITLE)}
             </Text>
 
-            {isDesktop ? <Text style={{ fontSize: "2em" }}>{t("index.description")}</Text> : null}
+            {isDesktop ? <Text style={{ fontSize: "2em" }}>{t(network.INDEX_DESCRIPTION)}</Text> : null}
 
             <Link style={{
                 textDecoration: "underline",
                 color: "white",
                 fontSize: "1.5em",
                 marginBottom: "0.5em",
-            }} href={network.MEDIUM_LINK}>{t("index.read_medium")}</Link>
+            }} href={network.MEDIUM_LINK}>{t(network.MEDIUM_TEXT)}</Link>
 
             <Link style={{ textDecoration: "underline", color: "white", fontSize: "1.5em" }}
-                href={network.WHITEPAPER}>{t("index.whitepaper")}</Link>
+                href={network.WHITEPAPER}>{t(network.WHITEPAPER_TEXT)}</Link>
         </Row>
 
     </Col>;

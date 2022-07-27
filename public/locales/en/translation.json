@@ -21,7 +21,12 @@
         "description": "Buy many tokens in one transaction. Diversify your crypto assets.",
         "read_medium": "Read about us on Medium",
         "whitepaper": "Whitepaper",
-        "safe_token": "Safe Token"
+        "safe_token": "Safe Token",
+
+        "polygon_whitepaper": "SAFE Whitepaper",
+        "polygon_description": "SAFE your crypto with usage limits. Make everyone HODL!",
+        "polygon_safe_token": "SAFE Token",
+        "polygon_read_medium": "Read about SAFE token on Medium"
     },
     "buy_product": {
         "token_buy": "Buy",

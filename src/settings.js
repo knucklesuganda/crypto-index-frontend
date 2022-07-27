@@ -1,6 +1,7 @@
 import { createIndexProductPage, createSafeTokenPage } from "./routes";
 import { ERC20Index } from "./web3/contracts/index/erc20Index";
 import { EtherIndex } from "./web3/contracts/index/etherIndex";
+import { SafeMinter } from "./web3/contracts/safe_token";
 
 
 const STATIC_STORAGE = "https://voidmanagementstorage.blob.core.windows.net";
@@ -39,6 +40,11 @@ const settings = {
             BUY_TOKEN_LINK: "https://app.uniswap.org/#/swap?inputCurrency=0x6b175474e89094c44da98b954eedeac495271d0f&outputCurrency=0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2&chain=mainnet",
             MEDIUM_LINK: "https://medium.com/@voidmanagement/crypto-revolution-decentralized-index-c05f45a0efb1#",
             WHITEPAPER: '/whitepaper.pdf',
+
+            WHITEPAPER_TEXT: "index.whitepaper",
+            INDEX_DESCRIPTION: "index.description",
+            INDEX_TITLE: "index.crypto_index",
+            MEDIUM_TEXT: "index.read_medium",
         },
         POLYGON: {
             NAME: "Polygon",
@@ -50,20 +56,24 @@ const settings = {
 
             PRODUCTS: [
                 {
-                    image: `${STATIC_STORAGE}/assets/indexBg.png`,
+                    image: `${STATIC_STORAGE}/assets/safe_token_bg.png`,
                     text: 'index.safe_token',
                     url: createSafeTokenPage('0x11EddA24d8A0F5f026661704560d200c3123e737'),
-                    contract: ERC20Index,
+                    contract: SafeMinter,
                 }
             ],
 
             BUY_TOKEN_LINK: "https://app.uniswap.org/#/swap&chain=polygon",
             MEDIUM_LINK: "https://medium.com/@voidmanagement/crypto-revolution-decentralized-index-c05f45a0efb1#",
             WHITEPAPER: '/whitepaper.pdf',
+
+            WHITEPAPER_TEXT: "index.polygon_whitepaper",
+            INDEX_DESCRIPTION: "index.polygon_description",
+            INDEX_TITLE: "index.polygon_safe_token",
+            MEDIUM_TEXT: "index.polygon_read_medium"
         },
     },
 };
 
 
-settings.ALL_PRODUCTS = [...settings.NETWORKS.ETHEREUM.PRODUCTS, ...settings.NETWORKS.POLYGON.PRODUCTS];
 export default settings;
