@@ -20,7 +20,7 @@ import "./style.css";
 
 export default function SafeTokenPage() {
     const { t } = useTranslation();
-    const { productAddress } = useParams();
+    const productAddress = settings.NETWORKS.POLYGON.PRODUCTS[0].address;
     const { network, changeNetworkParam } = useNetwork();
     const [tokenPrice, setTokenPrice] = useState(0);
     const [safeTokenData, setSafeTokenData] = useState(null);
@@ -75,8 +75,13 @@ export default function SafeTokenPage() {
             flexDirection: "column",
         }}>
             <Row style={{ display: "flex", alignItems: "baseline" }}>
-                <Typography.Title level={2} style={{ cursor: "pointer", fontWeight: 100, marginBottom: "0.3em" }}
-                    onMouseEnter={(event) => { event.target.style.color = '#1890ff'; }}
+                <Typography.Title level={2} style={{
+                    cursor: "pointer",
+                    fontWeight: 100,
+                    marginBottom: "0.3em",
+                    textDecoration: "underline",
+                    textDecorationThickness: "from-font",
+                }} onMouseEnter={(event) => { event.target.style.color = '#1890ff'; }}
                     onMouseLeave={(event) => { event.target.style.color = '#bfbfbf'; }}
                     onClick={() => {
                         const token = safeTokenData.token;
@@ -116,11 +121,11 @@ export default function SafeTokenPage() {
                     tokenPrice={tokenPrice} isWalletOffline={providerData === null} />
                 <SafeTokenDescription />
             </Fragment> :
-            <Fragment>
-                <SafeTokenDescription />
-                <SafeTokenAnalytics safeTokenData={safeTokenData} isPriceMatic={isPriceMatic}
-                    tokenPrice={tokenPrice} isWalletOffline={providerData === null} />
-            </Fragment>}
+                <Fragment>
+                    <SafeTokenDescription />
+                    <SafeTokenAnalytics safeTokenData={safeTokenData} isPriceMatic={isPriceMatic}
+                        tokenPrice={tokenPrice} isWalletOffline={providerData === null} />
+                </Fragment>}
         </Row>
     </Row>;
 }

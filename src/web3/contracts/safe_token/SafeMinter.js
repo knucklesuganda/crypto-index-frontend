@@ -1,8 +1,8 @@
-import { bigNumberToNumber, convertToEther, formatNumber } from "../../utils";
-import { Contract, BigNumber } from "ethers";
 import { SafeToken } from "./SafeToken";
+import { Contract, BigNumber } from "ethers";
 import SafeMinterABI from "../sources/SafeMinter.json";
 import { AmountError, BalanceError, NoTokensError } from "../errors";
+import { bigNumberToNumber, convertToEther, formatNumber } from "../../utils";
 import AggregatorV3ABI from "@chainlink/abi/v0.7/interfaces/AggregatorV3Interface.json";
 
 
@@ -20,7 +20,7 @@ export class SafeMinter {
     }
 
     async burn(amount){
-        amount = convertToEther(amount).div(BigNumber.from("10"));
+        amount = convertToEther(amount).div(BigNumber.from("100"));
 
         const token = await this.getToken();
         const userBalance = await token.balanceOf(this.providerData.account);
@@ -50,7 +50,7 @@ export class SafeMinter {
     }
 
     async mint(amount) {
-        amount = convertToEther(amount).div(BigNumber.from("10"));
+        amount = convertToEther(amount).div(BigNumber.from("100"));
         const { provider, account } = this.providerData;
         const userBalance = await provider.getBalance(account);
 
@@ -74,7 +74,7 @@ export class SafeMinter {
             '0xab594600376ec9fd91f8e885dadf0ce036862de0', AggregatorV3ABI.abi, this.providerData.signer,
         );
         const roundData = await maticFeed.latestRoundData();
-        return roundData.answer.mul(BigNumber.from("10").pow("10")).div("10");
+        return roundData.answer.mul(BigNumber.from("10").pow("8"));
     }
 
 }

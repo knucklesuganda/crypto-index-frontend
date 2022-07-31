@@ -1,4 +1,4 @@
-import { createIndexProductPage, createSafeTokenPage } from "./routes";
+import { createIndexProductPage, SAFETOKEN_PRODUCT_PAGE } from "./routes";
 import { ERC20Index } from "./web3/contracts/index/erc20Index";
 import { EtherIndex } from "./web3/contracts/index/etherIndex";
 import { SafeMinter } from "./web3/contracts/safe_token";
@@ -48,23 +48,23 @@ const settings = {
         },
         POLYGON: {
             NAME: "Polygon",
-            ID: 1337,
+            ID: 137,
             CURRENCY: { name: 'MATIC', decimals: 18, symbol: 'MATIC' },
-            URLS: ['127.0.0.1:8545'],
-            // URLS: ["https://polygon-rpc.com/"],
+            URLS: ["https://polygon-mainnet.g.alchemy.com/v2/ek0APUF__-zEjcBGit2XoTgGiQ-6eqc_"],
             EXPLORERS: ["https://polygonscan.com"],
 
             PRODUCTS: [
                 {
                     image: `${STATIC_STORAGE}/assets/safe_token_bg.png`,
                     text: 'index.safe_token',
-                    url: createSafeTokenPage('0x11EddA24d8A0F5f026661704560d200c3123e737'),
+                    url: SAFETOKEN_PRODUCT_PAGE,
+                    address: '0xc040A60288Fc432E98274caC7ceD28Ca78789720',
                     contract: SafeMinter,
                 }
             ],
 
             BUY_TOKEN_LINK: "https://app.uniswap.org/#/swap&chain=polygon",
-            MEDIUM_LINK: "https://medium.com/@voidmanagement/crypto-revolution-decentralized-index-c05f45a0efb1#",
+            MEDIUM_LINK: "https://medium.com/@voidmanagement/safe-token-everyone-hodls-b1032eb84a23",
             WHITEPAPER: '/whitepaper.pdf',
 
             WHITEPAPER_TEXT: "index.polygon_whitepaper",
@@ -74,6 +74,5 @@ const settings = {
         },
     },
 };
-
 
 export default settings;

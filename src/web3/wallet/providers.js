@@ -84,6 +84,7 @@ async function _getWallet() {
 
 
 export function getDummyProvider(address, networkData){
-    const provider = new providers.JsonRpcProvider(networkData.URL, networkData.ID);
+    const provider = new providers.JsonRpcProvider(networkData.URLS[0], networkData.ID);
+    setupEvents(provider);
     return { provider, signer: new ethers.VoidSigner(address, provider), account: null };
 }

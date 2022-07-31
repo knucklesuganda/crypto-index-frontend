@@ -76,7 +76,7 @@ export class SafeToken {
 
         const nextEpochTime = (await this.getNextEpochTime()).toNumber();
         let nextResetTime = null;
-        
+
         if(nextEpochTime > 0){
             const currentTimestamp = (new Date()).getTime();
             nextResetTime = new Date(currentTimestamp + (nextEpochTime * 1000));
@@ -104,7 +104,7 @@ export class SafeToken {
                 symbol: await this.token.symbol(),
                 decimals: await this.token.decimals(),
                 address: this.address,
-                image: "",
+                image: "https://voidmanagementstorage.blob.core.windows.net/assets/safetoken.png",
             }
         };
     }

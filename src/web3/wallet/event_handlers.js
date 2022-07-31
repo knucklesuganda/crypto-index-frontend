@@ -18,6 +18,7 @@ function chainChangedEventListener(){
 export function setupEvents(provider) {
     provider.on("error", errorEventListener);
     provider.on("disconnect", disconnectEventListener);
+
     provider.on('chainChanged', chainChangedEventListener);
     provider.on('accountsChanged', disconnectEventListener);
 }
