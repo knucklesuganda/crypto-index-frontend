@@ -29,10 +29,14 @@ export default function SafeTokenPage() {
     const isMobile = useMobileQuery();
 
     useEffect(() => {
-        if (getChainParameter() !== settings.NETWORKS.POLYGON.ID) {
-            changeNetworkParam(settings.NETWORKS.POLYGON.ID);
-            message.info(t("wallet.change_network"));
-        }
+        const polygonId = settings.NETWORKS.POLYGON.ID;
+
+        const changeNetworkIfRequired = () => {
+            if (getChainParameter() !== polygonId) {
+                message.info(t("wallet.change_network"));
+                changeNetworkParam(polygonId);
+            }
+        };
 
         document.body.className = "";
         document.title = `Void | ${t("index.safe_token")}`;
@@ -49,11 +53,17 @@ export default function SafeTokenPage() {
             if (isPriceMatic) {
                 setTokenPrice(BigNumber.from("100000000000000000"));
             } else {
-                minter.getPrice().then(price => setTokenPrice(price));
+                minter.getPrice().then(price => setTokenPrice(price)).catch(() => {
+                    changeNetworkIfRequired();
+                });
             }
 
             minter.getToken().then(token => {
-                token.getInfo().then(data => { setSafeTokenData(data) });
+                token.getInfo().then(data => { setSafeTokenData(data) }).catch(() => {
+                    changeNetworkIfRequired();
+                });
+            }).catch(() => {
+                changeNetworkIfRequired();
             });
 
         };

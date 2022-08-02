@@ -3,6 +3,7 @@ import { NetworkChanged, connectWallet } from "../web3/wallet";
 import { useEffect, useCallback, useState } from "react";
 import { useNavigate } from "react-router";
 import settings from "../settings";
+import { message } from "antd";
 
 
 export function getChainParameter(){
@@ -16,21 +17,21 @@ export function useNetwork() {
     const navigate = useNavigate();
 
     const changeNetworkParam = useCallback((chainId) => {
-
         const searchParams = new URLSearchParams(window.location.search);
         searchParams.set("chain", chainId);
         window.dispatchEvent(new NetworkChanged());
         navigate({ pathname: window.location.pathname, search: searchParams.toString() }, { replace: true });
-
     }, [navigate]);
 
     const networkChangeEvent = useCallback(() => {
+
         connectWallet(true).then(({ provider }) => {
             provider.getNetwork().then(({ chainId }) => {
+
                 const chainParameter = getChainParameter();
 
                 if(chainId !== chainParameter){
-                    changeNetwork(provider, chainParameter).catch((error) => {});
+                    changeNetwork(provider, chainParameter).catch((error) => {message.error(error.message)});
                     chainId = chainParameter;
                 }
 
@@ -40,6 +41,7 @@ export function useNetwork() {
             const chainParameter = getChainParameter();
             setNetwork(getNetwork(chainParameter));
         });
+
     }, []);
 
     useEffect(() => {

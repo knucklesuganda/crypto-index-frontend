@@ -39,7 +39,7 @@ const settings = {
 
             BUY_TOKEN_LINK: "https://app.uniswap.org/#/swap?inputCurrency=0x6b175474e89094c44da98b954eedeac495271d0f&outputCurrency=0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2&chain=mainnet",
             MEDIUM_LINK: "https://medium.com/@voidmanagement/crypto-revolution-decentralized-index-c05f45a0efb1#",
-            WHITEPAPER: '/whitepaper.pdf',
+            WHITEPAPER: `${STATIC_STORAGE}/assets/whitepaper.pdf`,
 
             WHITEPAPER_TEXT: "index.whitepaper",
             INDEX_DESCRIPTION: "index.description",
@@ -65,7 +65,7 @@ const settings = {
 
             BUY_TOKEN_LINK: "https://app.uniswap.org/#/swap&chain=polygon",
             MEDIUM_LINK: "https://medium.com/@voidmanagement/safe-token-everyone-hodls-b1032eb84a23",
-            WHITEPAPER: '/whitepaper.pdf',
+            WHITEPAPER: `${STATIC_STORAGE}/assets/whitepaper_safetoken.pdf`,
 
             WHITEPAPER_TEXT: "index.polygon_whitepaper",
             INDEX_DESCRIPTION: "index.polygon_description",

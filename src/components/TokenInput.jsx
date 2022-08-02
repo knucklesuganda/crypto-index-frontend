@@ -41,8 +41,6 @@ export function TokenInput(props) {
             status={status}
             controls={false}
             style={{ width: "100%" }}
-            formatter={formatNumber}
-            parser={value => value.replace(',', '')}
             addonAfter={
                 useAddon ? <Typography.Text>{tokenUsdPrice} {postfixSymbol}</Typography.Text> : null
             } />
