@@ -1,5 +1,5 @@
 import { TranslationOutlined, YoutubeOutlined, TwitterOutlined } from '@ant-design/icons';
-import { MobileOnly, OnlyDesktop } from "../MediaQuery";
+import { OnlyMobile, OnlyDesktop } from "../MediaQuery";
 import { useTranslation } from "react-i18next";
 import { DiscordLogo } from "./logos/DiscordLogo";
 import { UserAccount } from './UserAccount';
@@ -57,13 +57,13 @@ export function Header() {
                 }} style={{ fontSize: "2.2em" }} />
             </Col>
 
-            <MobileOnly>
+            <OnlyMobile>
                 <div style={{ marginTop: "0.4em" }}>
                     <UserAccount />
                 </div>
-            </MobileOnly>
+            </OnlyMobile>
         </Row>
 
-        <MobileOnly><Divider /></MobileOnly>
+        <OnlyMobile><Divider /></OnlyMobile>
     </Fragment>;
 }

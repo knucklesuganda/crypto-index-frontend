@@ -35,8 +35,7 @@ export function useNetwork() {
                 }
 
                 setNetwork(getNetwork(chainId));
-            }).cathc(() => {});
-
+            });
         }).catch(() => {
             const chainParameter = getChainParameter();
             setNetwork(getNetwork(chainParameter));

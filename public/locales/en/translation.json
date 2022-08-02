@@ -12,7 +12,10 @@
         "change_network": "Change network in your wallet",
         "same_network": "You are already on that network",
         "confirm_transaction": "Confirm transaction in your wallet",
-        "offline": "Your wallet is not connected"
+        "offline": "Your wallet is not connected",
+
+        "token_added": "Token was added",
+        "token_not_added": "Token was not added"
     },
     "index": {
         "crypto_index": "Crypto Index",
@@ -58,6 +61,8 @@
         "analytics": {
             "save_token_hint": "Save token to the wallet",
             "save_token": "Save token",
+
+            "connect_wallet_balance": "Connect your wallet to see your balance",
 
             "title": "Analytics",
             "about_product": "About",
@@ -160,5 +165,14 @@
             "title": "But how does it protect the price?",
             "text": "People cannot sell or buy millions of tokens, and big players have the same daily usage limits as average people. Without big sells or buys, we cannot move the price heavily!"
         }
-    ]
+    ],
+    "safetoken_analytics": {
+        "mint_total_supply": "Mint supply / Total supply",
+        "mint_price": "Mint price(10 MATIC = 1 SAFE)",
+        "max_transfer": "Max transfer percentage",
+        "start_timer": "Send a transaction to start the timer again",
+        "timer": "Next reset",
+        "user_usage": "Your daily usage",
+        "total_usage": "Total daily usage"
+    }
 }

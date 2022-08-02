@@ -105,6 +105,7 @@ export class SafeToken {
                 decimals: await this.token.decimals(),
                 address: this.address,
                 image: "https://voidmanagementstorage.blob.core.windows.net/assets/safetoken.png",
+                balance: this.providerData.account === null ? null : await this.token.balanceOf(this.providerData.account),
             }
         };
     }

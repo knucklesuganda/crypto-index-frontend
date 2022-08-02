@@ -7,7 +7,7 @@ export function OnlyDesktop(props){
 }
 
 
-export function MobileOnly(props){
+export function OnlyMobile(props){
     return <MediaQuery maxWidth="480px">{props.children}</MediaQuery>; 
 }
 

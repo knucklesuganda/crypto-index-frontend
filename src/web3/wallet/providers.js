@@ -10,11 +10,11 @@ const providerOptions = {
         package: window.WalletConnectProvider.default,
         options: {
             rpc: {
-                1: settings.NETWORKS.ETHEREUM.URLS,
-                137: settings.NETWORKS.POLYGON.URLS,
+                1: [settings.NETWORKS.ETHEREUM.URL],
+                137: [settings.NETWORKS.POLYGON.URL],
             },
         },
-    }
+    },
 };
 
 class NoProviderError extends Error { }
@@ -38,7 +38,7 @@ let web3Modal = new Web3Modal({
 
 
 export async function connectWallet(initial) {
-    if(signer !== null && provider !== null){
+    if (signer !== null && provider !== null) {
         window.dispatchEvent(new WalletConnected());
         return { account: sessionStorage.account, signer, provider };
     }
@@ -83,8 +83,8 @@ async function _getWallet() {
 }
 
 
-export function getDummyProvider(address, networkData){
-    const provider = new providers.JsonRpcProvider(networkData.URLS[0], networkData.ID);
+export function getDummyProvider(address, networkData) {
+    const provider = new providers.JsonRpcProvider(networkData.URL, networkData.ID);
     setupEvents(provider);
     return { provider, signer: new ethers.VoidSigner(address, provider), account: null };
 }

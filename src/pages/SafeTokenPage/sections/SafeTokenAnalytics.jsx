@@ -30,14 +30,14 @@ export function SafeTokenAnalytics(props) {
     const commonEndTextStyles = { textAlign: isMobile ? "center" : "end" };
 
     return <Col style={{
-        border: "1px solid #303030",
-        boxShadow: "0 0 5px 2px rgba(255, 255, 255, 0.2)",
         padding: "1em",
         fontSize: "1.2em",
-        marginLeft: isMobile ? "0" : "10em",
+        border: "1px solid #303030",
         minWidth: isMobile ? "0" : "30em",
+        marginLeft: isMobile ? "0" : "10em",
         borderLeft: isMobile ? "none" : "inherit",
         borderRight: isMobile ? "none" : "inherit",
+        boxShadow: "0 0 5px 2px rgba(255, 255, 255, 0.2)",
     }}>
         <Typography.Title level={3} style={{ fontWeight: 100, textAlign: "center" }}>
             Analytics
@@ -47,35 +47,49 @@ export function SafeTokenAnalytics(props) {
 
         <Col style={{ width: "100%" }}>
             {safeTokenData === null ? <Loading /> : <Fragment>
+                <Row style={{
+                    ...commonRowStyle,
+                    justifyContent: "center",
+                    marginBottom: isMobile ? "0.5em" : "0",
+                    fontSize: "4em",
+                    textAlign: 'center',
+                }}>
+                    <Statistic title={t('buy_product.analytics.balance')} value={
+                        safeTokenData !== null && safeTokenData.token.balance !== null ?
+                            `${formatNumber(bigNumberToNumber(safeTokenData.token.balance))} SAFE` :
+                            t("buy_product.analytics.connect_wallet_balance")
+                    } />
+                </Row>
+
                 <Row style={commonRowStyle}>
-                    <Statistic title="Mint supply / Total supply"
+                    <Statistic title={t("safetoken_analytics.mint_total_supply")}
                         value={bigNumberToNumber(safeTokenData.mintSupply)}
                         suffix={`/ ${formatNumber(bigNumberToNumber(safeTokenData.totalSupply))} SAFE`} />
 
-                    <Statistic title="Mint price(10 MATIC = 1 SAFE)" suffix={isPriceMatic ? " MATIC" : "$"}
+                    <Statistic title={t("safetoken_analytics.mint_price")} suffix={isPriceMatic ? " MATIC" : "$"}
                         value={bigNumberToNumber(tokenPrice)} style={commonEndTextStyles} />
                 </Row>
 
                 <Row style={commonRowStyle}>
-                    <Statistic title="Max transfer percentage" value={safeTokenData.maxTransferPercentage}
-                        suffix="%" />
+                    <Statistic title={t("safetoken_analytics.max_transfer")} 
+                        value={safeTokenData.maxTransferPercentage} suffix="%" />
 
                     <Countdown title={safeTokenData.nextResetTime === null ?
                         <Typography.Text style={{ color: "#e61b1b", fontWeight: "bold" }}>
-                            Send a transaction to start the timer again
-                        </Typography.Text> : "Next reset"
+                            {t("safetoken_analytics.start_timer")}
+                        </Typography.Text> : t("safetoken_analytics.timer")
                     } value={safeTokenData.nextResetTime} format="HH:mm:ss" style={commonEndTextStyles} />
                 </Row>
 
                 <Row style={{ display: "flex", alignItems: "center", justifyContent: "space-around" }}>
                     <Col style={{ marginRight: isMobile ? "0" : "1em", marginBottom: isMobile ? "1em" : "0" }}>
-                        <TokenUsageProgress title="Your daily usage"
+                        <TokenUsageProgress title={t("safetoken_analytics.user_usage")}
                             percent={safeTokenData.userLeftPercentage}
                             leftLimit={safeTokenData.userLeftLimit}
                             totalLimit={safeTokenData.userTransferLimit} />
                     </Col>
 
-                    <TokenUsageProgress title="Total token usage"
+                    <TokenUsageProgress title={t("safetoken_analytics.total_usage")}
                         percent={safeTokenData.totalLeftPercentage}
                         leftLimit={safeTokenData.totalLeftLimit}
                         totalLimit={safeTokenData.totalTransferLimit} />

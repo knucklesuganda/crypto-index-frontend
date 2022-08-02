@@ -2,8 +2,8 @@ import { useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { bigNumberToNumber } from "../../../web3/utils";
 import { Loading, TokenInput } from "../../../components";
-import { LoadingOutlined, FireTwoTone } from "@ant-design/icons";
 import { Spin, Form, Button, message, Radio, Row } from "antd";
+import { LoadingOutlined, FireTwoTone } from "@ant-design/icons";
 import { AmountError, BalanceError, NoTokensError } from "../../../web3/contracts/errors";
 import { LimitExceededError, SafeMinter, TotalLimitExceededError } from "../../../web3/contracts/safe_token";
 
@@ -24,9 +24,9 @@ export function SafeTokenBuy(props) {
                 let transactionPromise;
                 const amount = values.amount;
 
-                if(isBurn){
+                if (isBurn) {
                     transactionPromise = minter.burn(amount);
-                }else{
+                } else {
                     transactionPromise = minter.mint(amount);
                 }
 
@@ -43,9 +43,9 @@ export function SafeTokenBuy(props) {
                         errorMessage = t("buy_product.buy_form.no_tokens_error");
                     } else if (error instanceof AmountError) {
                         errorMessage = t("buy_product.buy_form.amount_error");
-                    } else if(error instanceof LimitExceededError){
+                    } else if (error instanceof LimitExceededError) {
                         errorMessage = t("buy_product.buy_form.limit_error");
-                    }else if(error instanceof TotalLimitExceededError){
+                    } else if (error instanceof TotalLimitExceededError) {
                         errorMessage = t("buy_product.buy_form.total_limit_error");
                     }
 
@@ -55,7 +55,7 @@ export function SafeTokenBuy(props) {
                 {tokenPrice === 0 ? <Loading /> :
                     <TokenInput useAddon inputRef={inputRef} productPrice={tokenPrice}
                         prefixSymbol="SAFE"
-                        postfixSymbol={isPriceMatic ? "MATIC" : "USD"}
+                        postfixSymbol={isPriceMatic ? "MATIC" : "$"}
                         minValue={1}
                         maxValue={mintSupply ? bigNumberToNumber(mintSupply) : null} />}
 
@@ -86,7 +86,6 @@ export function SafeTokenBuy(props) {
                     </Button>
                 </Form.Item>
             </Form>
-
         </Row>
-    </Spin>;
+    </Spin >;
 }

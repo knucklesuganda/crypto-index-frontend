@@ -1,6 +1,7 @@
 import { SafeTokenDescription } from "./sections/SafeTokenDescription";
 import { getChainParameter, useNetwork } from "../../hooks/useNetwork";
 import { SafeTokenAnalytics } from "./sections/SafeTokenAnalytics";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { useMobileQuery } from "../../components/MediaQuery";
 import { getDummyProvider } from "../../web3/wallet/providers";
 import { addTokenToWallet } from "../../web3/wallet/functions";
@@ -8,11 +9,9 @@ import { SafeMinter } from "../../web3/contracts/safe_token";
 import { SafeTokenBuy } from "./sections/SafeTokenBuy";
 import { bigNumberToNumber } from "../../web3/utils";
 import { Row, Col, Typography, message } from "antd";
-import { Fragment, useEffect, useRef, useState } from "react";
 import { WalletConnector } from "../../components";
 import { useTranslation } from "react-i18next";
 import { useProvider } from "../../hooks";
-import { useParams } from "react-router";
 import settings from "../../settings";
 import { BigNumber } from "ethers";
 import "./style.css";
@@ -91,7 +90,11 @@ export default function SafeTokenPage() {
                             address: token.address,
                             decimals: token.decimals,
                             image: token.image,
-                        }).catch(() => { });
+                        }).then((wasAdded) => {
+                            message.info(wasAdded ? t('wallet.token_added') : t("wallet.token_not_added"));
+                        }).catch((error) => {
+                            message.error(error.message.toString());
+                        });
 
                     }}>{t("index.safe_token")}</Typography.Title>
 
@@ -104,18 +107,14 @@ export default function SafeTokenPage() {
                 <WalletConnector style={{ alignContent: "flex-start", height: "auto" }}
                     handleWalletConnection={handleWalletConnection} /> :
                 <SafeTokenBuy productAddress={productAddress}
-                    providerData={providerData} tokenPrice={tokenPrice}
+                    providerData={providerData}
+                    tokenPrice={tokenPrice}
+                    tokenBalance={safeTokenData ? safeTokenData.token.balance : null}
                     mintSupply={safeTokenData ? safeTokenData.mintSupply : null}
                     isPriceMatic={isPriceMatic} setIsPriceMatic={setIsPriceMatic} />}
         </Col>
 
-        <Row style={{
-            width: "100%",
-            marginTop: "3em",
-            marginBottom: "5em",
-            display: "flex",
-            justifyContent: "center",
-        }}>
+        <Row style={{ width: "100%", marginTop: "3em", marginBottom: "5em", display: "flex", justifyContent: "center" }}>
             {isMobile ? <Fragment>
                 <SafeTokenAnalytics safeTokenData={safeTokenData} isPriceMatic={isPriceMatic}
                     tokenPrice={tokenPrice} isWalletOffline={providerData === null} />

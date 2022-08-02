@@ -19,7 +19,7 @@ const settings = {
             NAME: "Ethereum",
             ID: 1,
             CURRENCY: { name: 'ETHEREUM', decimals: 18, symbol: 'ETH' },
-            URLS: ["https://eth-mainnet.alchemyapi.io/v2/KQmEoXn9kKfPL4AAljiW1XV39HRHff_K"],
+            URL: "https://eth-mainnet.alchemyapi.io/v2/KQmEoXn9kKfPL4AAljiW1XV39HRHff_K",
             EXPLORERS: ["https://etherscan.io"],
 
             PRODUCTS: [
@@ -50,7 +50,7 @@ const settings = {
             NAME: "Polygon",
             ID: 137,
             CURRENCY: { name: 'MATIC', decimals: 18, symbol: 'MATIC' },
-            URLS: ["https://polygon-mainnet.g.alchemy.com/v2/ek0APUF__-zEjcBGit2XoTgGiQ-6eqc_"],
+            URL: "https://polygon-mainnet.g.alchemy.com/v2/ek0APUF__-zEjcBGit2XoTgGiQ-6eqc_",
             EXPLORERS: ["https://polygonscan.com"],
 
             PRODUCTS: [

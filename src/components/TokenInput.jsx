@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 
 function getTokenRoundedPrice(amount, productPrice) {
     const totalPrice = productPrice * amount;
-    //console.log(totalPrice, amount, productPrice)
     const roundedPrice = formatNumber(Math.floor((totalPrice + Number.EPSILON) * 100000) / 100000);
     return roundedPrice;
 }

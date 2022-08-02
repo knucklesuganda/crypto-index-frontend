@@ -1,9 +1,8 @@
-import { message } from "antd";
 import { hexValue } from "ethers/lib/utils";
 import settings from "../../settings";
 
 
-export class AlreadySendError extends Error {}
+export class AlreadySendError extends Error { }
 
 
 export async function addTokenToWallet(provider, token) {
@@ -14,8 +13,6 @@ export async function addTokenToWallet(provider, token) {
     } else if (token.symbol.length > 11) {
         symbol = token.symbol.slice(0, 6) + "...";
     }
-
-    message.info("Check your wallet to add the token");
 
     return await provider.send('wallet_watchAsset', {
         type: 'ERC20',
@@ -38,9 +35,9 @@ export function getNetwork(networkId) {
 }
 
 
-export function getProductByAddress(products, address){
+export function getProductByAddress(products, address) {
     for (const product of products) {
-        if(product.address === address){
+        if (product.address === address) {
             return product;
         }
     }
@@ -53,18 +50,16 @@ export async function changeNetwork(provider, networkId) {
     try {
         await provider.send('wallet_switchEthereumChain', [{ chainId: hexValue(networkData.ID) }]);
     } catch (error) {
-        
-
-        if(error.code === -32002){}
+        if (error.code === -32002) { }
         else if (error.code === 4902) {
             await provider.send('wallet_addEthereumChain', [{
                 chainName: networkData.NAME,
                 chainId: hexValue(networkData.ID),
                 nativeCurrency: networkData.CURRENCY,
-                rpcUrls: networkData.URLS,
+                rpcUrls: [networkData.URL],
                 blockExplorerUrls: networkData.EXPLORERS,
             }]);
-        }else{
+        } else {
             throw error;
         }
     }
