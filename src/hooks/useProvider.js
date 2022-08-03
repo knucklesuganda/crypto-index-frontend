@@ -5,13 +5,9 @@ export function useProvider() {
     const [providerData, setProviderData] = useState(null);
 
     const handleWalletConnection = (initial) => {
-
         return connectWallet(initial).then((providerData) => {
-            if(providerData !== null){
-                setProviderData(providerData);
-            }
+            if(providerData !== null){ setProviderData(providerData); }
         });
-
     };
 
     useEffect(() => {

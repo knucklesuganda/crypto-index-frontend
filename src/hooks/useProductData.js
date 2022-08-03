@@ -1,31 +1,45 @@
-import { useState, useEffect, useRef } from "react";
-import { useIndex } from "./useIndex";
 import settings from "../settings";
+import { useState, useEffect, useRef } from "react";
+import { getNetwork, getProductByAddress } from "../web3/wallet/functions";
 
 
-export function useProductData(productAddress, providerData) {
+export function useProductData(providerData, productAddress) {
     const [productData, setProductData] = useState(null);
-    const index = useIndex(productAddress, providerData);
+    const [product, setProduct] = useState(null);
     const updateInterval = useRef(null);
 
     useEffect(() => {
-        if (providerData === null || index === null) {
-            return;
+        const cleanupFunction = () => { clearInterval(updateInterval.current); };
+
+        if(!providerData){
+            return cleanupFunction;
         }
 
-        index.getInformation().then(product => {
-            setProductData(product);
-            document.title = `Void | ${product.name}`;
-        });
+        if(!product){
+            providerData.provider.getNetwork().then(({ chainId }) => {
+                const networkData = getNetwork(chainId);
+                const foundProduct = getProductByAddress(networkData.PRODUCTS);
 
-        updateInterval.current = setInterval(() => {
-            index.getInformation().then((index) => {
-                setProductData(index);
+                if(!foundProduct){
+                    return cleanupFunction;
+                }
+
+                const productInstance = new foundProduct.contract(productAddress, providerData);
+                setProduct(productInstance);
+            }).catch();
+        }else{
+            product.getInformation().then(productInfo => {
+                setProductData(productInfo);
+                document.title = `Void | ${productInfo.name}`;
             });
-        }, settings.STATE_UPDATE_INTERVAL);
 
-        return () => { clearInterval(updateInterval.current); };
-    }, [providerData, productAddress, index]);
+            updateInterval.current = setInterval(() => {
+                product.getInformation().then((productInfo) => { setProductData(productInfo); });
+            }, settings.STATE_UPDATE_INTERVAL);
+        }
 
-    return { productData, index };
+        return cleanupFunction;
+    }, [providerData, productAddress, product]);
+
+    return { productData, product };
 }

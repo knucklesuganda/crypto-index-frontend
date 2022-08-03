@@ -39,3 +39,28 @@ html {
     border: 1px solid white;
     box-shadow: 0px 0px 50px 0px rgba(255, 255, 255, 0.2);
 }
+
+.bordered_button{
+    cursor: pointer;
+    padding: 0.5em;
+    background: #0a0a0a;
+    border: 1px solid #303030;
+    border-radius: 4px;
+    transition: 200ms;
+}
+
+.bordered_button:hover{
+    box-shadow: 0 0 4px 0px white;
+}
+
+body{
+    background-attachment: fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    width: 100vw;
+    height: 100%;
+}

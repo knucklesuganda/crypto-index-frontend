@@ -1,24 +1,30 @@
 import { BigNumber } from "ethers";
-import { formatEther, parseEther } from "ethers/lib/utils";
+import { parseEther, formatUnits } from "ethers/lib/utils";
 
 
-export function bigNumberToString(value) {
+export function bigNumberToNumber(value, valuePrecision) {
+    valuePrecision = isNaN(valuePrecision) ? 18 : valuePrecision;
     const decimalPlaces = Math.pow(10, 10);
-    return Math.floor(parseFloat(formatEther(value)) * decimalPlaces) / decimalPlaces;
+    return Math.floor(parseFloat(formatUnits(value, valuePrecision)) * decimalPlaces) / decimalPlaces;
 }
 
 
-export function formatBigNumber(value, precision) {
+export function roundNumber(value, precision) {
     if (isNaN(precision)) {
         precision = 10;
     }
 
     const decimalPlaces = Math.pow(10, precision);
-    return Math.floor(bigNumberToString(value) * decimalPlaces) / decimalPlaces;
+
+    if(value instanceof BigNumber){
+        value = bigNumberToNumber(value);
+    }
+
+    return Math.floor(value * decimalPlaces) / decimalPlaces;
 }
 
 export function formatNumber(value) {
-    return value.toString().replace(/(?<!(\.\d*|^.{0}))(?=(\d{3})+(?!\d))/g, ',');
+    return value.toString().replace(' ', '').replace(/(?<!(\.\d*|^.{0}))(?=(\d{3})+(?!\d))/g, ',');
 }
 
 export function convertToEther(value) {

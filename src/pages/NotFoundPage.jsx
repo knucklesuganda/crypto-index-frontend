@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Col, Row, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 import { Fade } from "../components/animations";
@@ -6,6 +7,11 @@ import { Fade } from "../components/animations";
 export default function NotFoundPage() {
     const errorMessages = [];
     const { t } = useTranslation();
+
+    useEffect(() => {
+        document.body.className = "";
+        return () => {};
+    });
 
     for (let index = 0; index < 24; index++) {
         errorMessages.push(

@@ -8,7 +8,15 @@
         "buy_crypto": "Get crypto to your wallet",
         "buy_crypto_description": "Buy crypto from exchanges",
         "connect_wallet": "Connect the wallet",
-        "connect_wallet_description": "Connect your crypto wallet to void management"
+        "connect_wallet_description": "Connect your crypto wallet to void management",
+        "change_network": "Change network in your wallet",
+        "same_network": "You are already on that network",
+        "confirm_transaction": "Confirm transaction in your wallet",
+        "offline": "Your wallet is not connected",
+        "change_network_to": "Change network in your wallet to",
+
+        "token_added": "Token was added",
+        "token_not_added": "Token was not added"
     },
     "index": {
         "crypto_index": "Crypto Index",
@@ -16,11 +24,18 @@
         "void": "Void",
         "description": "Buy many tokens in one transaction. Diversify your crypto assets.",
         "read_medium": "Read about us on Medium",
-        "whitepaper": "Whitepaper"
+        "whitepaper": "Whitepaper",
+        "safe_token": "Safe Token",
+
+        "polygon_whitepaper": "SAFE Whitepaper",
+        "polygon_description": "SAFE your crypto with usage limits. Make everyone HODL!",
+        "polygon_safe_token": "SAFE Token",
+        "polygon_read_medium": "Read about SAFE token on Medium"
     },
     "buy_product": {
         "token_buy": "Buy",
         "token_buy_here": "here",
+        "token_burn": "Burn",
 
         "buy_form": {
             "amount": {
@@ -40,11 +55,15 @@
             "liquidity_error": "Not enough liquidity, try buying less tokens or wait for some time",
             "balance_error": "You do not have enough tokens. Your balance",
             "settlement_error": "You cannot interact with the product while the funds are being settled",
-            "success_message": "Your operation was successful"
+            "success_message": "Your operation was successful",
+            "limit_error": "Your today's limit is exceeded",
+            "total_limit_error": "Total token limit is exceeded"
         },
         "analytics": {
             "save_token_hint": "Save token to the wallet",
             "save_token": "Save token",
+
+            "connect_wallet_balance": "Connect your wallet to see your balance",
 
             "title": "Analytics",
             "about_product": "About",
@@ -133,5 +152,28 @@
         "must_connect": "You must connect your wallet in order to buy products",
         "connect_wallet": "Connect wallet",
         "choose_another_provider": "Choose another provider"
+    },
+    "safetoken": [
+        {
+            "title": "What is SAFE Token?",
+            "text": "SAFE Token is a currency that will allow you to protect your investments from big price changes."
+        },
+        {
+            "title": "How does SAFE work?",
+            "text": "You can only use a small fraction of tokens each day. That makes everyone HODL and protects the price"
+        },
+        {
+            "title": "But how does it protect the price?",
+            "text": "People cannot sell or buy millions of tokens, and big players have the same daily usage limits as average people. Without big sells or buys, we cannot move the price heavily!"
+        }
+    ],
+    "safetoken_analytics": {
+        "mint_total_supply": "Mint supply / Total supply",
+        "mint_price": "Mint price(10 MATIC = 1 SAFE)",
+        "max_transfer": "Max transfer percentage",
+        "start_timer": "Send a transaction to start the timer again",
+        "timer": "Next reset",
+        "user_usage": "Your daily usage",
+        "total_usage": "Total daily usage"
     }
 }

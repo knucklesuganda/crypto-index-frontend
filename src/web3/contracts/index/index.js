@@ -1,10 +1,11 @@
-import {
+import { DebtExceededError, LiquidityError, ProductSettlementError } from "./baseIndex";
+import { AmountError, BalanceError, NoTokensError } from "../errors";
+
+export {
     DebtExceededError,
     LiquidityError,
-    NoTokensError,
     ProductSettlementError,
-    BalanceError,
     AmountError,
-} from "./baseIndex";
-
-export { DebtExceededError, LiquidityError, NoTokensError, ProductSettlementError, BalanceError, AmountError };
+    BalanceError,
+    NoTokensError,
+};

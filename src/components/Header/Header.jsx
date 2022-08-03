@@ -1,59 +1,27 @@
-import { Fragment, useEffect, useState } from "react";
-import { Title } from "../Title";
-import { Col, Row } from "antd";
-import { UserAgreement } from "..";
-import { INDEX_PAGE } from "../../routes";
-import { Divider, Typography } from "antd";
-import { useTranslation } from "react-i18next";
-import { MobileOnly, OnlyDesktop } from "../MediaQuery";
 import { TranslationOutlined, YoutubeOutlined, TwitterOutlined } from '@ant-design/icons';
-import { clearProvider } from "../../web3/wallet/providers";
-import { DiscordLogo } from "./DiscordLogo";
-import "./style.css";
+import { OnlyMobile, OnlyDesktop } from "../MediaQuery";
+import { useTranslation } from "react-i18next";
+import { DiscordLogo } from "./logos/DiscordLogo";
+import { UserAccount } from './UserAccount';
 import { useNavigate } from "react-router";
+import { UserAgreement, Title } from "..";
+import { INDEX_PAGE } from "../../routes";
+import { Col, Row, Divider } from "antd";
+import { Fragment } from "react";
+import "./style.css";
 
 
-function UserAccount() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const { t } = useTranslation();
-
-    useEffect(() => {
-        const accountConnected = (_) => { setIsLoggedIn(true); };
-        window.addEventListener('account_connected', accountConnected, false);
-
-        return () => { window.removeEventListener('account_connected', accountConnected); };
-    }, [setIsLoggedIn]);
-
-    if (!isLoggedIn) {
-        return <span />;
-    }
-
-    const text = `${t("logout")} ${sessionStorage.account.slice(0, 15)}...`;
-
-    return <Col style={{
-        cursor: "pointer",
-        padding: "0.5em",
-        background: "#0a0a0a",
-        border: "1px solid #303030",
-        borderRadius: "4px",
-    }} onClick={() => {
-        clearProvider();
-        window.location.reload();
-    }}>
-        <Typography.Text style={{ fontSize: "1.2em" }}>{text}</Typography.Text>
-    </Col>;
-}
-
-
-export function Header(props) {
-    const { t, i18n } = useTranslation();
+export function Header() {
     const navigate = useNavigate();
+    const { t, i18n } = useTranslation();
 
     return <Fragment>
         <Row id="header_row">
             <Col>
                 <Title id='start'>
-                    <span onClick={() => {navigate(INDEX_PAGE)}} style={{ color: "white" }}>{t('title')}</span>
+                    <span onClick={() => { navigate(INDEX_PAGE) }} style={{ color: "white", cursor: "pointer" }}>
+                        {t('title')}
+                    </span>
                 </Title>
             </Col>
 
@@ -89,13 +57,13 @@ export function Header(props) {
                 }} style={{ fontSize: "2.2em" }} />
             </Col>
 
-            <MobileOnly>
+            <OnlyMobile>
                 <div style={{ marginTop: "0.4em" }}>
                     <UserAccount />
                 </div>
-            </MobileOnly>
+            </OnlyMobile>
         </Row>
 
-        <MobileOnly><Divider /></MobileOnly>
+        <OnlyMobile><Divider /></OnlyMobile>
     </Fragment>;
 }

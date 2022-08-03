@@ -1,15 +1,13 @@
-import settings from "../../../settings";
 import { useState, useRef } from 'react';
 import { useTranslation } from "react-i18next";
 import { addTokenNotification, TokenInput } from "../../../components";
 import { OnlyDesktop, useMobileQuery } from "../../../components/MediaQuery";
 import { LoadingOutlined, RiseOutlined, FallOutlined } from '@ant-design/icons';
-import { formatBigNumber, formatNumber } from "../../../web3/utils";
+import { roundNumber, formatNumber } from "../../../web3/utils";
+import { DebtExceededError, LiquidityError, NoTokensError,
+    ProductSettlementError, BalanceError, AmountError } from "../../../web3/contracts/index/index";
 import { Form, Col, Radio, Row, Button, Typography, Collapse, message, Avatar, Spin, Modal } from "antd";
-import {
-    DebtExceededError, LiquidityError, NoTokensError,
-    ProductSettlementError, BalanceError, AmountError,
-} from "../../../web3/contracts/index/index";
+import { useNetwork } from "../../../hooks/useNetwork";
 
 
 function DebtSection(props) {
@@ -24,12 +22,12 @@ function DebtSection(props) {
     return <Col style={{ display: "flex", flexDirection: "column", alignContent: 'center' }}>
         <Typography.Text style={{ paddingBottom: "0.2em", fontSize: "1.2em" }}
             title={t('buy_product.total_available_debt_hint')}>
-            {t('buy_product.total_available_debt_text')}: {formatBigNumber(totalDebt, 6)} {sectionSymbol}
+            {t('buy_product.total_available_debt_text')}: {roundNumber(totalDebt, 6)} {sectionSymbol}
         </Typography.Text>
 
         <Col style={{ fontSize: "1.2em", paddingBottom: "0.2em" }}>
             <Typography.Text>
-                {t('buy_product.user_debt_text')}: {formatBigNumber(userDebt, 6)} {sectionSymbol}
+                {t('buy_product.user_debt_text')}: {roundNumber(userDebt, 6)} {sectionSymbol}
             </Typography.Text>
         </Col>
 
@@ -66,7 +64,7 @@ function DebtSection(props) {
                 <TokenInput prefixSymbol={sectionSymbol}
                     productPrice={productData.price}
                     postfixSymbol={productData.buyToken.symbol}
-                    maxValue={formatBigNumber(userDebt)}
+                    maxValue={roundNumber(userDebt)}
                     useAddon={isBuyDebt} inputRef={inputRef} />
 
                 <Button htmlType="submit" type="primary" danger={productData.isSettlement || totalDebt.eq(0)}
@@ -138,6 +136,7 @@ function createProductAlert(name) {
 
 
 export function ProductBuySection(props) {
+    const { network } = useNetwork();
     const { providerData, productData, product } = props;
     const [inProgress, setInProgress] = useState(false);
     const [operationType, setOperationType] = useState(true);
@@ -179,7 +178,7 @@ export function ProductBuySection(props) {
                             }
 
                             errorMessage = `${t('buy_product.buy_form.balance_error')}: 
-                                ${formatNumber(formatBigNumber(tokenBalance))} ${tokenSymbol}`;
+                                ${formatNumber(roundNumber(tokenBalance))} ${tokenSymbol}`;
 
                         } else if (error instanceof AmountError) {
                             errorMessage = t("buy_product.buy_form.amount_error");
@@ -203,7 +202,7 @@ export function ProductBuySection(props) {
                     minValue={0.00001}
                     productPrice={productData.price}
                     postfixSymbol={productData.buyToken.symbol}
-                    maxValue={formatBigNumber(productData.availableLiquidity)}
+                    maxValue={roundNumber(productData.availableLiquidity)}
                     productSymbol={productData.productToken.symbol}
                     prefixSymbol={productData.productToken.symbol}
                 />
@@ -239,7 +238,7 @@ export function ProductBuySection(props) {
                         </Typography.Text> :
 
                         <Typography.Link style={{ fontSize: "1.1em", textDecoration: "underline" }}
-                            type="success" href={settings.BUY_DAI_LINK} target="_blank">
+                            type="success" href={network.BUY_TOKEN_LINK} target="_blank">
 
                             {t("buy_product.token_buy")} {productData.buyToken.symbol} {t("buy_product.token_buy_here")}
                         </Typography.Link>}
@@ -293,7 +292,7 @@ export function ProductBuySection(props) {
             }}>
                 <Typography.Text style={{ fontSize: "1.2em" }} title={t("buy_product.analytics.balance_hint")}>
                     {t('buy_product.analytics.balance')}: {
-                        formatBigNumber(productData.productToken.balance)} {productData.productToken.symbol}
+                        roundNumber(productData.productToken.balance)} {productData.productToken.symbol}
                 </Typography.Text>
             </Col>
         </OnlyDesktop>

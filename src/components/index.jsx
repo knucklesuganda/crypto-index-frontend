@@ -6,6 +6,8 @@ import { addTokenNotification, AddToken } from "./AddToken";
 import { WalletConnector } from "./WalletConnector";
 import { UserAgreement } from "./UserAgreement";
 import { TokenInput } from "./TokenInput";
+import { BottomNotification } from "./BottomNotification";
+
 
 export {
     Title,
@@ -13,6 +15,7 @@ export {
     NextPage,
     TokenInput,
     addTokenNotification,
+    BottomNotification,
     Header,
     AddToken,
     WalletConnector,

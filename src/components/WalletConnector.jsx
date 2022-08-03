@@ -8,10 +8,10 @@ const { Step } = Steps;
 
 
 export function WalletConnector(props) {
-    const [isHidden, setIsHidden] = useState(false);
-    const { handleWalletConnection } = props;
     const { t } = useTranslation();
+    const { handleWalletConnection } = props;
     const [currentStep, setCurrentStep] = useState(0);
+    const [isHidden, setIsHidden] = useState(false);
 
     const connectWallet = useCallback(() => {
 
@@ -34,6 +34,7 @@ export function WalletConnector(props) {
         marginLeft: "auto",
         marginRight: "auto",
         textAlign: "center",
+        ...props.style,
     }}>
         <Card style={{ background: "#0a0a0a", boxShadow: "5px 5px 25px 0px rgba(255, 255, 255, 0.2)" }}>
             <Col>

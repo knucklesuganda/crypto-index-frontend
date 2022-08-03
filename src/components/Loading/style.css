@@ -2,6 +2,7 @@
     height: 50vh;
     width: 100%;
     display: flex;
+    position: block;
     justify-content: center;
     transform: scale(0.5);
     padding-right: 5em;
@@ -9,7 +10,7 @@
 }
 
 .cube {
-    position: absolute;
+    position: fixed;
     width: 86px;
     height: 100px;
 }

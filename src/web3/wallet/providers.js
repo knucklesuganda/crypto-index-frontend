@@ -1,26 +1,30 @@
+import { NetworkChanged, WalletConnected } from "./events";
+import { ethers, providers } from "ethers";
+import { setupEvents } from "./event_handlers";
 import Web3Modal from "web3modal";
-import { ethers } from "ethers";
-import { setupEvents } from "./events";
 import settings from "../../settings";
 
 
 const providerOptions = {
     walletconnect: {
         package: window.WalletConnectProvider.default,
-        options: { rpc: { 1: settings.PUBLIC_RPC_URL } },
-    }
+        options: {
+            rpc: {
+                1: [settings.NETWORKS.ETHEREUM.URL],
+                137: [settings.NETWORKS.POLYGON.URL],
+            },
+        },
+    },
 };
 
 class NoProviderError extends Error { }
 export class NoInitialProviderError extends NoProviderError { }
-export class NotConnectedError extends Error {}
+export class NotConnectedError extends Error { }
 
 
 let signer = null, provider = null;
 let web3Modal = new Web3Modal({
-
     cacheProvider: true,
-    network: "mainnet",
     providerOptions,
 
     theme: {
@@ -28,40 +32,37 @@ let web3Modal = new Web3Modal({
         main: "#ffffff",
         secondary: "#177ddc",
         border: "#a0a0a0",
-        hover: "#272323"
+        hover: "#272323",
     },
 });
 
 
 export async function connectWallet(initial) {
+    if (signer !== null && provider !== null) {
+        window.dispatchEvent(new WalletConnected());
+        return { account: sessionStorage.account, signer, provider };
+    }
 
     let web3ModalProvider;
 
-    try {
-
-        if (initial === true && typeof web3Modal.cachedProvider === "string") {
-
-            try{
+    if (initial === true && (typeof web3Modal.cachedProvider !== "string" || !web3Modal.cachedProvider)) {
+        throw new NoProviderError();
+    } else if (initial === true) {
+        try {
             web3ModalProvider = await web3Modal.connectTo(web3Modal.cachedProvider);
-            }catch(error){
-                throw new NotConnectedError(error.message);
-            }
-
-
-        } else if (initial === true) {
-            throw new NoProviderError();
+        } catch (error) {
+            throw new NotConnectedError(error.message);
         }
-
+    } else {
         web3ModalProvider = await web3Modal.connect();
-    } catch (error) {
-        throw new NoProviderError(error);
     }
 
-    provider = new ethers.providers.Web3Provider(web3ModalProvider);
+    provider = new ethers.providers.Web3Provider(web3ModalProvider, "any");
     signer = provider.getSigner();
-
     sessionStorage.account = await _getWallet();
-    window.dispatchEvent(new Event("account_connected"));
+
+    window.dispatchEvent(new WalletConnected());
+    window.dispatchEvent(new NetworkChanged());
     setupEvents(provider);
 
     return { account: sessionStorage.account, signer, provider };
@@ -77,6 +78,13 @@ export async function clearProvider() {
 }
 
 
-export async function _getWallet() {
+async function _getWallet() {
     return (await provider.listAccounts())[0];
+}
+
+
+export function getDummyProvider(address, networkData) {
+    const provider = new providers.JsonRpcProvider(networkData.URL, networkData.ID);
+    setupEvents(provider);
+    return { provider, signer: new ethers.VoidSigner(address, provider), account: null };
 }

@@ -1,12 +1,13 @@
 import { useDesktopQuery, useHalfScreenQuery } from "../../components/MediaQuery";
 import { Row, Col, Typography, Image } from "antd";
-import { useNavigate } from "react-router";
-import { useState } from "react";
+import { useNetwork } from "../../hooks/useNetwork";
 import { useTranslation } from "react-i18next";
-import { createProductPage } from "../../routes";
-import settings from "../../settings";
+import { useNavigate } from "react-router";
 import { Loading } from "../../components";
+import settings from "../../settings";
+import { useState, useEffect } from "react";
 import "./style.css";
+import { NetworkChanged } from "../../web3/wallet";
 
 
 const { Text, Link } = Typography;
@@ -45,9 +46,27 @@ function ProductCard(props) {
 
 export default function IndexPage() {
     const { t } = useTranslation();
+    const { network } = useNetwork();
     const isDesktop = useDesktopQuery();
     const isHalfScreen = useHalfScreenQuery();
-    document.body.className = 'indexBackground';
+    const [currentProducts, setCurrentProducts] = useState(settings.NETWORKS.ETHEREUM.PRODUCTS);
+
+    useEffect(() => {
+        setCurrentProducts(network.PRODUCTS);
+
+        const changeBackground = () => {
+            if (network && network.ID === settings.NETWORKS.POLYGON.ID) {
+                document.body.className = 'polygonIndexBackground';
+            } else {
+                document.body.className = 'indexBackground';
+            }
+        };
+
+        changeBackground();
+        window.addEventListener((new NetworkChanged()).type, changeBackground);
+
+        return () => { window.removeEventListener((new NetworkChanged()).type, changeBackground); };
+    }, [network]);
 
     return <Col style={{
         display: "flex",
@@ -59,15 +78,11 @@ export default function IndexPage() {
         alignItems: isDesktop ? "flex-start" : "center",
         height: isDesktop ? "80vh" : "inherit",
     }}>
-        <Row style={{ display: "flex", justifyContent: "space-between", width: "80vw" }}>
-            <ProductCard image={`${settings.STATIC_STORAGE}/assets/indexBg.png`}
-                text={t('index.crypto_index')} isDesktop={isDesktop}
-                url={createProductPage('index', settings.PRODUCTS.INDEX_ADDRESS)} />
-
-            <ProductCard image={`${settings.STATIC_STORAGE}/assets/ethIndexBg.png`}
-                text={t('index.eth_index')} isDesktop={isDesktop}
-                url={createProductPage('index', settings.PRODUCTS.ETH_INDEX_ADDRESS)} />
-        </Row>
+        <Row style={{ display: "flex", justifyContent: "space-between", width: "80vw" }}>{
+            currentProducts.map((product, index) => <ProductCard key={index}
+                image={product.image} text={t(product.text)}
+                isDesktop={isDesktop} url={product.url} />)
+        }</Row>
 
         <Row style={{
             fontWeight: "100",
@@ -77,16 +92,20 @@ export default function IndexPage() {
             marginTop: isDesktop ? (isHalfScreen ? "0em" : "15em") : "0",
         }}>
             <Text style={{ fontSize: isDesktop ? "4.8em" : "3.5em", textAlign: isDesktop ? "inherit" : "center" }}>
-                <b style={{ fontWeight: "bolder" }}>{t("index.void")}</b> {t("index.crypto_index")}
+                <b style={{ fontWeight: "bolder" }}>{t("index.void")}</b> {t(network.INDEX_TITLE)}
             </Text>
 
-            {isDesktop ? <Text style={{ fontSize: "2em" }}>{t("index.description")}</Text> : null}
+            {isDesktop ? <Text style={{ fontSize: "2em" }}>{t(network.INDEX_DESCRIPTION)}</Text> : null}
 
-            <Link style={{ fontSize: "1.5em", marginBottom: "0.5em" }} href={settings.MEDIUM_LINK}>
-                {t("index.read_medium")}</Link>
+            <Link style={{
+                textDecoration: "underline",
+                color: "white",
+                fontSize: "1.5em",
+                marginBottom: "0.5em",
+            }} href={network.MEDIUM_LINK}>{t(network.MEDIUM_TEXT)}</Link>
 
-            <Link style={{ fontSize: "1.5em", background: "black" }} href='/whitepaper.pdf'>
-                {t("index.whitepaper")}</Link>
+            <Link style={{ textDecoration: "underline", color: "white", fontSize: "1.5em" }}
+                href={network.WHITEPAPER}>{t(network.WHITEPAPER_TEXT)}</Link>
         </Row>
 
     </Col>;
