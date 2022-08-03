@@ -13,6 +13,7 @@
         "same_network": "You are already on that network",
         "confirm_transaction": "Confirm transaction in your wallet",
         "offline": "Your wallet is not connected",
+        "change_network_to": "Change network in your wallet to",
 
         "token_added": "Token was added",
         "token_not_added": "Token was not added"

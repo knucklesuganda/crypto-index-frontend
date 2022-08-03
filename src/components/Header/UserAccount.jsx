@@ -53,10 +53,6 @@ export function UserAccount() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const { t } = useTranslation();
 
-    const handleWalletConnection = () => {
-        connectWallet().catch(() => { message.error(t("accept_wallet")); });
-    };
-
     useEffect(() => {
         const accountConnected = (_) => { setIsLoggedIn(true); };
         window.addEventListener(new WalletConnected().type, accountConnected, false);
@@ -71,7 +67,9 @@ export function UserAccount() {
                 clearProvider();
                 window.location.reload();
             } else {
-                handleWalletConnection();
+                connectWallet().catch(() => {
+                    message.error(t("accept_wallet"));
+                });
             }
         }}>
             <Typography.Text style={{ fontSize: "1.2em" }}>

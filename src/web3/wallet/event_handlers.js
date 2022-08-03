@@ -1,5 +1,5 @@
 import { message } from 'antd';
-import { WalletConnected } from './events';
+import { NetworkChanged } from './events';
 
 
 function errorEventListener(error) {
@@ -11,16 +11,16 @@ function errorEventListener(error) {
 function disconnectEventListener(){ window.location.reload(); }
 function chainChangedEventListener(){
     message.info("Chain was changed");
-    window.dispatchEvent(new WalletConnected());
+    window.dispatchEvent(new NetworkChanged());
 }
 
 
 export function setupEvents(provider) {
-    provider.on("error", errorEventListener);
-    provider.on("disconnect", disconnectEventListener);
+    window.ethereum.on("error", errorEventListener);
+    window.ethereum.on("disconnect", disconnectEventListener);
 
-    provider.on('chainChanged', chainChangedEventListener);
-    provider.on('accountsChanged', disconnectEventListener);
+    window.ethereum.on('chainChanged', chainChangedEventListener);
+    window.ethereum.on('accountsChanged', disconnectEventListener);
 }
 
 export function unsetEvents() { window.ethereum.removeAllListeners(); }

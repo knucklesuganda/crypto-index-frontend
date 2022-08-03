@@ -14,7 +14,8 @@
         "confirm_transaction": "Подтвердите транзакцию в вашем кошельке",
         "offline": "Ваш кошелек не подключен",
         "token_added": "Токен добавлен",
-        "token_not_added": "Токен не добавлен"
+        "token_not_added": "Токен не добавлен",
+        "change_network_to": "Поменяйте сеть на"
     },
     "index": {
         "crypto_index": "Крипто Индекс",

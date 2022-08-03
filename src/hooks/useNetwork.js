@@ -14,19 +14,24 @@ export function getChainParameter(){
 
 export function useNetwork() {
     const [network, setNetwork] = useState(getNetwork(getChainParameter()));
+    const [currentNetworkId, setCurrentNetworkId] = useState(network.ID);
     const navigate = useNavigate();
 
     const changeNetworkParam = useCallback((chainId) => {
+
         const searchParams = new URLSearchParams(window.location.search);
         searchParams.set("chain", chainId);
+
         window.dispatchEvent(new NetworkChanged());
         navigate({ pathname: window.location.pathname, search: searchParams.toString() }, { replace: true });
+
     }, [navigate]);
 
-    const networkChangeEvent = useCallback(() => {
+    const changeNetworkInWallet = useCallback(() => {
 
         connectWallet(true).then(({ provider }) => {
             provider.getNetwork().then(({ chainId }) => {
+                setCurrentNetworkId(chainId);
 
                 const chainParameter = getChainParameter();
 
@@ -37,6 +42,7 @@ export function useNetwork() {
 
                 setNetwork(getNetwork(chainId));
             });
+
         }).catch(() => {
             const chainParameter = getChainParameter();
             setNetwork(getNetwork(chainParameter));
@@ -53,11 +59,11 @@ export function useNetwork() {
         }
 
         setNetwork(getNetwork(chainParameter));
-        window.addEventListener((new NetworkChanged()).type, networkChangeEvent);
-        networkChangeEvent();
+        window.addEventListener((new NetworkChanged()).type, changeNetworkInWallet);
+        changeNetworkInWallet();
 
-        return () => { window.removeEventListener((new NetworkChanged()).type, networkChangeEvent); }
-    }, [changeNetworkParam, networkChangeEvent]);
+        return () => { window.removeEventListener((new NetworkChanged()).type, changeNetworkInWallet); }
+    }, [changeNetworkParam, changeNetworkInWallet]);
 
-    return { network, changeNetworkParam };
+    return { network, changeNetworkParam, currentNetworkId, changeNetworkInWallet };
 }

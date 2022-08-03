@@ -20,7 +20,8 @@ export class SafeMinter {
     }
 
     async burn(amount){
-        amount = convertToEther(amount).div(BigNumber.from("100"));
+        amount = convertToEther(amount);
+        console.log(amount.toString());
 
         const token = await this.getToken();
         const userBalance = await token.balanceOf(this.providerData.account);
@@ -50,7 +51,7 @@ export class SafeMinter {
     }
 
     async mint(amount) {
-        amount = convertToEther(amount).div(BigNumber.from("100"));
+        amount = convertToEther(amount).div(BigNumber.from("10"));
         const { provider, account } = this.providerData;
         const userBalance = await provider.getBalance(account);
 

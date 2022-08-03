@@ -80,6 +80,9 @@ export class SafeToken {
         if(nextEpochTime > 0){
             const currentTimestamp = (new Date()).getTime();
             nextResetTime = new Date(currentTimestamp + (nextEpochTime * 1000));
+        }else{
+            userLeftLimit = userTransferLimit;
+            totalLeftLimit = totalTransferLimit;
         }
 
         return {

@@ -48,17 +48,20 @@ export async function changeNetwork(provider, networkId) {
     const networkData = getNetwork(networkId);
 
     try {
-        return await provider.send('wallet_switchEthereumChain', [{ chainId: hexValue(networkData.ID) }]);
+        await provider.send('wallet_switchEthereumChain', [{ chainId: hexValue(networkData.ID) }]);
+        return true;
     } catch (error) {
-        if (error.code === -32002) { }
-        else if (error.code === 4902) {
-            return await provider.send('wallet_addEthereumChain', [{
+        if (error.code === -32002) {
+            return false;
+        } else if (error.code === 4902) {
+            await provider.send('wallet_addEthereumChain', [{
                 chainName: networkData.NAME,
                 chainId: hexValue(networkData.ID),
                 nativeCurrency: networkData.CURRENCY,
                 rpcUrls: [networkData.URL],
                 blockExplorerUrls: networkData.EXPLORERS,
             }]);
+            return true;
         } else {
             throw error;
         }
