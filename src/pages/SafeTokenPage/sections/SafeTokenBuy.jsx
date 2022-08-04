@@ -56,7 +56,7 @@ export function SafeTokenBuy(props) {
                     <TokenInput useAddon inputRef={inputRef} productPrice={tokenPrice}
                         prefixSymbol="SAFE"
                         postfixSymbol={isPriceMatic ? "MATIC" : "$"}
-                        minValue={1}
+                        minValue={0.01}
                         maxValue={mintSupply ? bigNumberToNumber(mintSupply) : null} />}
 
                 <Form.Item style={{ marginBottom: 0, display: "flex" }}>

@@ -56,7 +56,7 @@ export default function SafeTokenPage() {
         };
 
         getTokenData();
-        tokenDataInterval.current = setInterval(() => { getTokenData() }, settings.STATE_UPDATE_INTERVAL * 5);
+        tokenDataInterval.current = setInterval(() => { getTokenData() }, settings.STATE_UPDATE_INTERVAL);
 
         return () => { clearInterval(tokenDataInterval.current) };
     }, [isPriceMatic, productAddress, providerData, t]);
