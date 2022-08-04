@@ -16,11 +16,19 @@ function chainChangedEventListener(){
 
 
 export function setupEvents(provider) {
-    window.ethereum.on("error", errorEventListener);
-    window.ethereum.on("disconnect", disconnectEventListener);
+    if(window.ethereum){
+        provider = window.ethereum;
+    }
 
-    window.ethereum.on('chainChanged', chainChangedEventListener);
-    window.ethereum.on('accountsChanged', disconnectEventListener);
+    provider.on("error", errorEventListener);
+    provider.on("disconnect", disconnectEventListener);
+
+    provider.on('chainChanged', chainChangedEventListener);
+    provider.on('accountsChanged', disconnectEventListener);
 }
 
-export function unsetEvents() { window.ethereum.removeAllListeners(); }
+export function unsetEvents() {
+    if(window.ethereum) {
+        window.ethereum.removeAllListeners();
+    }
+}

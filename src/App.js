@@ -1,23 +1,22 @@
-import { Suspense, useEffect } from "react";
-import { Header, Loading } from "./components";
-import NotFoundPage from "./pages/NotFoundPage";
-import IndexPage from './pages/IndexPage/IndexPage';
 import { INDEX_PAGE, INDEX_PRODUCT_PAGE, SAFETOKEN_PRODUCT_PAGE } from "./routes";
 import ProductPage from './pages/IndexProductPage/ProductPage';
 import SafeTokenPage from "./pages/SafeTokenPage/SafeTokenPage";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { unsetEvents } from "./web3/wallet/event_handlers";
+import IndexPage from './pages/IndexPage/IndexPage';
+import NotFoundPage from "./pages/NotFoundPage";
+import { Header, Loading } from "./components";
+import { Suspense, useEffect } from "react";
 import 'antd/dist/antd.min.css';
 import 'antd/dist/antd.dark.min.css';
 import "./App.css";
 
 
-function App() {
-    document.title = "Void";
-
+export default function App() {
     useEffect(() => {
+        document.title = "Void";
         return () => { unsetEvents() };
-    });
+    }, []);
 
     return <Suspense fallback={<Loading />}>
         <BrowserRouter>
@@ -31,5 +30,3 @@ function App() {
         </BrowserRouter>
     </Suspense>;
 }
-
-export default App;

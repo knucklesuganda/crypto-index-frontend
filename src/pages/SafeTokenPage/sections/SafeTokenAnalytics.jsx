@@ -5,7 +5,7 @@ import { WarningOutlined } from "@ant-design/icons";
 import Countdown from "antd/lib/statistic/Countdown";
 import { Row, Col, Statistic, Progress, Typography } from "antd";
 import { bigNumberToNumber, formatNumber } from "../../../web3/utils";
-import { useMobileQuery } from "../../../components/MediaQuery";
+import { OnlyDesktop, useMobileQuery } from "../../../components/MediaQuery";
 
 
 function TokenUsageProgress(props) {
@@ -28,8 +28,7 @@ export function SafeTokenAnalytics(props) {
         textAlign: isMobile ? "center" : "left",
     };
     const commonEndTextStyles = { textAlign: isMobile ? "center" : "end" };
-
-    return <Col style={{
+    const mainContainerStyle = {
         padding: "1em",
         fontSize: "1.2em",
         border: "1px solid #303030",
@@ -38,7 +37,13 @@ export function SafeTokenAnalytics(props) {
         borderLeft: isMobile ? "none" : "inherit",
         borderRight: isMobile ? "none" : "inherit",
         boxShadow: "0 0 5px 2px rgba(255, 255, 255, 0.2)",
-    }}>
+    };
+
+    if(isMobile){
+        mainContainerStyle.width = "100%";
+    }
+
+    return <Col style={mainContainerStyle}>
         <Typography.Title level={3} style={{ fontWeight: 100, textAlign: "center" }}>
             Analytics
             {isWalletOffline ? <WarningOutlined style={{ marginLeft: "0.5em", color: "#c41717" }}
@@ -46,7 +51,7 @@ export function SafeTokenAnalytics(props) {
         </Typography.Title>
 
         <Col style={{ width: "100%" }}>
-            {safeTokenData === null ? <Loading /> : <Fragment>
+            {safeTokenData === null ? <Loading style={{ width: "100%" }} /> : <Fragment>
                 <Row style={{
                     ...commonRowStyle,
                     justifyContent: "center",
@@ -71,8 +76,10 @@ export function SafeTokenAnalytics(props) {
                 </Row>
 
                 <Row style={commonRowStyle}>
-                    <Statistic title={t("safetoken_analytics.max_transfer")} 
-                        value={safeTokenData.maxTransferPercentage} suffix="%" />
+                    <OnlyDesktop>
+                        <Statistic title={t("safetoken_analytics.max_transfer")}
+                            value={safeTokenData.maxTransferPercentage} suffix="%" />
+                    </OnlyDesktop>
 
                     <Countdown title={safeTokenData.nextResetTime === null ?
                         <Typography.Text style={{ color: "#e61b1b", fontWeight: "bold" }}>

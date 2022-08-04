@@ -74,6 +74,7 @@ export async function clearProvider() {
     provider = null;
     web3Modal.clearCachedProvider();
     localStorage.removeItem('walletconnect');
+    localStorage.removeItem('WALLETCONNECT_DEEPLINK_CHOICE');
     sessionStorage.removeItem('account');
 }
 
@@ -82,9 +83,7 @@ async function _getWallet() {
     return (await provider.listAccounts())[0];
 }
 
-
 export function getDummyProvider(address, networkData) {
     const provider = new providers.JsonRpcProvider(networkData.URL, networkData.ID);
-    setupEvents(provider);
     return { provider, signer: new ethers.VoidSigner(address, provider), account: null };
 }
