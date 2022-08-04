@@ -24,7 +24,7 @@ export function NetworkOverlay(props){
         return () => { window.removeEventListener((new NetworkChanged()).type, networkChangeCallback) };
     }, [t, changeNetwork, wantedNetwork.ID, isNetworkCorrect]);
 
-    if(currentNetworkId === wantedNetwork.ID){
+    if(currentNetworkId === null || currentNetworkId === wantedNetwork.ID){
         return children;
     }
 

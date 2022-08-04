@@ -168,11 +168,11 @@
         }
     ],
     "safetoken_analytics": {
-        "mint_total_supply": "Mint supply / Total supply",
-        "mint_price": "Mint price(10 MATIC = 1 SAFE)",
+        "mint_total_supply": "Token mint supply / Total supply",
+        "mint_price": "Token creation price(10 MATIC = 1 SAFE)",
         "max_transfer": "Max transfer percentage",
         "start_timer": "Send a transaction to start the timer again",
-        "timer": "Next reset",
+        "timer": "Next limit reset",
         "user_usage": "Your daily usage",
         "total_usage": "Total daily usage"
     }

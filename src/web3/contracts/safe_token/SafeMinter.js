@@ -21,8 +21,6 @@ export class SafeMinter {
 
     async burn(amount){
         amount = convertToEther(amount);
-        console.log(amount.toString());
-
         const token = await this.getToken();
         const userBalance = await token.balanceOf(this.providerData.account);
 

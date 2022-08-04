@@ -49,7 +49,7 @@ export default function IndexPage() {
     const { network } = useNetwork();
     const isDesktop = useDesktopQuery();
     const isHalfScreen = useHalfScreenQuery();
-    const [currentProducts, setCurrentProducts] = useState(settings.NETWORKS.ETHEREUM.PRODUCTS);
+    const [currentProducts, setCurrentProducts] = useState(settings.NETWORKS.POLYGON.PRODUCTS);
 
     useEffect(() => {
         setCurrentProducts(network.PRODUCTS);

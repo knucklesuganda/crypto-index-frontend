@@ -17,4 +17,9 @@
       <changefreq>hourly</changefreq>
    </url>
 
+   <url>
+      <loc>https://void.management/product/safe_token</loc>
+      <changefreq>hourly</changefreq>
+   </url>
+
 </urlset> 

@@ -37,7 +37,7 @@ function NetworkPicker() {
 
             if (network.ID === networkId) {
                 message.error(t("wallet.same_network"));
-            } else{
+            } else {
                 changeNetworkParam(networkId);
             }
         }} />
@@ -63,8 +63,9 @@ export function UserAccount() {
         <NetworkPicker />
 
         <Col className="bordered_button" onClick={() => {
+            clearProvider();
+
             if (isLoggedIn) {
-                clearProvider();
                 window.location.reload();
             } else {
                 connectWallet().catch(() => {
@@ -73,7 +74,7 @@ export function UserAccount() {
             }
         }}>
             <Typography.Text style={{ fontSize: "1.2em" }}>
-                { isLoggedIn ? `${t("logout")} ${sessionStorage.account.slice(0, 15)}...` : 
+                {isLoggedIn ? `${t("logout")} ${sessionStorage.account.slice(0, 15)}...` :
                     t('wallet_connector.connect_wallet')}
             </Typography.Text>
         </Col>

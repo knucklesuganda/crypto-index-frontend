@@ -14,7 +14,7 @@ export function getChainParameter(){
 
 export function useNetwork() {
     const [network, setNetwork] = useState(getNetwork(getChainParameter()));
-    const [currentNetworkId, setCurrentNetworkId] = useState(network.ID);
+    const [currentNetworkId, setCurrentNetworkId] = useState(null);
     const navigate = useNavigate();
 
     const changeNetworkParam = useCallback((chainId) => {
@@ -54,7 +54,7 @@ export function useNetwork() {
         let chainParameter = getChainParameter();
 
         if(isNaN(chainParameter)){
-            chainParameter = settings.NETWORKS.ETHEREUM.ID;
+            chainParameter = settings.NETWORKS.POLYGON.ID;
             changeNetworkParam(chainParameter);
         }
 

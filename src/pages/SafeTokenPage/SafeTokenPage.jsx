@@ -39,28 +39,30 @@ export default function SafeTokenPage() {
             if (providerData !== null) {
                 minter = new SafeMinter(productAddress, providerData);
             } else {
-                minter = new SafeMinter(productAddress, getDummyProvider(productAddress, network));
+                minter = new SafeMinter(productAddress, getDummyProvider(productAddress, settings.NETWORKS.POLYGON));
             }
 
             if (isPriceMatic) {
                 setTokenPrice(BigNumber.from("100000000000000000"));
             } else {
-                minter.getPrice().then(price => setTokenPrice(price)).catch(() => {});
+                minter.getPrice().then(price => setTokenPrice(price));
             }
 
             minter.getToken().then(token => {
-                token.getInfo().then(data => { setSafeTokenData(data) })
-            }).catch(() => {});
+                token.getInfo().then(data => {
+                    setSafeTokenData(data);
+                })
+            });
         };
 
         getTokenData();
-        tokenDataInterval.current = setInterval(getTokenData, settings.STATE_UPDATE_INTERVAL);
+        tokenDataInterval.current = setInterval(() => { getTokenData() }, settings.STATE_UPDATE_INTERVAL * 5);
 
         return () => { clearInterval(tokenDataInterval.current) };
-    }, [changeNetworkParam, t, providerData, productAddress, isPriceMatic, network]);
+    }, []);
 
-    return <NetworkOverlay currentNetworkId={currentNetworkId}
-        wantedNetwork={settings.NETWORKS.POLYGON}
+    return <NetworkOverlay currentNetworkId={currentNetworkId} 
+        wantedNetwork={settings.NETWORKS.POLYGON} 
         changeNetwork={changeNetworkParam}>
 
         <Row style={{ width: "100%", marginTop: "3em", paddingLeft: isMobile ? "0" : "3em" }}>
