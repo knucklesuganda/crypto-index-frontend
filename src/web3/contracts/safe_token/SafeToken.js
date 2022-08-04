@@ -35,13 +35,20 @@ export class SafeToken {
         const epochTokensTransferred = await this.token.epochTokensTransferred();
         const totalTransferLimit = await this.token.getTotalTransferLimit();
 
-        if(todayTransfers.gt(userTransferLimit)){
+        if(todayTransfers.add(amount).gt(userTransferLimit)){
             throw new LimitExceededError();
-        }else if(epochTokensTransferred.gte(totalTransferLimit)){
+        }else if(epochTokensTransferred.add(amount).gt(totalTransferLimit)){
             throw new TotalLimitExceededError();
         }
 
-        return await this.token.burn(amount);
+        let gasLimit;
+        try{
+            gasLimit = this.token.burn.estimateGas(amount);
+        }catch(error){
+            gasLimit = BigNumber.from('200000');
+        }
+
+        return await this.token.burn(amount, { gasLimit });
     }
 
     async balanceOf(tokenAddress){

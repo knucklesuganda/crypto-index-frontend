@@ -26,8 +26,8 @@ export class SafeMinter {
 
         try{
             this._checkBalanceErrors(amount, userBalance);
+            return await token.burn(amount);
         }catch(error){
-
             if(error instanceof BalanceError){
                 error.balance = `${userBalance} SAFE`;
             }
@@ -35,7 +35,6 @@ export class SafeMinter {
             throw error;
         }
 
-        return await token.burn(amount);
     }
 
     _checkBalanceErrors(amount, balance){
@@ -62,7 +61,14 @@ export class SafeMinter {
             throw new NoTokensError();
         }
 
-        const transaction = await this.minter.mint({ value: amount });
+        let gasLimit;
+        try{
+            gasLimit = this.minter.mint.estimateGas({ value: amount });
+        }catch(error){
+            gasLimit = BigNumber.from('200000');
+        }
+
+        const transaction = await this.minter.mint({ value: amount, gasLimit: gasLimit });
         await transaction.wait();
 
         return transaction;
