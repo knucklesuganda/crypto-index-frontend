@@ -21,7 +21,7 @@ import "./style.css";
 export default function SafeTokenPage() {
     const { t } = useTranslation();
     const productAddress = settings.NETWORKS.POLYGON.PRODUCTS[0].address;
-    const { network, changeNetworkParam, currentNetworkId } = useNetwork();
+    const { changeNetworkParam, currentNetworkId } = useNetwork();
     const [tokenPrice, setTokenPrice] = useState(0);
     const [safeTokenData, setSafeTokenData] = useState(null);
     const { providerData, handleWalletConnection } = useProvider();
@@ -59,7 +59,7 @@ export default function SafeTokenPage() {
         tokenDataInterval.current = setInterval(() => { getTokenData() }, settings.STATE_UPDATE_INTERVAL * 5);
 
         return () => { clearInterval(tokenDataInterval.current) };
-    }, []);
+    }, [isPriceMatic, productAddress, providerData, t]);
 
     return <NetworkOverlay currentNetworkId={currentNetworkId} 
         wantedNetwork={settings.NETWORKS.POLYGON} 
